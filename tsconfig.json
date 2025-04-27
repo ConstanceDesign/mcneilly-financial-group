@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",  // This is the key change to fix the error
+    "target": "ESNext",
+    "module": "ESNext",  // This is the key change to fix the error
     "lib": ["dom", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -10,8 +10,9 @@
     "resolveJsonModule": true,  // This will now work
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "strict": true
   },
-  "include": ["src"]
+  "include": ["src/**/*", "tailwind.config.ts"]
 }
 
