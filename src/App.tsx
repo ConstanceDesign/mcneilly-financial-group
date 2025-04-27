@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Navbar from './components/Navbar';
 import './index.css';
+
 import Home from './pages/Home';
 import About from './pages/About';
 import Contact from './pages/Contact';
@@ -24,34 +26,37 @@ import Wealth from './pages/Wealth';
 const App: React.FC = () => {
   return (
     <Router>
-      <Routes>
-        <Route path="/home" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/links" element={<Links />} />
+      <Navbar /> {/* Include Navbar at the top of all pages */}
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/links" element={<Links />} />
 
-        {/* Business Routes */}
-        <Route path="/business" element={<Business />}>
-          <Route path="group_insurance" element={<Group_Insurance />} />
-          <Route path="buy_sell" element={<Buy_Sell />} />
-          <Route path="key_person" element={<Key_Person />} />
-          <Route path="business_overhead" element={<Business_Overhead />} />
-          <Route path="disability_insurance" element={<Disability_Insurance />} />
-          <Route path="health_insurance" element={<Health_Insurance />} />
-        </Route>
+          {/* Business Routes */}
+          <Route path="/business" element={<Business />}>
+            <Route path="group_insurance" element={<Group_Insurance />} />
+            <Route path="buy_sell" element={<Buy_Sell />} />
+            <Route path="key_person" element={<Key_Person />} />
+            <Route path="business_overhead" element={<Business_Overhead />} />
+            <Route path="disability_insurance" element={<Disability_Insurance />} />
+            <Route path="health_insurance" element={<Health_Insurance />} />
+          </Route>
 
-        {/* Personal Routes */}
-        <Route path="/personal" element={<Personal />}>
-          <Route path="term_insurance" element={<Term_Insurance />} />
-          <Route path="critical_illness" element={<Critical_Illness />} />
-          <Route path="health_insurance" element={<PersonalHealth_Insurance />} />
-          <Route path="disability_insurance" element={<PersonalDisability_Insurance />} />
-          <Route path="mortgage_insurance" element={<Mortgage_Insurance />} />
-          <Route path="permanent_insurance" element={<Permanent_Insurance />} />
-        </Route>
+          {/* Personal Routes */}
+          <Route path="/personal" element={<Personal />}>
+            <Route path="term_insurance" element={<Term_Insurance />} />
+            <Route path="critical_illness" element={<Critical_Illness />} />
+            <Route path="health_insurance" element={<PersonalHealth_Insurance />} />
+            <Route path="disability_insurance" element={<PersonalDisability_Insurance />} />
+            <Route path="mortgage_insurance" element={<Mortgage_Insurance />} />
+            <Route path="permanent_insurance" element={<Permanent_Insurance />} />
+          </Route>
 
-        <Route path="/wealth" element={<Wealth />} />
-      </Routes>
+          <Route path="/wealth" element={<Wealth />} />
+        </Routes>
+      </main>
     </Router>
   );
 };
