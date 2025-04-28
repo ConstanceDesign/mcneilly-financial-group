@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import './index.css';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -20,6 +23,7 @@ const Contact: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
+      <Navbar /> {/* Include Navbar */}
       <Helmet>
         <title>Contact Us | McNeilly Financial Group</title>
         <meta
@@ -110,6 +114,7 @@ const Contact: React.FC = () => {
           ></iframe>
         </div>
       </div>
+      <Footer /> {/* Include Footer */}  
     </div>
   );
 };
