@@ -7,12 +7,12 @@ const Personal: React.FC = () => {
     <div>
       <h2>Personal Page</h2>
       <nav>
-        <Link to="Term_Insurance">Go to Term_Insurance</Link>
-        <Link to="Critical_Illness">Go to Critical_Illness</Link>
-        <Link to="Health_Insurance">Go to Health_Insurance</Link>
-        <Link to="Disability_Insurance">Go to Disability_Insurance</Link>
-        <Link to="Mortgage_Insurance">Go to Mortgage_Insurance</Link>
-        <Link to="Permanent_Insurance">Go to Permanent_Insurance</Link>
+        <Link to="TermInsurance">Go to Term Insurance</Link>
+        <Link to="CriticalIllness">Go to Critical Illness</Link>
+        <Link to="HealthInsurance">Go to Health Insurance</Link>
+        <Link to="DisabilityInsurance">Go to Disability Insurance</Link>
+        <Link to="MortgageInsurance">Go to Mortgage Insurance</Link>
+        <Link to="PermanentInsurance">Go to Permanent Insurance</Link>
       </nav>
       <Outlet /> {/* This renders the child route */}
     </div>
