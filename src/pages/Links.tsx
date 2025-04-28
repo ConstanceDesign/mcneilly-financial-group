@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import './index.css';
-import { ExternalLinkIcon } from '@heroicons/react/solid';
+import { LinkIcon } from '@heroicons/react/24/solid';
 
 const Links: React.FC = () => {
   return (
@@ -40,7 +40,7 @@ const Links: React.FC = () => {
                   title={`Visit the ${link.name} website`}
                 >
                   <span>{link.name}</span>
-                  <ExternalLinkIcon className="w-5 h-5 text-blue-600" />
+                  <LinkIcon className="w-5 h-5 text-blue-600" />
                 </a>
               </div>
             ))}
@@ -69,7 +69,7 @@ const Links: React.FC = () => {
                   title={`Visit the ${link.name} website`}
                 >
                   <span>{link.name}</span>
-                  <ExternalLinkIcon className="w-5 h-5 text-blue-600" />
+                  <LinkIcon className="w-5 h-5 text-blue-600" />
                 </a>
               </div>
             ))}
@@ -100,7 +100,7 @@ const Links: React.FC = () => {
                   title={`Visit the ${link.name} website`}
                 >
                   <span>{link.name}</span>
-                  <ExternalLinkIcon className="w-5 h-5 text-blue-600" />
+                  <LinkIcon className="w-5 h-5 text-blue-600" />
                 </a>
               </div>
             ))}
@@ -128,7 +128,7 @@ const Links: React.FC = () => {
                   title={`Visit the ${link.name} website`}
                 >
                   <span>{link.name}</span>
-                  <ExternalLinkIcon className="w-5 h-5 text-blue-600" />
+                  <LinkIcon className="w-5 h-5 text-blue-600" />
                 </a>
               </div>
             ))}
