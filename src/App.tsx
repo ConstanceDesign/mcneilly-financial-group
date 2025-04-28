@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import './index.css';
 
+// Import your pages
 import Home from './pages/Home';
 import About from './pages/About';
 import Contact from './pages/Contact';
@@ -27,38 +28,44 @@ import Wealth from './pages/Wealth';
 const App: React.FC = () => {
   return (
     <Router>
-      <Navbar /> {/* Include Navbar at the top of all pages */}
+      <Navbar />
       <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/links" element={<Links />} />
+        <Suspense fallback={
+          <div className="flex justify-center items-center min-h-screen">
+            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        }>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/links" element={<Links />} />
 
-          {/* Business Routes */}
-          <Route path="/business" element={<Business />}>
-            <Route path="group_insurance" element={<GroupInsurance />} />
-            <Route path="buy_sell" element={<BuySell />} />
-            <Route path="key_person" element={<KeyPerson />} />
-            <Route path="business_overhead" element={<BusinessOverhead />} />
-            <Route path="disability_insurance" element={<DisabilityInsurance />} />
-            <Route path="health_insurance" element={<HealthInsurance />} />
-          </Route>
+            {/* Business Routes */}
+            <Route path="/business" element={<Business />}>
+              <Route path="group-insurance" element={<GroupInsurance />} />
+              <Route path="buy-sell" element={<BuySell />} />
+              <Route path="key-person" element={<KeyPerson />} />
+              <Route path="business-overhead" element={<BusinessOverhead />} />
+              <Route path="disability-insurance" element={<DisabilityInsurance />} />
+              <Route path="health-insurance" element={<HealthInsurance />} />
+            </Route>
 
-          {/* Personal Routes */}
-          <Route path="/personal" element={<Personal />}>
-            <Route path="term_insurance" element={<TermInsurance />} />
-            <Route path="critical_illness" element={<CriticalIllness />} />
-            <Route path="health_insurance" element={<PersonalHealthInsurance />} />
-            <Route path="disability_insurance" element={<PersonalDisabilityInsurance />} />
-            <Route path="mortgage_insurance" element={<MortgageInsurance />} />
-            <Route path="permanent_insurance" element={<PermanentInsurance />} />
-          </Route>
+            {/* Personal Routes */}
+            <Route path="/personal" element={<Personal />}>
+              <Route path="term-insurance" element={<TermInsurance />} />
+              <Route path="critical-illness" element={<CriticalIllness />} />
+              <Route path="health-insurance" element={<PersonalHealthInsurance />} />
+              <Route path="disability-insurance" element={<PersonalDisabilityInsurance />} />
+              <Route path="mortgage-insurance" element={<MortgageInsurance />} />
+              <Route path="permanent-insurance" element={<PermanentInsurance />} />
+            </Route>
 
-          <Route path="/wealth" element={<Wealth />} />
-        </Routes>
+            <Route path="/wealth" element={<Wealth />} />
+          </Routes>
+        </Suspense>
       </main>
-      <Footer /> {/* Include Footer at the bottom of all pages */}
+      <Footer />
     </Router>
   );
 };
