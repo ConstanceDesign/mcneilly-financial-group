@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import './index.css';
 
 import Home from './pages/Home';
@@ -57,6 +58,7 @@ const App: React.FC = () => {
           <Route path="/wealth" element={<Wealth />} />
         </Routes>
       </main>
+      <Footer /> {/* Include Footer at the bottom of all pages */}
     </Router>
   );
 };
