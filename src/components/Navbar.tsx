@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import useIsMobile from '../hooks/useIsMobile';
+import useIsMobile from 'hooks/useIsMobile';
 
 const Navbar: React.FC = () => {
   const isMobile = useIsMobile(768); // Check if screen is mobile (adjust breakpoint if needed)

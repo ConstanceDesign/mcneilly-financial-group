@@ -1,7 +1,7 @@
 import React from 'react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import './index.css';
+import Navbar from 'components/Navbar';
+import Footer from 'components/Footer';
+import 'index.css';
 import FinancialCalculator from '../components/FinancialCalculator';
 
 const Home: React.FC = () => {

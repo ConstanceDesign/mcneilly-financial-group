@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import './index.css';
+import Navbar from 'components/Navbar';
+import Footer from 'components/Footer';
+import 'index.css';
 
 const Wealth: React.FC = () => {
   // State for managing expanded/collapsed accordion sections

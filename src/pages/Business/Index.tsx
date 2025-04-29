@@ -1,21 +1,97 @@
-import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
-import './index.css';
+import React, { useState } from 'react';
+import { Helmet } from 'react-helmet';
+import Navbar from 'components/Navbar';
+import Footer from 'components/Footer';
+import 'index.css';
 
 const Business: React.FC = () => {
+  const [activeTab, setActiveTab] = useState(0); // Manage the active tab
+
+  // Tab Content
+  const tabs = [
+    {
+      title: 'Overview',
+      content: (
+        <>
+          <p>
+            If personal insurance is mind-boggling, then business insurance is undoubtedly even more complex. Over 90% of our clients are business/professional individuals, making us experts in servicing the Ontario market.
+          </p>
+          <p>
+            The process is highly technical, requiring full disclosure of financial statements, partnership agreements, and other documents. It's best to involve your accountant, lawyer, and advisor in the process to safeguard against any potential conflicts of interest.
+          </p>
+          <p>
+            The most critical concern is ensuring that living benefits are in place for key people in your business. The last thing you want is a key individual getting sick or injured.
+          </p>
+        </>
+      ),
+    },
+    {
+      title: 'Business Insurance Solutions',
+      content: (
+        <>
+          <ul className="list-disc pl-6 text-lg space-y-2">
+            <li>Group Insurance</li>
+            <li>Buy/Sell</li>
+            <li>Key Person</li>
+            <li>Business Overhead</li>
+            <li>Disability Insurance</li>
+            <li>Health Insurance</li>
+          </ul>
+        </>
+      ),
+    },
+    // More tabs as needed...
+  ];
+
   return (
-    <div>
-      <h2>Business Page</h2>
-      <nav>
-        <Link to="Group_Insurance">Go to Group Insurance</Link>
-        <Link to="Buy_Sell">Go to Buy Sell</Link>
-        <Link to="Key_Person">Go to Key Person</Link>
-        <Link to="Business_Overhead">Go to Business Overhead</Link>
-        <Link to="Disability_Insurance">Go to Disability Insurance</Link>
-        <Link to="Health_Insurance">Go to Health Insurance</Link>
-      </nav>
-      <Outlet /> {/* This renders the child route */}
-    </div>
+    <>
+      <Helmet>
+        <title>Business Insurance Solutions | McNeilly Financial Group</title>
+        <meta name="description" content="Explore comprehensive business insurance solutions to safeguard your company's future." />
+        <meta name="keywords" content="business insurance, group insurance, key person insurance, buy/sell insurance, disability insurance" />
+        <meta property="og:title" content="Business Insurance Solutions | McNeilly Financial Group" />
+        <meta property="og:description" content="Learn about business insurance options including key person insurance, group insurance, and more." />
+        <meta property="og:image" content="/images/business-hero.jpg" />
+      </Helmet>
+
+      <Navbar /> {/* Include Navbar */}
+
+      {/* Hero Section */}
+      <section className="relative bg-gray-200">
+        <img
+          src="/images/business-hero.jpg"
+          alt="Business Insurance Solutions"
+          className="w-full h-96 object-cover"
+        />
+        <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-40">
+          <h1 className="text-4xl text-white font-bold text-center px-4 py-2">Business Insurance Solutions</h1>
+        </div>
+      </section>
+
+      <div className="container mx-auto px-4 py-6">
+        {/* Tabs Navigation */}
+        <div className="mb-6">
+          <div className="flex space-x-6">
+            {tabs.map((tab, index) => (
+              <button
+                key={index}
+                className={`px-6 py-2 text-lg font-semibold ${activeTab === index ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-600'}`}
+                onClick={() => setActiveTab(index)}
+              >
+                {tab.title}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Tab Content */}
+        <div className="space-y-6">
+          <div>{tabs[activeTab].content}</div>
+        </div>
+      </div>
+
+      <Footer /> {/* Include Footer */}
+    </>
   );
 };
 

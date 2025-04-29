@@ -1,5 +1,5 @@
 import React from 'react';
-import useIsMobile from '../hooks/useIsMobile';
+import useIsMobile from 'hooks/useIsMobile';
 
 const Footer: React.FC = () => {
   const isMobile = useIsMobile();

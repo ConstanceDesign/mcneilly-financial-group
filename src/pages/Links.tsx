@@ -1,7 +1,7 @@
 import React from 'react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import './index.css';
+import Navbar from 'components/Navbar';
+import Footer from 'components/Footer';
+import 'index.css';
 import { LinkIcon } from '@heroicons/react/24/solid';
 
 const Links: React.FC = () => {
