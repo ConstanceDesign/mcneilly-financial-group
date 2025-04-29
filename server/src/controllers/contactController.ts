@@ -1,14 +1,19 @@
 import { Request, Response } from 'express';
+import { sendEmail } from '../services/emailService';
 
-export const createContact = (req: Request, res: Response) => {
+export const submitContactForm = async (req: Request, res: Response) => {
   const { name, email, message } = req.body;
 
-  // Simulate a dummy response
-  if (!name || !email || !message) {
-    return res.status(400).json({ error: 'All fields are required.' });
+  try {
+    // Send the email
+    await sendEmail(
+      process.env.CONTACT_EMAIL as string,
+      `New Contact Form Submission from ${name}`,
+      `Name: ${name}\nEmail: ${email}\nMessage: ${message}`
+    );
+    res.status(200).json({ success: true, message: 'Message sent successfully!' });
+  } catch (error) {
+    console.error('Error sending contact email:', error);
+    res.status(500).json({ success: false, message: 'Failed to send message.' });
   }
-
-  return res.status(200).json({
-    message: `Contact form submitted successfully. We received: ${name}, ${email}, ${message}`
-  });
 };

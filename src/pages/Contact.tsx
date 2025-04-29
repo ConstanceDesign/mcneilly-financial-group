@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
+import axios from 'axios'; 
 import Navbar from 'components/Navbar';
 import Footer from 'components/Footer';
 import 'index.css';
@@ -7,23 +8,34 @@ import 'index.css';
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission (e.g., send to API)
-    setFormSubmitted(true);
-    // Reset form or show confirmation message
-    setFormData({ name: '', email: '', message: '' });
+
+    try {
+      const response = await axios.post('/api/contact', formData);
+      if (response.data.success) {
+        setFormSubmitted(true);
+        setFormData({ name: '', email: '', message: '' });
+        setErrorMessage('');
+      } else {
+        setErrorMessage('Something went wrong. Please try again later.');
+      }
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+      setErrorMessage('Failed to send message. Please try again later.');
+    }
   };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <Navbar /> {/* Include Navbar */}
+      <Navbar />
       <Helmet>
         <title>Contact Us | McNeilly Financial Group</title>
         <meta
@@ -32,10 +44,13 @@ const Contact: React.FC = () => {
         />
         <meta name="robots" content="index, follow" />
       </Helmet>
+
       <h1 className="text-3xl font-semibold text-center mb-8" aria-label="Contact Us">
         Contact Us
       </h1>
+
       <form onSubmit={handleSubmit} className="contact-form space-y-4">
+        {/* Name */}
         <div>
           <label htmlFor="name" className="block text-lg font-medium mb-2" aria-label="Name">
             Your Name
@@ -53,6 +68,7 @@ const Contact: React.FC = () => {
           />
         </div>
 
+        {/* Email */}
         <div>
           <label htmlFor="email" className="block text-lg font-medium mb-2" aria-label="Email">
             Your Email
@@ -70,6 +86,7 @@ const Contact: React.FC = () => {
           />
         </div>
 
+        {/* Message */}
         <div>
           <label htmlFor="message" className="block text-lg font-medium mb-2" aria-label="Message">
             Your Message
@@ -87,6 +104,7 @@ const Contact: React.FC = () => {
           />
         </div>
 
+        {/* Submit Button */}
         <div>
           <button
             type="submit"
@@ -97,10 +115,21 @@ const Contact: React.FC = () => {
         </div>
       </form>
 
+      {/* Success Message */}
       {formSubmitted && (
-        <p className="text-green-600 mt-4 text-center">Thank you for contacting us. We’ll get back to you soon!</p>
+        <p className="text-green-600 mt-4 text-center">
+          Thank you for contacting us. We’ll get back to you soon!
+        </p>
       )}
 
+      {/* Error Message */}
+      {errorMessage && (
+        <p className="text-red-600 mt-4 text-center">
+          {errorMessage}
+        </p>
+      )}
+
+      {/* Map */}
       <div className="mt-8">
         <h2 className="text-2xl font-semibold text-center mb-4">Find Us on the Map</h2>
         <div className="w-full h-64">
@@ -114,7 +143,8 @@ const Contact: React.FC = () => {
           ></iframe>
         </div>
       </div>
-      <Footer /> {/* Include Footer */}  
+
+      <Footer />
     </div>
   );
 };
