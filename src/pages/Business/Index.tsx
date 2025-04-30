@@ -3,9 +3,11 @@ import { Helmet } from 'react-helmet';
 import Navbar from 'components/Navbar';
 import Footer from 'components/Footer';
 import 'index.css';
+import { Outlet } from 'react-router-dom';
 
 const Business: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0); // Manage the active tab
+  <div><h1>Business Insurance</h1><Outlet /></div>
 
   // Tab Content
   const tabs = [
@@ -34,8 +36,8 @@ const Business: React.FC = () => {
             <li>Buy/Sell</li>
             <li>Key Person</li>
             <li>Business Overhead</li>
-            <li>Disability Insurance</li>
-            <li>Health Insurance</li>
+            <li>Business Disability Insurance</li>
+            <li>Business Health Insurance</li>
           </ul>
         </>
       ),

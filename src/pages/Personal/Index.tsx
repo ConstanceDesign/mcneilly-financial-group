@@ -3,10 +3,12 @@ import { Helmet } from 'react-helmet';
 import Navbar from 'components/Navbar';
 import Footer from 'components/Footer';
 import 'index.css';
+import { Outlet } from 'react-router-dom';
 
 
 const Personal: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0); // Manage the active tab
+   <div><h1>Personal Insurance</h1><Outlet /></div>
 
   // Tab Content
   const tabs = [
@@ -33,8 +35,8 @@ const Personal: React.FC = () => {
           <ul className="list-disc pl-6 text-lg space-y-2">
             <li>Term Insurance</li>
             <li>Critical Illness</li>
-            <li>Health Insurance</li>
-            <li>Disability Insurance</li>
+            <li>Personal Health Insurance</li>
+            <li>Personal Disability Insurance</li>
             <li>Mortgage Insurance</li>
             <li>Permanent Insurance</li>
           </ul>
