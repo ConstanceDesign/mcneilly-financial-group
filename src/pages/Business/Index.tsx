@@ -1,8 +1,4 @@
 import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
-import Navbar from 'components/Navbar';
-import Footer from 'components/Footer';
-import 'index.css';
 import { Outlet } from 'react-router-dom';
 
 const Business: React.FC = () => {
@@ -47,16 +43,13 @@ const Business: React.FC = () => {
 
   return (
     <>
-      <Helmet>
         <title>Business Insurance Solutions | McNeilly Financial Group</title>
         <meta name="description" content="Explore comprehensive business insurance solutions to safeguard your company's future." />
         <meta name="keywords" content="business insurance, group insurance, key person insurance, buy/sell insurance, disability insurance" />
         <meta property="og:title" content="Business Insurance Solutions | McNeilly Financial Group" />
         <meta property="og:description" content="Learn about business insurance options including key person insurance, group insurance, and more." />
         <meta property="og:image" content="/images/business-hero.jpg" />
-      </Helmet>
 
-      <Navbar /> {/* Include Navbar */}
 
       {/* Hero Section */}
       <section className="relative bg-gray-200">
@@ -92,7 +85,6 @@ const Business: React.FC = () => {
         </div>
       </div>
 
-      <Footer /> {/* Include Footer */}
     </>
   );
 };

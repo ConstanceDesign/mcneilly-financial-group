@@ -1,7 +1,4 @@
 import React from 'react';
-import Navbar from 'components/Navbar';
-import Footer from 'components/Footer';
-import 'index.css';
 import FinancialCalculator from '../components/FinancialCalculator';
 
 const Home: React.FC = () => {
@@ -11,7 +8,6 @@ const Home: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar /> {/* Include Navbar */}
       
       {/* Hero Section */}
       <section className="relative w-full h-96 bg-cover bg-center" style={{ backgroundImage: 'url(/images/hero-image.jpg)' }}>
@@ -77,7 +73,6 @@ const Home: React.FC = () => {
         </div>
       </main>
 
-      <Footer /> {/* Include Footer */}
     </div>
   );
 };

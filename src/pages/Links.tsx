@@ -1,13 +1,9 @@
 import React from 'react';
-import Navbar from 'components/Navbar';
-import Footer from 'components/Footer';
-import 'index.css';
 import { LinkIcon } from '@heroicons/react/24/solid';
 
 const Links: React.FC = () => {
   return (
     <div className="container mx-auto p-6 flex flex-col md:flex-row items-start space-y-6 md:space-y-0 md:space-x-8">
-      <Navbar /> {/* Include Navbar */}
       <div className="flex-1">
         <h1 className="text-3xl font-bold text-center text-gray-900 mb-8">Useful Links</h1>
         
@@ -40,7 +36,7 @@ const Links: React.FC = () => {
                   title={`Visit the ${link.name} website`}
                 >
                   <span>{link.name}</span>
-                  <LinkIcon className="w-5 h-5 text-blue-600" />
+                  {/* <LinkIcon className="w-1 h-1 text-blue-600" /> */}
                 </a>
               </div>
             ))}
@@ -69,7 +65,7 @@ const Links: React.FC = () => {
                   title={`Visit the ${link.name} website`}
                 >
                   <span>{link.name}</span>
-                  <LinkIcon className="w-5 h-5 text-blue-600" />
+                  {/* <LinkIcon className="w-1 h-1 text-blue-600" /> */}
                 </a>
               </div>
             ))}
@@ -100,7 +96,7 @@ const Links: React.FC = () => {
                   title={`Visit the ${link.name} website`}
                 >
                   <span>{link.name}</span>
-                  <LinkIcon className="w-5 h-5 text-blue-600" />
+                  {/* <LinkIcon className="w-1 h-1 text-blue-600" /> */}
                 </a>
               </div>
             ))}
@@ -128,7 +124,7 @@ const Links: React.FC = () => {
                   title={`Visit the ${link.name} website`}
                 >
                   <span>{link.name}</span>
-                  <LinkIcon className="w-5 h-5 text-blue-600" />
+                  {/* <LinkIcon className="w-1 h-1 text-blue-600" /> */}
                 </a>
               </div>
             ))}
@@ -144,7 +140,6 @@ const Links: React.FC = () => {
           className="w-full h-auto rounded-lg shadow-md"
         />
       </div>
-      <Footer /> {/* Include Footer */}
     </div>
   );
 };

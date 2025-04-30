@@ -1,8 +1,4 @@
 import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
-import Navbar from 'components/Navbar';
-import Footer from 'components/Footer';
-import 'index.css';
 
 const Wealth: React.FC = () => {
   // State for managing expanded/collapsed accordion sections
@@ -14,8 +10,7 @@ const Wealth: React.FC = () => {
 
   return (
     <>
-      <Navbar /> {/* Include Navbar */}
-      <Helmet>
+
         <title>Why Should I Save? | McNeilly Financial Group</title>
         <meta
           name="description"
@@ -31,7 +26,7 @@ const Wealth: React.FC = () => {
           content="Learn the importance of saving, investment options, and how an investment professional can help you secure your future."
         />
         <meta property="og:image" content="/images/wealth-hero.jpg" />
-      </Helmet>
+
 
       {/* Hero Section */}
       <section className="relative bg-gray-200">
@@ -188,7 +183,7 @@ const Wealth: React.FC = () => {
 
           </div>
         </section>
-      <Footer /> {/* Include Footer */} 
+
       </div>
     </>
   );

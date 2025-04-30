@@ -1,12 +1,8 @@
 import React from 'react';
-import Navbar from 'components/Navbar';
-import Footer from 'components/Footer';
-import 'index.css';
 
 const About: React.FC = () => {
   return (
     <div className="flex flex-col lg:flex-row bg-gray-100 p-6">
-      <Navbar /> {/* Include Navbar */}
       <div className="lg:w-1/2 pr-8">
         <h1 className="text-3xl font-semibold text-center text-gray-800 mb-4">Our Financial Philosophy</h1>
         <p className="text-lg text-gray-700 mb-4">
@@ -37,8 +33,7 @@ const About: React.FC = () => {
           alt="Patrick McNeilly, Financial Advisor"
           className="w-full h-auto object-cover rounded-lg shadow-lg"
         />
-      </div>
-      <Footer /> {/* Include Footer */}      
+      </div>     
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import useIsMobile from 'hooks/useIsMobile';
 
@@ -10,27 +10,24 @@ const Navbar: React.FC = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  // Close menu when screen size changes
+  useEffect(() => {
+    if (!isMobile) {
+      setIsMenuOpen(false); // Close the menu when switching to desktop
+    }
+  }, [isMobile]);
+
   return (
-    <nav
-      className="flex justify-between items-center p-4 bg-brand-darkgreen text-white relative"
-      aria-label="Main Navigation"
-    >
+    <nav className="flex justify-between items-center p-4 bg-brand-darkgreen text-white relative" aria-label="Main Navigation">
       <div className="navbar-brand">
         <Link to="/" aria-label="Home">
-          <img
-            src="/images/mcneillyfinancialgroup-logo.png"
-            alt="McNeilly Financial Group Logo"
-            className="w-[400px] mt-2 mb-2"
-          />
+          <img src="/images/mcneillyfinancialgroup-logo.png" alt="McNeilly Financial Group Logo" className="w-[400px] mt-2 mb-2" />
         </Link>
       </div>
 
       {/* Desktop Navigation (visible when not mobile) */}
       {!isMobile && (
-        <div
-          className="flex gap-5 font-bold uppercase text-lg transition-all duration-1000 ease-in-out"
-          role="navigation"
-        >
+        <div className="flex gap-5 font-bold uppercase text-lg transition-all duration-1000 ease-in-out" role="navigation">
           <ul className="flex list-none p-0 m-0">
             <li>
               <Link to="/" className="text-white hover:text-brand-lightgreen" aria-label="Home">
@@ -63,11 +60,7 @@ const Navbar: React.FC = () => {
               </Link>
             </li>
             <li>
-              <Link
-                to="/contact"
-                className="text-white hover:text-brand-lightgreen"
-                aria-label="Contact Us"
-              >
+              <Link to="/contact" className="text-white hover:text-brand-lightgreen" aria-label="Contact Us">
                 Contact
               </Link>
             </li>
@@ -89,9 +82,7 @@ const Navbar: React.FC = () => {
       {/* Mobile Navigation (visible when mobile) */}
       {isMobile && (
         <div
-          className={`${
-            isMenuOpen ? 'block' : 'hidden'
-          } absolute top-[60px] left-0 right-0 bg-brand-darkgreen text-center p-4 z-10`}
+          className={`${isMenuOpen ? 'block' : 'hidden'} absolute top-[60px] left-0 right-0 bg-brand-darkgreen text-center p-4 z-10`}
           role="navigation"
         >
           <ul className="list-none p-0 m-0">
@@ -126,11 +117,7 @@ const Navbar: React.FC = () => {
               </Link>
             </li>
             <li>
-              <Link
-                to="/contact"
-                className="text-white hover:text-brand-lightgreen"
-                aria-label="Contact Us"
-              >
+              <Link to="/contact" className="text-white hover:text-brand-lightgreen" aria-label="Contact Us">
                 Contact
               </Link>
             </li>

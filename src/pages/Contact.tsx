@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
 import axios from 'axios'; 
-import Navbar from 'components/Navbar';
-import Footer from 'components/Footer';
-import 'index.css';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -19,7 +15,7 @@ const Contact: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('/api/contact', formData);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/contact`, formData);
       if (response.data.success) {
         setFormSubmitted(true);
         setFormData({ name: '', email: '', message: '' });
@@ -35,15 +31,14 @@ const Contact: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <Navbar />
-      <Helmet>
+  
         <title>Contact Us | McNeilly Financial Group</title>
         <meta
           name="description"
           content="Get in touch with McNeilly Financial Group for expert financial advice. Contact us today!"
         />
         <meta name="robots" content="index, follow" />
-      </Helmet>
+ 
 
       <h1 className="text-3xl font-semibold text-center mb-8" aria-label="Contact Us">
         Contact Us
@@ -59,6 +54,7 @@ const Contact: React.FC = () => {
             type="text"
             name="name"
             id="name"
+            autoComplete="name"
             value={formData.name}
             onChange={handleChange}
             placeholder="Your Name"
@@ -77,6 +73,7 @@ const Contact: React.FC = () => {
             type="email"
             name="email"
             id="email"
+            autoComplete="email"
             value={formData.email}
             onChange={handleChange}
             placeholder="Your Email"
@@ -143,8 +140,6 @@ const Contact: React.FC = () => {
           ></iframe>
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 };

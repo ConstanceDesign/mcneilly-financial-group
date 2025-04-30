@@ -1,5 +1,4 @@
 import React from "react";
-import { Helmet } from "react-helmet";
 import Navbar from "components/Navbar";
 import Footer from "components/Footer";
 import "index.css";
@@ -12,10 +11,8 @@ interface PersonalLayoutProps {
 const PersonalLayout: React.FC<PersonalLayoutProps> = ({ children, pageTitle }) => {
   return (
     <>
-      <Helmet>
         <title>{pageTitle} | Personal Insurance</title>
-      </Helmet>
-
+      
       <Navbar />
 
       <div className="bg-blue-50 min-h-screen w-full py-12 px-4 md:px-12">

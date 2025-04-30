@@ -1,8 +1,4 @@
 import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
-import Navbar from 'components/Navbar';
-import Footer from 'components/Footer';
-import 'index.css';
 import { Outlet } from 'react-router-dom';
 
 
@@ -48,16 +44,13 @@ const Personal: React.FC = () => {
 
   return (
     <>
-      <Helmet>
+
         <title>Personal Insurance Solutions | McNeilly Financial Group</title>
         <meta name="description" content="Explore personal insurance solutions, including term life insurance, disability coverage, and more." />
         <meta name="keywords" content="personal insurance, term insurance, critical illness, disability insurance, mortgage insurance" />
         <meta property="og:title" content="Personal Insurance Solutions | McNeilly Financial Group" />
         <meta property="og:description" content="Find out how personal insurance can protect you and your loved ones against financial risks." />
         <meta property="og:image" content="/images/personal-hero.jpg" />
-      </Helmet>
-
-      <Navbar /> {/* Include Navbar */}
 
       {/* Hero Section */}
       <section className="relative bg-gray-200">
@@ -93,7 +86,6 @@ const Personal: React.FC = () => {
         </div>
       </div>
 
-      <Footer /> {/* Include Footer */}
     </>
   );
 };

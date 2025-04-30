@@ -1,5 +1,4 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
 import Navbar from 'components/Navbar';
 import Footer from 'components/Footer';
 import 'index.css';
@@ -12,9 +11,7 @@ interface BusinessLayoutProps {
 const BusinessLayout: React.FC<BusinessLayoutProps> = ({ children, pageTitle }) => {
   return (
     <>
-      <Helmet>
         <title>{pageTitle} | Business Insurance</title>
-      </Helmet>
 
       <Navbar />
 

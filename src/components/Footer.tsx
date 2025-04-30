@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import useIsMobile from 'hooks/useIsMobile';
 
 const Footer: React.FC = () => {
   const isMobile = useIsMobile();
   const currentYear = new Date().getFullYear();
+  const [cookiesAccepted, setCookiesAccepted] = useState<boolean>(false);
+
+  // Check if cookies have been accepted
+  useEffect(() => {
+    const cookiesConsent = document.cookie.indexOf('cookies_accepted=true') > -1;
+    setCookiesAccepted(cookiesConsent);
+  }, []);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -33,6 +40,13 @@ const Footer: React.FC = () => {
     </div>
   );
 
+  const showCookieBanner = !cookiesAccepted;
+
+  const acceptCookies = () => {
+    document.cookie = "cookies_accepted=true; max-age=" + 60 * 60 * 24 * 365 + "; path=/; SameSite=Lax";
+    setCookiesAccepted(true);
+  };
+
   return (
     <footer className="bg-gray-200 p-8 flex flex-col md:flex-row justify-between items-start gap-8">
       {footerContent}
@@ -49,6 +63,22 @@ const Footer: React.FC = () => {
 
       {isMobile && (
         <p className="text-sm font-bold text-left mt-4">&copy; {currentYear} McNeilly Financial Group. All Rights Reserved.</p>
+      )}
+
+      {/* Cookie Consent Banner */}
+      {showCookieBanner && (
+        <div className="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 text-center z-50">
+          <p>
+            We use cookies to improve your experience on our site. By continuing, you agree to our 
+            <a href="/privacy-policy" className="text-green-400"> Privacy Policy</a> and consent to our use of cookies.
+          </p>
+          <button 
+            onClick={acceptCookies} 
+            className="bg-green-500 text-white px-4 py-2 rounded mt-2 hover:bg-green-600"
+          >
+            Got it!
+          </button>
+        </div>
       )}
     </footer>
   );
