@@ -2,10 +2,10 @@
   "name": "mcneilly-financial-group",
   "private": true,
   "version": "1.0.0",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "dev:frontend": "vite",
-    "dev:backend": "nodemon",
+    "dev:backend": "ts-node --esm server/server.ts",
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "build": "tsc --project tsconfig.server.json && vite build",
     "start": "node dist/server/server.js",

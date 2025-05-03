@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import axios from 'axios'; 
+import axios from 'axios';
 
 const Contact: React.FC = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -15,7 +16,7 @@ const Contact: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/contact`, formData);
+      const response = await axios.post(`${API_BASE_URL}/api/contact`, formData);
       if (response.data.success) {
         setFormSubmitted(true);
         setFormData({ name: '', email: '', message: '' });
@@ -31,14 +32,12 @@ const Contact: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-  
-        <title>Contact Us | McNeilly Financial Group</title>
-        <meta
-          name="description"
-          content="Get in touch with McNeilly Financial Group for expert financial advice. Contact us today!"
-        />
-        <meta name="robots" content="index, follow" />
- 
+      <title>Contact Us | McNeilly Financial Group</title>
+      <meta
+        name="description"
+        content="Get in touch with McNeilly Financial Group for expert financial advice. Contact us today!"
+      />
+      <meta name="robots" content="index, follow" />
 
       <h1 className="text-3xl font-semibold text-center mb-8" aria-label="Contact Us">
         Contact Us
@@ -47,7 +46,7 @@ const Contact: React.FC = () => {
       <form onSubmit={handleSubmit} className="contact-form space-y-4">
         {/* Name */}
         <div>
-          <label htmlFor="name" className="block text-lg font-medium mb-2" aria-label="Name">
+          <label htmlFor="name" className="block text-lg font-medium mb-2">
             Your Name
           </label>
           <input
@@ -60,13 +59,12 @@ const Contact: React.FC = () => {
             placeholder="Your Name"
             className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
-            aria-required="true"
           />
         </div>
 
         {/* Email */}
         <div>
-          <label htmlFor="email" className="block text-lg font-medium mb-2" aria-label="Email">
+          <label htmlFor="email" className="block text-lg font-medium mb-2">
             Your Email
           </label>
           <input
@@ -79,13 +77,12 @@ const Contact: React.FC = () => {
             placeholder="Your Email"
             className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
-            aria-required="true"
           />
         </div>
 
         {/* Message */}
         <div>
-          <label htmlFor="message" className="block text-lg font-medium mb-2" aria-label="Message">
+          <label htmlFor="message" className="block text-lg font-medium mb-2">
             Your Message
           </label>
           <textarea
@@ -97,7 +94,6 @@ const Contact: React.FC = () => {
             rows={5}
             className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
-            aria-required="true"
           />
         </div>
 

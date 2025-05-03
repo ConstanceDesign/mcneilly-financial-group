@@ -5,7 +5,6 @@ export const submitContactForm = async (req: Request, res: Response) => {
   const { name, email, message } = req.body;
 
   try {
-    // Send the email
     await sendEmail(
       process.env.CONTACT_EMAIL as string,
       `New Contact Form Submission from ${name}`,

@@ -1,17 +1,23 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import contactRoutes from './routes/contactRoutes';
+import contactRoutes from './routes/contactRoutes.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Load environment variables
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
 
-// Middleware
 app.use(cors({
   origin: 'http://localhost:5173',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'], // Ensure headers are valid
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
   optionsSuccessStatus: 204,
 }));
@@ -19,10 +25,8 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
 app.use('/api/contact', contactRoutes);
 
-// Health check
 app.get('/health', (req, res) => {
   res.status(200).json({ message: 'Server is running' });
 });
