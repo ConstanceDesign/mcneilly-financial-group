@@ -12,10 +12,15 @@ const config: Config = {
         'blue-700': '#0056b3', 
         'teal-400': '#61dafb', 
       },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
+      },
       fontSize: {
         'xxl': '2rem', 
         'xl': '1.5rem', 
-        'lg': '1.2rem', 
+        'lg': '1.2rem',
+        'xs': '0.25rem', 
       },
       spacing: {
         '128': '32rem',
@@ -32,5 +37,8 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('daisyui')
+  ]
 };
