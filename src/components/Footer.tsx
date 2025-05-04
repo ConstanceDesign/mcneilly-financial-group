@@ -70,13 +70,13 @@ const Footer: React.FC = () => {
 
       {/* Footer bottom */}
       <div className="w-full flex flex-col lg:flex-row justify-between items-start lg:items-center mt-6 gap-3">
-        <button
-          className="bg-[#9b9da0] text-white font-bold text-sm px-[10px] py-[5px] transition-all duration-300 hover:bg-[#8cbe3f] hover:-translate-y-1 active:translate-y-0"
-          onClick={scrollToTop}
-        >
-          Back to Top
-        </button>
-        <p className="text-[13px] font-bold">
+      <button
+  onClick={scrollToTop}
+  className="bg-red-500 text-white font-bold text-sm px-4 py-2 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 hover:bg-brand-lightgreen focus:outline-none focus:ring-0 active:scale-100 shadow-md"
+>
+  Back to Top
+</button>
+        <p className="bg-red-500 text-[13px] font-bold">
           &copy; {currentYear} McNeilly Financial Group. All Rights Reserved.
         </p>
       </div>
