@@ -13,10 +13,11 @@ const Home: React.FC = () => {
         <div className="absolute inset-0 bg-black/60" />
         <div className="relative z-10 flex flex-col items-center justify-center h-full text-white text-center px-4">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-            Welcome to Patrick McNeilly Financial Planning
+            Welcome to McNeilly Financial Group
           </h1>
           <p className="text-lg md:text-xl mb-6 max-w-2xl">
-            Secure your future with expert financial guidance. We offer comprehensive solutions for individuals and businesses.
+            Secure your future with expert financial guidance.
+            <p className="text-lg md:text-xl mb-6 max-w-2xl"> We offer comprehensive solutions for individuals and businesses.</p>
           </p>
           <button
             onClick={handleContactClick}

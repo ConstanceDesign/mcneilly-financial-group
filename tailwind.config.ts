@@ -28,7 +28,7 @@ const config: Config = {
       },
       spacing: {
         '128': '32rem',
-        'footer-button-padding': '5px 10px',
+        'button-padding': '5px 10px',
       },
       maxWidth: {
         '1200': '1200px',
