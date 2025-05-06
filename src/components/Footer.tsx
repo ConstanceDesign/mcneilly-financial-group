@@ -76,7 +76,7 @@ const Footer: React.FC = () => {
 >
   Back to Top
 </button>
-        <p className="bg-red-500 text-[13px] font-bold">
+        <p className="text-[13px] font-bold">
           &copy; {currentYear} McNeilly Financial Group. All Rights Reserved.
         </p>
       </div>

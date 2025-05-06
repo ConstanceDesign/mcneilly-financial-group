@@ -28,21 +28,21 @@ const Navbar: React.FC = () => {
   }, [isMenuOpen]);
 
   return (
-    <nav className="bg-[#0f5028] text-white py-4 shadow-md sticky top-0 h-26 z-50">
-      <div className="mx-auto max-w-screen-xl flex items-center justify-between">
+    <nav className="bg-[#0f5028] text-white h-28 w-full shadow-md sticky top-0 z-50">
+      <div className="relative right-15 mx-auto max-w-full flex items-center justify-between h-full">
         {/* Logo */}
-        <div className="flex items-center flex-shrink-0 p-[10%]">
+        <div className="flex items-center flex-shrink-0">
           <NavLink to="/">
             <img
               src="/images/mcneillyfinancialgroup-logo.png"
               alt="McNeilly Financial Group"
-              className="relative left-15 bottom-5 top-2 w-[250px] md:w-[250px]"
+              className="relative left-30 w-[250px] object-contain"
             />
           </NavLink>
         </div>
 
         {/* Hamburger Icon */}
-        <div className="block lg:hidden">
+        <div className="block xl:hidden">
           <button
             onClick={toggleMenu}
             className="relative w-10 h-10 flex items-center justify-center group"
@@ -57,8 +57,8 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Desktop Links */}
-        <div className="hidden lg:flex lg:items-center">
-          <ul className="flex gap-6 uppercase font-normal tracking-wide text-[1.1rem] items-center">
+        <div className="hidden xl:flex items-center space-x-6 grid-cols-2 gap-8">
+          <ul className="flex gap-8 uppercase font-normal tracking-widest text-[1.05rem] items-centers">
             {[
               { to: '/', label: 'Home' },
               { to: '/about', label: 'About' },
@@ -79,25 +79,22 @@ const Navbar: React.FC = () => {
                 >
                   <span className="inline-block relative group">
                     {label}
-                    <span className="flex left-0 -bottom-1 h-0.5 w-0 bg-[#8cbe3f] transition-all duration-300 group-hover:w-full"></span>
+                    <span className="flex bottom-1 h-0.5 w-0 bg-[#8cbe3f] transition-all duration-300 group-hover:w-full"></span>
                   </span>
                 </NavLink>
               </li>
             ))}
-            <li>
-              <a
-                href="https://www.sterlingmutuals.com/repweb/client/login.xhtml"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex pl-5 items-center p-2 gap-2 bg-[#4b9328] text-[#0f5028] hover:bg-[#8cbe3f] hover:text-white font-bold text-base transition-all duration-300 rounded-none hover:scale-110"
-              >
-                <span className="pl-1">
-                  <FaUserCircle size={18} />
-                </span>
-                <span className="relative right-2 font-medium tracking-wide p-2 m-2 text-[1.1rem]">Login</span>
-              </a>
-            </li>
           </ul>
+          <a
+      href="https://www.sterlingmutuals.com/repweb/client/login.xhtml"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center justify-center w-25 h-8 gap-2 bg-[#4b9328] text-[#0f5028] hover:bg-[#8cbe3f] hover:text-white font-bold text-base transition-all duration-300 hover:scale-110 rounded-xs"
+      aria-label="Login to Sterling Mutuals"
+    >
+      <FaUserCircle size={18} className="center justify-center"/>
+      <span className="center justify-center tracking-wide text-[1.10rem] uppercase">Login</span>
+          </a>
         </div>
       </div>
 
@@ -189,9 +186,7 @@ const Navbar: React.FC = () => {
                     rel="noopener noreferrer"
                     className="p-2 text-white text-[4vw] sm:text-[1.2rem] font-bold uppercase bg-[#4b9328] hover:bg-[#8cbe3f] hover:text-[#0f5028] transition-all duration-300 text-center flex items-center justify-center gap-2"
                   >
-                    <span className="pl-1">
-                      <FaUserCircle size={18} />
-                    </span>
+                    <FaUserCircle size={18} />
                     <span className="p-2">Login</span>
                   </a>
                 </motion.div>
