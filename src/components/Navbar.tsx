@@ -90,6 +90,7 @@ const Navbar: React.FC = () => {
         closeMenu={() => setIsMenuOpen(false)}
         toggleMenu={toggleMenu}
       />
+
     </nav>
   );
 };

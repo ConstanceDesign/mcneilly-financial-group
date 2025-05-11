@@ -48,9 +48,13 @@ const MobileMenu: React.FC<Props> = ({ isMenuOpen, menuRef, closeMenu, toggleMen
   return (
     <>
       {/* Hamburger Button */}
-      <div className="absolute xl:hidden bottom-4 right-4 z-50">
+      <div className="absolute xl:hidden bottom-4 right-4 z-[100]">
         <button
-          onClick={toggleMenu}
+          onClick={(e) => {
+            e.stopPropagation();
+            console.log('hamburger clicked')
+            toggleMenu();
+          }}
           className={`transition duration-300 ease-in-out p-2 border border-white rounded focus:outline-none ${
             isMenuOpen ? 'rotate-90' : ''
           }`}
@@ -85,71 +89,67 @@ const MobileMenu: React.FC<Props> = ({ isMenuOpen, menuRef, closeMenu, toggleMen
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={(e) => {
-                const button = document.querySelector('button[aria-label]');
-                if (button && button.contains(e.target as Node)) return;
-                closeMenu();
-              }}
+              onClick={closeMenu}
             />
 
 {/* <div className="hidden xl:flex items-center space-x-6 grid-cols-2 gap-8"> */}
 
             {/* Mobile Menu Panel */}
             <motion.div
-              ref={menuRef}
-              initial={{ opacity: 0, y: -15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 0 }}
-              transition={{ duration: 0.25 }}
-              className="absolute top-28 left-0 w-full max-h-[calc(100vh-6rem)] overflow-y-auto overflow-x-hidden bg-white z-50 shadow-xl"
-              tabIndex={-1}
-            >
-              <motion.ul
-                className="flex flex-col gap-5 py-2 text-[#0f5028] font-semibold tracking-widest text-lg uppercase pl-3 pt-3 pb-3"
-                initial="hidden"
-                animate="visible"
-                variants={{
-                  visible: {
-                    transition: {
-                      staggerChildren: 0.08,
-                    },
-                  },
-                }}
-              >
-                {menuItems.map(({ to, label }, index) => {
-                  const isActive = location.pathname === to;
+  ref={menuRef}
+  initial={{ opacity: 0, y: -15 }}
+  animate={{ opacity: 1, y: 0 }}
+  exit={{ opacity: 0, y: 0 }}
+  transition={{ duration: 0.25 }}
+  className="absolute top-28 left-0 w-full max-h-[calc(100vh-6rem)] overflow-y-auto overflow-x-hidden bg-white z-50 shadow-xl px-6" // <-- added px-6
+  tabIndex={-1}
+>
+  <motion.ul
+    className="flex flex-col gap-5 text-[#0f5028] font-semibold tracking-widest text-lg uppercase pt-4 pb-6" // <-- removed py-2 and pl-3, pt/pb for vertical padding
+    initial="hidden"
+    animate="visible"
+    variants={{
+      visible: {
+        transition: {
+          staggerChildren: 0.08,
+        },
+      },
+    }}
+  >
+    {menuItems.map(({ to, label }, index) => {
+      const isActive = location.pathname === to;
 
-                  return (
-                    <motion.li
-                      key={to}
-                      variants={{
-                        hidden: { opacity: 0, y: 10 },
-                        visible: { opacity: 1, y: 0 },
-                      }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <Link
-                        to={to}
-                        onClick={closeMenu}
-                        className="relative inline-block py-3 transition-all duration-300 hover:text-[#8cbe3f]"
-                        role="menuitem"
-                        autoFocus={index === 0}
-                      >
-                        <span className="group relative">
-                          {label}
-                          <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-[#8cbe3f] transition-all duration-300 group-hover:w-full"></span>
-                          {isActive && (
-                            <motion.span
-                              layoutId="mobile-underline"
-                              className="absolute -bottom-1 left-0 h-0.5 w-full bg-[#8cbe3f]"
-                            />
-                          )}
-                        </span>
-                      </Link>
-                    </motion.li>
-                  );
-                })}
-              </motion.ul>
+      return (
+        <motion.li
+          key={to}
+          variants={{
+            hidden: { opacity: 0, y: 10 },
+            visible: { opacity: 1, y: 0 },
+          }}
+          transition={{ duration: 0.3 }}
+        >
+          <Link
+            to={to}
+            onClick={closeMenu}
+            className="relative inline-block py-3 transition-all duration-300 hover:text-[#8cbe3f]"
+            role="menuitem"
+            autoFocus={index === 0}
+          >
+            <span className="group relative">
+              {label}
+              <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-[#8cbe3f] transition-all duration-300 group-hover:w-full"></span>
+              {isActive && (
+                <motion.span
+                  layoutId="mobile-underline"
+                  className="absolute -bottom-1 left-0 h-0.5 w-full bg-[#8cbe3f]"
+                />
+              )}
+            </span>
+          </Link>
+        </motion.li>
+      );
+    })}
+  </motion.ul>
 
               {/* Login Button Anchored to Bottom */}
               <div className="sticky bottom-0 w-full px-6 bg-white pt-3 pb-6 shadow-xl overflow-hidden">
