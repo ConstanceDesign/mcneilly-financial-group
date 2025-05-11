@@ -29,6 +29,7 @@ const config: Config = {
       spacing: {
         '128': '32rem',
         'button-padding': '5px 10px',
+        'mobile-padding': '30px',
       },
       maxWidth: {
         '1200': '1200px',

@@ -15,10 +15,10 @@ const Home: React.FC = () => {
           <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
             Welcome to McNeilly Financial Group
           </h1>
-          <p className="text-lg md:text-xl mb-6 max-w-2xl">
+          <span className="text-lg md:text-xl mb-6 max-w-2xl">
             Secure your future with expert financial guidance.
-            <p className="text-lg md:text-xl mb-6 max-w-2xl"> We offer comprehensive solutions for individuals and businesses.</p>
-          </p>
+            <span className="text-lg md:text-xl mb-6 max-w-2xl"> We offer comprehensive solutions for individuals and businesses.</span>
+          </span>
           <button
             onClick={handleContactClick}
             className="btn btn-success text-white py-3 px-6 rounded-lg text-lg transition duration-300 shadow-md"
@@ -32,9 +32,9 @@ const Home: React.FC = () => {
       <section className="bg-gray-50 py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-4">Our Services</h2>
-          <p className="text-xl text-center mb-12 text-gray-700 max-w-3xl mx-auto">
+          <span className="text-xl text-center mb-12 text-gray-700 max-w-3xl mx-auto">
             At Patrick McNeilly Financial Planning, we specialize in helping you make informed decisions about your financial future.
-          </p>
+          </span>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
@@ -48,7 +48,7 @@ const Home: React.FC = () => {
             ].map((service, index) => (
               <div key={index} className="card bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition">
                 <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
-                <p className="text-gray-700">{service.desc}</p>
+                <span className="text-gray-700">{service.desc}</span>
               </div>
             ))}
           </div>
@@ -68,11 +68,11 @@ const Home: React.FC = () => {
       <section className="bg-white py-16 px-4">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4">Try Our Financial Calculator</h2>
-          <p className="text-lg text-gray-700 mb-8">
+          <span className="text-lg text-gray-700 mb-8">
             Estimate your retirement savings or life insurance needs — take control of your financial planning.
-          </p>
+          </span>
           <FinancialCalculator />
-          <p className="text-lg mt-6 text-gray-700">Contact our office to get personalized advice today.</p>
+          <span className="text-lg mt-6 text-gray-700">Contact our office to get personalized advice today.</span>
           <div className="mt-6">
             <button
               onClick={handleContactClick}
