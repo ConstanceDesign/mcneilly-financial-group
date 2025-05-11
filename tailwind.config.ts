@@ -2,9 +2,9 @@ import type { Config } from 'tailwindcss';
 
 const config: Config = {
   content: [
-    './src/**/*.{html,js,ts,jsx,tsx}',
-    './src/components/**/*.{js,ts,jsx,tsx}',
-    './src/pages/**/*.{js,ts,jsx,tsx}',
+    './src/**/*.{html,js,jsx,ts,tsx}',
+    // './src/components/**/*.{js,jsx,ts,tsx}',
+    // './src/pages/**/*.{js,jsx,ts,tsx}',
   ],
   theme: {
     extend: {
@@ -16,6 +16,7 @@ const config: Config = {
         'blue-700': '#0056b3', 
         'teal-400': '#61dafb', 
       },
+
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
         inter: ['Inter', 'sans-serif'],
@@ -26,11 +27,7 @@ const config: Config = {
         'lg': '1.2rem',
         'xs': '0.25rem', 
       },
-      spacing: {
-        '128': '32rem',
-        'button-padding': '5px 10px',
-        'mobile-padding': '30px',
-      },
+  
       maxWidth: {
         '1200': '1200px',
       },

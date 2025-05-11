@@ -57,8 +57,8 @@ const Navbar: React.FC = () => {
                 <NavLink
                   to={to}
                   className={({ isActive }) =>
-                    `relative transition-all duration-300 hover:text-[#8cbe3f] hover:scale-105 ${
-                      isActive ? 'text-[#8cbe3f]' : 'text-white'
+                    `relative transition-all duration-300 hover:scale-105 ${
+                      isActive ? 'text-white' : 'text-white'
                     }`
                   }
                 >
@@ -74,7 +74,7 @@ const Navbar: React.FC = () => {
             href="https://www.sterlingmutuals.com/repweb/client/login.xhtml"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center w-25 h-8 gap-2 bg-[#4b9328] text-[#0f5028] hover:bg-[#8cbe3f] hover:text-white font-bold text-base transition-all duration-300 hover:scale-110 rounded-xs"
+            className="flex items-center justify-center w-25 h-8 gap-2 bg-[#4b9328] text-white hover:bg-[#8cbe3f] hover:text-white font-bold text-base transition-all duration-300 hover:scale-110 rounded-xs"
             aria-label="Login to Sterling Mutuals"
           >
             <FaUserCircle size={18} />
@@ -90,6 +90,38 @@ const Navbar: React.FC = () => {
         closeMenu={() => setIsMenuOpen(false)}
         toggleMenu={toggleMenu}
       />
+
+            {/* Hamburger Button */}
+            <div className="absolute xl:hidden bottom-4 right-4 z-[100]">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            console.log('hamburger clicked')
+            toggleMenu();
+          }}
+          className={`transition duration-300 ease-in-out p-4 focus:outline-none ${
+            isMenuOpen ? 'rotate-90' : ''
+          }`}
+          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={isMenuOpen}
+        >
+          <svg
+            className="h-6 w-6 text-white transition-transform duration-300 ease-in-out"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            {isMenuOpen ? (
+              <path d="M6 18L18 6M6 6l12 12" />
+            ) : (
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            )}
+          </svg>
+        </button>
+      </div>
 
     </nav>
   );
