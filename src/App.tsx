@@ -23,6 +23,10 @@ import PersonalDisabilityInsurance from '@pages/Personal/PersonalDisabilityInsur
 import MortgageInsurance from 'pages/Personal/MortgageInsurance';
 import PermanentInsurance from 'pages/Personal/PermanentInsurance';
 import Wealth from 'pages/Wealth';
+import Accessibility from 'pages/Accessibility';
+import Disclaimer from 'pages/Disclaimer';
+import PrivacyPolicy from 'pages/PrivacyPolicy';
+import TermsOfUse from 'pages/TermsOfUse';
 
 const App: React.FC = () => (
   <Router>
@@ -62,6 +66,12 @@ const App: React.FC = () => (
           </Route>
 
           <Route path="/wealth" element={<Wealth />} />
+
+
+          <Route path="/accessibility" element={<Accessibility />} />
+          <Route path="/disclaimer" element={<Disclaimer />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy  />} />
+          <Route path="/terms-of-use" element={<TermsOfUse  />} />
 
           {/* 404 */}
           <Route path="*" element={<div className="text-center py-12 text-xl">Page Not Found</div>} />

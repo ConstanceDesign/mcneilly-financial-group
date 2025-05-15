@@ -74,7 +74,7 @@ const Navbar: React.FC = () => {
             href="https://www.sterlingmutuals.com/repweb/client/login.xhtml"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center w-25 h-8 gap-2 bg-[#4b9328] text-white hover:bg-[#8cbe3f] hover:text-white font-bold text-base transition-all duration-300 hover:scale-110 rounded-xs"
+            className="flex items-center justify-center w-25 h-8 gap-2 tracking-wide bg-[#4b9328] text-white hover:bg-[#8cbe3f] hover:text-white font-bold text-base transition-all duration-300 hover:scale-110 rounded-xs"
             aria-label="Login to Sterling Mutuals"
           >
             <FaUserCircle size={18} />
