@@ -49,7 +49,7 @@ const [showBanner, setShowBanner] = useState(true); // default to visible
   };
 
   return (
-    <footer className="bg-[#e5e5e5] text-[#333] text-[14px] leading-[1.6] px-[70px] py-[50px] flex flex-col gap-6 font-inter relative">
+    <footer className="bg-[#e5e5e5] text-[#333] text-[14px] leading-[1.6] px-[5vw] py-[50px] flex flex-col gap-6 font-inter relative">
       {/* Content above bottom bar */}
       <div style={{ marginBottom: '5vh' }}>
         {/* Top Section */}
