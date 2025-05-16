@@ -10,6 +10,7 @@ import {
   FaCommentDots,
   FaScroll,
   FaCheck,
+  FaLinkedin,
 } from 'react-icons/fa';
 import useIsMobile from 'hooks/useIsMobile';
 import { NavLink } from 'react-router-dom';
@@ -135,6 +136,7 @@ const [showBanner, setShowBanner] = useState(true); // default to visible
               { to: '/disclaimer', label: 'Website Disclaimer', icon: <FaFileAlt /> },
               { to: '/privacy-policy', label: 'Privacy Policy', icon: <FaShieldAlt /> },
               { to: '/terms-of-use', label: 'Terms of Use', icon: <FaScroll /> },
+              { to: 'https://www.linkedin.com/in/patrick-mcneilly-3300b42/', label: 'Follow on LinkedIn', icon: <FaLinkedin /> },
             ].map(({ to, label, icon }) => (
               <li key={to} className="flex items-center gap-2">
                 <NavLink
