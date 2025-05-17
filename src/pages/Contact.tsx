@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import {
   FaClock,
   FaLocationArrow,
-  FaBroom,
+  FaUndo,
   FaLinkedin,
   FaEnvelope,
   FaMap,
@@ -70,9 +70,8 @@ const Contact: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
-
-      <div className="grid md:grid-cols-2 gap-14 items-start">
+    <div className="max-w-7xl mx-auto px-10 py-12">
+      <div className="grid xl:grid-cols-2 gap-14 items-start xl:[@media(max-width:1050px)]:grid-cols-1">
         {/* Contact Form */}
         <motion.form
           onSubmit={handleSubmit}
@@ -81,15 +80,16 @@ const Contact: React.FC = () => {
           transition={{ duration: 0.5 }}
           className="space-y-6"
         >
-              <h1 className="text-4xl md:text-5xl font-bold text-center mb-10 text-[#9b9da0]">
-        <motion.span
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          Let’s Start a Conversation
-        </motion.span>
-      </h1>
+        <h1 className="sm:text-5xl text-4xl drop-shadow-2xl text-center px-4 py-2 font-bold mb-10 text-[#a8cf7f]">
+            <motion.span
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              Contact Our Team
+            </motion.span>
+          </h1>
+
           <p className="text-lg">
             Whether you're seeking guidance on your investments, retirement planning, or financial strategy, we’re here to help.
             Fill out the form below and one of our advisors will get back to you shortly.
@@ -103,9 +103,9 @@ const Contact: React.FC = () => {
               type="text"
               value={formData.name}
               onChange={handleChange}
-              placeholder="Jane Doe"
+              placeholder="First and Last Name"
               required
-              className="w-full p-3 border border-[#ccc] rounded-sm focus:ring-1 focus:ring-lime-600"
+              className="w-full p-3 border border-[#ccc] rounded-xs focus:outline-none focus:ring-1 focus:ring-lime-600 focus:border-lime-600"
             />
             {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
           </div>
@@ -120,7 +120,7 @@ const Contact: React.FC = () => {
               onChange={handleChange}
               placeholder="you@example.com"
               required
-              className="w-full p-3 border border-[#ccc] rounded-sm focus:ring-1 focus:ring-lime-600"
+              className="w-full p-3 border border-[#ccc] rounded-xs focus:outline-none focus:ring-1 focus:ring-lime-600 focus:border-lime-600"
             />
             {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
           </div>
@@ -135,27 +135,34 @@ const Contact: React.FC = () => {
               placeholder="How can we assist you?"
               rows={5}
               required
-              className="w-full p-3 border border-[#ccc] rounded-sm focus:ring-1 focus:ring-lime-600"
+              className="w-full p-3 border border-[#ccc] rounded-xs focus:outline-none focus:ring-1 focus:ring-lime-600 focus:border-lime-600"
             ></textarea>
             {errors.message && <p className="text-red-500 text-sm">{errors.message}</p>}
           </div>
 
-          <div className="flex flex-col xl:flex-row gap-4">
+          <div className="flex flex-row gap-4">
+            {/* Send Message Button */}
             <button
               type="submit"
-              className="flex-1 xl:w-2/3 inline-flex items-center justify-center gap-2 py-3 px-6 text-white bg-blue-600 hover:bg-blue-700 rounded-md font-medium transition"
+              className="relative flex-1 xl:w-2/3 group overflow-hidden px-6 py-5 rounded-xs text-lg text-[#333] font-bold tracking-wide flex justify-between items-center transition-all duration-300 hover:bg-[#62a342] hover:text-white shadow"
             >
-              <FaEnvelope className="text-2xl mr-2" />
-              Send Message
+              <span className="absolute inset-0 w-full h-full bg-[#c2e1a1] transition-transform duration-300 transform group-hover:translate-x-full group-hover:opacity-0"></span>
+              <span className="relative z-10 flex items-center justify-between w-full">
+                <span>Send Message</span>
+                <FaEnvelope className="text-xl ml-3" />
+              </span>
             </button>
 
+            {/* Clear Form Button */}
             <button
               type="button"
               onClick={handleClear}
-              className="flex-1 xl:w-1/3 inline-flex items-center justify-center gap-2 py-3 px-6 text-gray-700 border border-gray-400 hover:bg-gray-100 rounded-md font-medium transition"
+              className="relative flex-none xl:w-16 lg:w-16 md:w-16 sm:w-16 xs:w-16 items-center group overflow-hidden px-5 py-3 rounded-xs text-[#333] tracking-widest transition-all duration-300 hover:bg-[#e5e5e5] shadow"
             >
-              <FaBroom className="text-2xl mr-2" />
-              Clear Form
+              <span className="absolute inset-0 w-full h-full bg-[#f0f0f0] transition-transform duration-300 transform group-hover:-translate-x-half group-hover:opacity-0"></span>
+              <span className="relative z-10 flex items-center animate-spin-on-hover">
+                <FaUndo className="text-xl" />
+              </span>
             </button>
           </div>
 
@@ -167,93 +174,80 @@ const Contact: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="space-y-6"
+          transition={{ duration: 0.5 }}
+          className="space-y-7"
         >
-          <div className="bg-[#f0f0f0] border border-[#ccc] shadow rounded-md p-6 text-gray-800">
-            <div className="flex flex-col md:flex-row gap-6 md:gap-12">
+<div className="bg-[#f0f0f0] shadow rounded-xs p-6 text-gray-800">
+  <div className="flex flex-col sm:flex-row gap-6 sm:gap-6">
+    {/* Our Office */}
+    <div className="flex-1 space-y-2">
+      <div className="flex items-center gap-2 mb-6">
+        <FaMap className="text-2xl text-[#333]" />
+        <h2 className="text-2xl text-[#333] font-semibold">Our Office</h2>
+      </div>
+      <p className="font-semibold">McNeilly Financial Group</p>
+      <p>1608 Sylvestre Drive</p>
+      <p>Suite 2D</p>
+      <p>Tecumseh, Ontario</p>
+      <p>N8N 2L9</p>
+      <p className="mt-6">Phone: <a href="tel:15199795396" className="font-semibold hover:nounderline">(519) 979-5396</a></p>
+      <p>Fax: (519) 979-5432</p>
+    </div>
 
-              {/* Office Info */}
-              <div className="flex-1 space-y-1">
-              <div className="flex items-center gap-2 mb-6">
-           <FaMap className="text-2xl text-[#838588] " />
-                <h2 className="text-2xl font-semibold text-[#838588] ">Our Office</h2>
+    {/* Divider */}
+    <div className="w-full h-px bg-[#9b9da0] sm:hidden my-6" />
+    <div className="w-px bg-[#9b9da0] hidden sm:block" />
+
+    {/* Our Hours */}
+    <div className="flex-1 space-y-1">
+      <div className="flex items-center gap-2 mb-6">
+        <FaClock className="text-2xl text-[#333]" />
+        <h2 className="text-2xl text-[#333] font-semibold">Our Hours</h2>
+      </div>
+      <p className="font-semibold">Monday – Friday:</p>
+      <p className="font-semibold">9:00 AM – 5:00 PM</p>
+      <p className="mt-6">Saturday & Sunday,</p>
+      <p>Holidays: Closed</p>
+
+      {/* LinkedIn */}
+      <div className="flex items-center gap-2 mt-8 group">
+        <a
+          href="https://www.linkedin.com/company/mcneilly-financial-group"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Connect on LinkedIn"
+          className="flex items-center gap-2 hover:text-[#0a66c2] transition-colors"
+        >
+          <FaLinkedin size={20} className="text-[#0a66c2] group-hover:text-[#0a66c2]" />
+          <h2 className="text-1xl font-semibold">Connect on LinkedIn</h2>
+        </a>
+      </div>
+
+      {/* Directions */}
+      <div className="flex items-center gap-2 mt-1 group">
+        <a
+          href="https://www.google.com/maps/dir/?api=1&destination=McNeilly+Financial+Group,+Tecumseh,+Ontario"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Get directions on Google Maps"
+          className="flex items-center gap-2 hover:text-[#4b9328] transition-colors"
+        >
+          <FaLocationArrow size={16} className="text-[#4b9328] group-hover:text-[#4b9328]" />
+          <h2 className="text-1xl font-semibold">Get Directions</h2>
+        </a>
+      </div>
+    </div>
+  </div>
 </div>
 
+      
 
-                <div className="mt-6"></div>
-                <p className="font-semibold">McNeilly Financial Group</p>
-                <p>1608 Sylvestre Drive</p>
-                <p>Suite 2D</p>
-                <p>Tecumseh, Ontario</p>
-                <p>N8N 2L9</p>
-                <div className="mt-6"></div>
-                <p>Phone: <a href="tel:15199795396" className="font-semibold hover:nounderline">(519) 979-5396</a></p>
-                <p>Fax: (519) 979-5432</p>
-              </div>
-
-              {/* Divider */}
-              <div className="w-px bg-[#9b9da0] hidden md:block" />
-
-              {/* Business Hours */}
-              <div className="flex-1 space-y-1">
-
-              <div className="flex items-center gap-2 mb-6">
-           <FaClock className="text-2xl text-[#838588] " />
-                <h2 className="text-2xl font-semibold text-[#838588] ">Business Hours</h2>
-</div>
-
-                <div className="mt-6"></div>
-                <p className="font-semibold">Monday – Friday:</p>
-                <p className="font-semibold">9:00 AM – 5:00 PM</p>
-                <div className="mt-6"></div>
-                <p>Saturday & Sunday,</p>
-                <p>Holidays: Closed</p>
-                
-
-                {/* LinkedIn */}
-                <div className="flex items-center gap-2 mb-6 mt-6">
-                  <a
-                    href="https://www.linkedin.com/company/mcneilly-financial-group"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Connect on LinkedIn"
-                  >
-                    {/* <FaLinkedin size={20} className="text-blue-700" />
-                    <p className="font-semibold">Connect on LinkedIn</p> */}
-
-
-                    <div className="flex items-center gap-2 mb-6">
-           <FaClock className="text-2xl text-[#838588] " />
-                <h2 id="mutual-funds" className="text-2xl font-semibold text-[#838588] ">Business Hours</h2>
-</div>
-
-                    
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex justify-center mt-4">
-              <a
-                href="https://www.google.com/maps/dir/?api=1&destination=McNeilly+Financial+Group,+Tecumseh,+Ontario"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center w-50 h-8 gap-2 tracking-wide bg-[#4b9328] text-white hover:bg-[#8cbe3f] hover:text-white font-bold text-base transition-all duration-300 hover:scale-110 rounded-xs"
-              aria-label="Get directions in Google Maps"
-              >
-                <FaLocationArrow size={16} />
-                <span className="tracking-wide text-[1.10rem] uppercase">Get Directions</span>
-              </a>
-            </div>
-
-          {/* Map + Directions */}
+          {/* Satellite Map */}
           <div>
-            <div className="w-full aspect-video rounded-md overflow-hidden border border-[#ccc] shadow-lg">
+            <div className="w-full aspect-video rounded-xs overflow-hidden shadow">
               <iframe
-                title="McNeilly Financial Group Office Location"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2916.342227835676!2d-82.8762024!3d42.3051101!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x883b31c8b02c7b4d%3A0x7600832066f7306b!2s1608%20Sylvestre%20Dr%20%232D%2C%20Tecumseh%2C%20ON%20N8N%202L9%2C%20Canada!5e0!3m2!1sen!2sus!4v1685045914896!5m2!1sen!2sus"
+                title="McNeilly Financial Group Office Location - Satellite View"
+                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d2916.342227835676!2d-82.8762024!3d42.3051101!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x883b31c8b02c7b4d%3A0x7600832066f7306b!2s1608%20Sylvestre%20Dr%20%232D%2C%20Tecumseh%2C%20ON%20N8N%202L9%2C%20Canada!5e0!3m2!1sen!2sus!4v1685045914896!5m2!1sen!2sus&t=k"
                 width="100%"
                 height="100%"
                 loading="lazy"
@@ -263,15 +257,29 @@ const Contact: React.FC = () => {
                 onLoad={() =>
                   window.gtag?.('event', 'map_view', {
                     event_category: 'Engagement',
-                    event_label: 'Map Viewed',
+                    event_label: 'Satellite Map Viewed',
                   })
                 }
               ></iframe>
             </div>
-            
           </div>
         </motion.div>
       </div>
+            {/* Custom Styles */}
+            <style>{`
+        @media (max-width: 1050px) {
+          .custom-contact-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+        .animate-spin-on-hover:hover svg {
+          animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(90deg); }
+        }
+      `}</style>
     </div>
   );
 };
