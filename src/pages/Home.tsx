@@ -1,5 +1,6 @@
 import React from 'react';
 import FinancialCalculator from '../components/FinancialCalculator';
+import heroImage from '../images/home-hero.jpg';
 
 const Home: React.FC = () => {
   const handleContactClick = () => {
@@ -9,8 +10,13 @@ const Home: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
-      <section className="relative w-full h-[32rem] bg-cover bg-center" style={{ backgroundImage: 'url(/images/hero-image.jpg)' }}>
-        <div className="absolute inset-0 bg-black/60" />
+      <section className="relative w-full h-[32rem] bg-cover bg-cente bg-gradient-to-br from-primary to-[#1f7a45]">
+      <img
+          src={heroImage}
+          alt="Investing for the future"
+          className="h-full w-full object-cover opacity-35 absolute inset-0 z-0"
+        />
+        {/* <div className="absolute inset-0 bg-black/60" /> */}
         <div className="relative z-10 flex flex-col items-center justify-center h-full text-white text-center px-4">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
             Welcome to McNeilly Financial Group

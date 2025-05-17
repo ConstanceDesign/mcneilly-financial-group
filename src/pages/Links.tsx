@@ -5,8 +5,9 @@ import {
   FaChartLine,
   FaInfoCircle,
   FaWallet,
+  FaExternalLinkAlt,
 } from 'react-icons/fa';
-import heroImage from '../images/wealth-hero.jpg';
+import heroImage from '../images/links-hero.jpg';
 
 const tabs = [
   { id: 'mutual', label: 'Mutual Funds', icon: <FaUniversity /> },
@@ -57,8 +58,13 @@ const fadeInScale = {
   exit: { opacity: 0, scale: 0.95 }
 };
 
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
+
 const Links: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'mutual' | 'industry' | 'financial'>('mutual');
+  const [activeTab, setActiveTab] = useState<'mutual' | 'industry' | 'financial' | 'personal'>('mutual');
 
   return (
     <div className="text-[#333] font-sans">
@@ -66,26 +72,22 @@ const Links: React.FC = () => {
       <section className="relative bg-gradient-to-br from-primary to-[#1f7a45] text-white">
         <img
           src={heroImage}
-          alt="Investing for the future"
-          className="h-full w-full object-cover opacity-20 absolute inset-0 z-0"
+          alt="Explore trusted links to financial resources."
+          loading="lazy"
+          className="h-full w-full object-cover opacity-25 absolute inset-0 z-0"
         />
         <div className="relative z-10 flex flex-col items-center justify-center text-center h-96 px-4">
-          <h1 className="text-5xl md:text-6xl font-bold drop-shadow-lg">
-            Valuable Links
-          </h1>
-          <p className="mt-4 text-lg md:text-xl text-softGray drop-shadow-md">
-          Explore financial resources covering mutual funds, industry groups, planning tools, and more.
-          </p>
+        <h1 className="text-5xl  text-white font-bold drop-shadow-2xl text-center px-4 py-2">Explore Trusted Links to Financial Resources </h1>
         </div>
       </section>
 
       {/* Tabs */}
-      <div className="container mx-auto px-6 py-12 pb-20">
+      <div className="container mx-auto px-6 py-12 pb-25">
         <div className="flex justify-center gap-6 mb-12 flex-wrap">
           {tabs.map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as 'mutual' | 'industry' | 'financial')}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
               className={`flex items-center gap-2 px-4 py-2 rounded-full border-2 md:text-base font-semibold uppercase tracking-widest transition-all duration-300 ${
                 activeTab === tab.id
                   ? 'bg-accent text-[#0a4020] border-accent'
@@ -99,28 +101,129 @@ const Links: React.FC = () => {
 
         {/* Tab Content */}
         <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            variants={fadeInScale}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            transition={{ duration: 0.3 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-          >
-            {tabData[activeTab].map(link => (
-              <motion.a
-                key={link.name}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`relative group ${sectionColors[activeTab]}text-[#bcda8e] bg-[#c2e1a1] font-bold tracking-wide rounded-xs p-5 shadow-md transition-all duration-300 transform hover:scale-105 hover:bg-[#62a342] hover:text-white hover:shadow-xl`}
-              >
-                <span className="relative z-10">{link.name}</span>
-                <span className="absolute inset-0 bg-[#7d9e8a] opacity-0 group-hover:opacity-0 transition duration-300 rounded-sm"></span>
-              </motion.a>
-            ))}
-          </motion.div>
+          {activeTab === 'mutual' && (
+            <motion.section
+              key="mutual"
+              aria-labelledby="mutual-funds"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={fadeInUp}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="flex items-center gap-2 mb-6">
+                <FaUniversity className="text-2xl" />
+                <h2 id="mutual-funds" className="text-2xl font-semibold">Mutual Funds</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {tabData.mutual.map(link => (
+                  <motion.a
+                    key={link.name}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`relative group ${sectionColors[activeTab]}text-[#bcda8e] bg-[#c2e1a1] text-lg font-bold tracking-wide rounded-xs p-5 shadow-md transition-all duration-300 transform hover:scale-105 hover:bg-[#62a342] hover:text-white hover:shadow-xl flex justify-between items-center`}
+                  >
+                    <span>{link.name}</span>
+                    <FaExternalLinkAlt className="ml-2 text-sm" />
+                  </motion.a>
+                ))}
+              </div>
+            </motion.section>
+          )}
+
+          {activeTab === 'industry' && (
+            <motion.section
+              key="industry"
+              aria-labelledby="industry-groups"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={fadeInUp}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <FaChartLine className="text-2xl" />
+                <h2 id="industry-groups" className="text-2xl font-semibold">Industry Groups</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+                {tabData.industry.map(link => (
+                  <motion.a
+                    key={link.name}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`relative group ${sectionColors[activeTab]}text-[#bcda8e] bg-[#c2e1a1] text-lg font-bold tracking-wide rounded-xs p-5 shadow-md transition-all duration-300 transform hover:scale-105 hover:bg-[#62a342] hover:text-white hover:shadow-xl flex justify-between items-center`}
+                  >
+                    <span>{link.name}</span>
+                    <FaExternalLinkAlt className="ml-2 text-sm" />
+                  </motion.a>
+                ))}
+              </div>
+            </motion.section>
+          )}
+
+          {activeTab === 'financial' && (
+            <motion.section
+              key="financial"
+              aria-labelledby="financial-info"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={fadeInUp}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <FaInfoCircle className="text-2xl" />
+                <h2 id="financial-info" className="text-2xl font-semibold">Financial Info</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {tabData.financial.map(link => (
+                  <motion.a
+                    key={link.name}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`relative group ${sectionColors[activeTab]}text-[#bcda8e] bg-[#c2e1a1] text-lg font-bold tracking-wide rounded-xs p-5 shadow-md transition-all duration-300 transform hover:scale-105 hover:bg-[#62a342] hover:text-white hover:shadow-xl flex justify-between items-center`}
+                  >
+                    <span>{link.name}</span>
+                    <FaExternalLinkAlt className="ml-2 text-sm" />
+                  </motion.a>
+                ))}
+              </div>
+            </motion.section>
+          )}
+
+          {activeTab === 'personal' && (
+            <motion.section
+              key="personal"
+              aria-labelledby="personal-finance"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={fadeInUp}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <FaWallet className="text-2xl" />
+                <h2 id="personal-finance" className="text-2xl font-semibold">Personal Finance</h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-6">
+                {tabData.personal.map(link => (
+                  <motion.a
+                    key={link.name}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`relative group ${sectionColors[activeTab]}text-[#bcda8e] bg-[#c2e1a1] text-lg font-bold tracking-wide rounded-xs p-5 shadow-md transition-all duration-300 transform hover:scale-105 hover:bg-[#62a342] hover:text-white hover:shadow-xl flex justify-between items-center`}
+                  >
+                    <span>{link.name}</span>
+                    <FaExternalLinkAlt className="ml-2 text-sm" />
+                  </motion.a>
+                ))}
+              </div>
+            </motion.section>
+          )}
         </AnimatePresence>
       </div>
     </div>
