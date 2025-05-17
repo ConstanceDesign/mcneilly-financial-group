@@ -182,8 +182,8 @@ const Contact: React.FC = () => {
     {/* Our Office */}
     <div className="flex-1 space-y-2">
       <div className="flex items-center gap-2 mb-6">
-        <FaMap className="text-2xl text-[#333]" />
-        <h2 className="text-2xl text-[#333] font-semibold">Our Office</h2>
+        <FaMap className="text-2xl" />
+        <h2 className="text-2xl font-semibold">Our Office</h2>
       </div>
       <p className="font-semibold">McNeilly Financial Group</p>
       <p>1608 Sylvestre Drive</p>
@@ -201,8 +201,8 @@ const Contact: React.FC = () => {
     {/* Our Hours */}
     <div className="flex-1 space-y-1">
       <div className="flex items-center gap-2 mb-6">
-        <FaClock className="text-2xl text-[#333]" />
-        <h2 className="text-2xl text-[#333] font-semibold">Our Hours</h2>
+        <FaClock className="text-2xl" />
+        <h2 className="text-2xl font-semibold">Our Hours</h2>
       </div>
       <p className="font-semibold">Monday – Friday:</p>
       <p className="font-semibold">9:00 AM – 5:00 PM</p>
@@ -210,7 +210,7 @@ const Contact: React.FC = () => {
       <p>Holidays: Closed</p>
 
       {/* LinkedIn */}
-      <div className="flex items-center gap-2 mt-8 group">
+      <div className="flex items-center gap-2 mt-12 group">
         <a
           href="https://www.linkedin.com/company/mcneilly-financial-group"
           target="_blank"
@@ -224,13 +224,13 @@ const Contact: React.FC = () => {
       </div>
 
       {/* Directions */}
-      <div className="flex items-center gap-2 mt-1 group">
+      <div className="flex items-center gap-2 mt-2 group">
         <a
           href="https://www.google.com/maps/dir/?api=1&destination=McNeilly+Financial+Group,+Tecumseh,+Ontario"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Get directions on Google Maps"
-          className="flex items-center gap-2 hover:text-[#4b9328] transition-colors"
+          className="flex items-center gap-3 hover:text-[#4b9328] transition-colors"
         >
           <FaLocationArrow size={16} className="text-[#4b9328] group-hover:text-[#4b9328]" />
           <h2 className="text-1xl font-semibold">Get Directions</h2>
