@@ -81,34 +81,48 @@ const Footer: React.FC = () => {
     </div>
 
         {/* Container 3: External & Internal Links */}
-        <div className="lg:w-1/3 text-left pb-23">
+        <div className="w-full lg:max-w-[300px] max-w-[300px] sm:max-w-[300px] md:max-w-[300px] text-left pb-23">
       <ul className="flex flex-col gap-3">
-        {[
-          { to: 'https://www.sterlingmutuals.com/advisor/legal.html', label: 'Sterling Mutuals Legal Information', icon: <FaGavel /> },
-          { to: 'https://www.sterlingmutuals.com/advisor/privacy.html', label: 'Sterling Mutuals Privacy Policy', icon: <FaUserShield /> },
-          { to: 'https://www.sterlingmutuals.com/advisor/complaint.html', label: 'Client Complaint Procedures', icon: <FaCommentDots /> },
-          { to: 'https://www.linkedin.com/in/patrick-mcneilly-3300b42/', label: 'Follow on LinkedIn', icon: <FaLinkedin /> },
-          { to: '/accessibility', label: 'Accessibility', icon: <FaUniversalAccess /> },
-          { to: '/disclaimer', label: 'Website Disclaimer', icon: <FaFileAlt /> },
-          { to: '/privacy-policy', label: 'Privacy Policy', icon: <FaShieldAlt /> },
-          { to: '/terms-of-use', label: 'Terms of Use', icon: <FaScroll /> },
-        ].map(({ to, label, icon }) => (
-          <li key={to} className="flex items-center gap-2">
-            <NavLink
-              to={to}
-              className="flex items-center text-[12px] font-semibold uppercase tracking-widest gap-2 text-[#333] hover:text-[#0f5028] transition"
-            >
-              {icon}
-              <span className="relative group">
-                {label}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#8cbe3f] transition-all duration-300 group-hover:w-full"></span>
-              </span>
-            </NavLink>
-          </li>
-        ))}
+      {[
+  { to: 'https://www.sterlingmutuals.com/advisor/legal.html', label: 'Sterling Mutuals Legal Info', icon: <FaGavel />, external: true },
+  { to: 'https://www.sterlingmutuals.com/advisor/privacy.html', label: 'Sterling Mutuals Privacy Policy', icon: <FaUserShield />, external: true },
+  { to: 'https://www.sterlingmutuals.com/advisor/complaint.html', label: 'Client Complaint Procedures', icon: <FaCommentDots />, external: true },
+  { to: '/accessibility', label: 'Accessibility', icon: <FaUniversalAccess /> },
+  { to: '/disclaimer', label: 'Website Disclaimer', icon: <FaFileAlt /> },
+  { to: '/privacy-policy', label: 'Privacy Policy', icon: <FaShieldAlt /> },
+  { to: '/terms-of-use', label: 'Terms of Use', icon: <FaScroll /> },
+  { to: 'https://www.linkedin.com/in/patrick-mcneilly-3300b42/', label: 'Follow on LinkedIn', icon: <FaLinkedin />, external: true },
+].map(({ to, label, icon, external }) => (
+  <li key={to} className="flex items-center gap-2">
+    {external ? (
+      <a
+        href={to}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center text-[12px] font-semibold uppercase tracking-widest gap-2 text-[#333] hover:text-[#0f5028] transition"
+      >
+        {icon}
+        <span className="relative group">
+          {label}
+          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#8cbe3f] transition-all duration-300 group-hover:w-full"></span>
+        </span>
+      </a>
+    ) : (
+      <NavLink
+        to={to}
+        className="flex items-center text-[12px] font-semibold uppercase tracking-widest gap-2 text-[#333] hover:text-[#0f5028] transition"
+      >
+        {icon}
+        <span className="relative group">
+          {label}
+          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#8cbe3f] transition-all duration-300 group-hover:w-full"></span>
+        </span>
+      </NavLink>
+    )}
+  </li>
+))}
       </ul>
     </div>
-
   </div>
 </div>
 
