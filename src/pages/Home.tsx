@@ -1,5 +1,6 @@
 import React from 'react';
 import FinancialCalculator from '../components/FinancialCalculator';
+import PrintButton from 'components/PrintButton';
 import heroImage from '../images/home-hero.jpg';
 
 const Home: React.FC = () => {

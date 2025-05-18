@@ -20,6 +20,9 @@ const config: Config = {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
         inter: ['Inter', 'sans-serif'],
+        serif: ['Cormorant Garamond', 'serif'],
+        cormorant: ['Inter', 'serif'],
+        allura: ['Allura', 'cursive'],
       },
       fontSize: {
         'xxl': '2rem', 

@@ -5,7 +5,7 @@ import Footer from 'components/Footer';
 
 // Pages
 import Home from 'pages/Home';
-import About from 'pages/About';
+import About from '@pages/About';
 import Contact from 'pages/Contact';
 import Links from 'pages/Links';
 import Business from 'pages/Business/Index';

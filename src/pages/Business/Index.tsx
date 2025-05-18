@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import heroImage from '../../images/business-hero.jpg';
 
 const Business: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0); // Manage the active tab
@@ -50,16 +51,18 @@ const Business: React.FC = () => {
         <meta property="og:description" content="Learn about business insurance options including key person insurance, group insurance, and more." />
         <meta property="og:image" content="/images/business-hero.jpg" />
 
-
       {/* Hero Section */}
-      <section className="relative bg-gray-200">
+      <section className="relative bg-gradient-to-br from-primary to-[#1f7a45] text-white">
         <img
-          src="/images/business-hero.jpg"
-          alt="Business Insurance Solutions"
-          className="w-full h-96 object-cover"
+          src={heroImage}
+          alt="Explore trusted links to financial resources."
+          loading="lazy"
+          className="h-full w-full object-cover opacity-25 absolute inset-0 z-0"
         />
-        <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-40">
-          <h1 className="text-4xl text-white font-bold text-center px-4 py-2">Business Insurance Solutions</h1>
+        <div className="relative z-10 flex flex-col items-center justify-center text-center h-96 px-4">
+          <h1 className="text-5xl font-bold text-white drop-shadow-2xl px-4 py-2">
+            About Our Financial Philosophy
+          </h1>
         </div>
       </section>
 
