@@ -90,7 +90,7 @@ const Contact: React.FC = () => {
             </motion.span>
           </h1>
 
-          <p className="text-[#333] text-lg">
+          <p className="text-[#333] text-lg pb-5">
             Whether you're seeking guidance on your investments, retirement planning, or financial strategy, we’re here to help.
             Fill out the form below and one of our advisors will get back to you shortly.
           </p>
@@ -177,8 +177,8 @@ const Contact: React.FC = () => {
           transition={{ duration: 0.5 }}
           className="space-y-7"
         >
-<div className="bg-[#f0f0f0] shadow rounded-xs p-6 text-gray-800">
-  <div className="flex flex-col sm:flex-row gap-6 sm:gap-6">
+<div className="bg-[#f0f0f0] shadow rounded-xs p-6">
+  <div className="flex flex-col sm:flex-row gap-8 sm:gap-6">
     {/* Our Office */}
     <div className="flex-1 space-y-2">
       <div className="flex items-center gap-2 mb-6">
