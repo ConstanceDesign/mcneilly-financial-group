@@ -31,6 +31,7 @@ import TermsOfUse from 'pages/TermsOfUse';
 const App: React.FC = () => (
   <Router>
     <Navbar />
+    <div className="flex flex-col min-h-screen">
     <main>
     <Suspense
     fallback={
@@ -79,6 +80,7 @@ const App: React.FC = () => (
       </Suspense>
     </main>
     <Footer />
+    </div>
   </Router>
 );
 

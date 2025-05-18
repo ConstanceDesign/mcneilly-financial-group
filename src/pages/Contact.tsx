@@ -80,7 +80,7 @@ const Contact: React.FC = () => {
           transition={{ duration: 0.5 }}
           className="space-y-6"
         >
-        <h1 className="sm:text-5xl text-4xl drop-shadow-2xl text-center px-4 py-2 font-bold mb-10 text-[#a8cf7f]">
+        <h1 className="text-[#333] text-4xl font-bold mb-10">
             <motion.span
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -90,13 +90,13 @@ const Contact: React.FC = () => {
             </motion.span>
           </h1>
 
-          <p className="text-lg">
+          <p className="text-[#333] text-lg">
             Whether you're seeking guidance on your investments, retirement planning, or financial strategy, we’re here to help.
             Fill out the form below and one of our advisors will get back to you shortly.
           </p>
 
           <div>
-            <label htmlFor="name" className="block font-semibold mb-1">Your Name</label>
+            <label htmlFor="name" className="block text-[#333] font-semibold mb-1">Your Name</label>
             <input
               id="name"
               name="name"
@@ -111,7 +111,7 @@ const Contact: React.FC = () => {
           </div>
 
           <div>
-            <label htmlFor="email" className="block font-semibold mb-1">Your Email</label>
+            <label htmlFor="email" className="block text-[#333] font-semibold mb-1">Your Email</label>
             <input
               id="email"
               name="email"
@@ -126,7 +126,7 @@ const Contact: React.FC = () => {
           </div>
 
           <div>
-            <label htmlFor="message" className="block font-semibold mb-1">Your Message</label>
+            <label htmlFor="message" className="block text-[#333] font-semibold mb-1">Your Message</label>
             <textarea
               id="message"
               name="message"
@@ -161,7 +161,7 @@ const Contact: React.FC = () => {
             >
               <span className="absolute inset-0 w-full h-full bg-[#f0f0f0] transition-transform duration-300 transform group-hover:-translate-x-half group-hover:opacity-0"></span>
               <span className="relative z-10 flex items-center animate-spin-on-hover">
-                <FaUndo className="text-xl" />
+                <FaUndo className="text-[#333] text-xl" />
               </span>
             </button>
           </div>
@@ -182,16 +182,16 @@ const Contact: React.FC = () => {
     {/* Our Office */}
     <div className="flex-1 space-y-2">
       <div className="flex items-center gap-2 mb-6">
-        <FaMap className="text-2xl" />
-        <h2 className="text-2xl font-semibold">Our Office</h2>
+        <FaMap className="text-2xl text-[#333]" />
+        <h2 className="text-2xl text-[#333] font-semibold">Our Office</h2>
       </div>
-      <p className="font-semibold">McNeilly Financial Group</p>
-      <p>1608 Sylvestre Drive</p>
-      <p>Suite 2D</p>
-      <p>Tecumseh, Ontario</p>
-      <p>N8N 2L9</p>
-      <p className="mt-6">Phone: <a href="tel:15199795396" className="font-semibold hover:nounderline">(519) 979-5396</a></p>
-      <p>Fax: (519) 979-5432</p>
+      <p className="text-[#333] font-semibold">McNeilly Financial Group</p>
+      <p className="text-[#333]">1608 Sylvestre Drive</p>
+      <p className="text-[#333]">Suite 2D</p>
+      <p className="text-[#333]">Tecumseh, Ontario</p>
+      <p className="text-[#333]">N8N 2L9</p>
+      <p className="mt-6 text-[#333]">Phone: <a href="tel:15199795396" className="font-semibold text-[#333] hover:nounderline">(519) 979-5396</a></p>
+      <p className="text-[#333]">Fax: (519) 979-5432</p>
     </div>
 
     {/* Divider */}
@@ -201,12 +201,12 @@ const Contact: React.FC = () => {
     {/* Our Hours */}
     <div className="flex-1 space-y-1">
       <div className="flex items-center gap-2 mb-6">
-        <FaClock className="text-2xl" />
-        <h2 className="text-2xl font-semibold">Our Hours</h2>
+        <FaClock className="text-2xl text-[#333]" />
+        <h2 className="text-2xl text-[#333] font-semibold">Our Hours</h2>
       </div>
-      <p className="font-semibold">Monday – Friday:</p>
-      <p className="font-semibold">9:00 AM – 5:00 PM</p>
-      <p className="mt-6">Saturday & Sunday,</p>
+      <p className="text-[#333] font-semibold">Monday – Friday:</p>
+      <p className="text-[#333] font-semibold">9:00 AM – 5:00 PM</p>
+      <p className="text-[#333] mt-6">Saturday & Sunday,</p>
       <p>Holidays: Closed</p>
 
       {/* LinkedIn */}
@@ -219,7 +219,7 @@ const Contact: React.FC = () => {
           className="flex items-center gap-2 hover:text-[#0a66c2] transition-colors"
         >
           <FaLinkedin size={20} className="text-[#0a66c2] group-hover:text-[#0a66c2]" />
-          <h2 className="text-1xl font-semibold">Connect on LinkedIn</h2>
+          <h2 className="text-1xl text-[#333] font-semibold">Connect on LinkedIn</h2>
         </a>
       </div>
 
@@ -233,7 +233,7 @@ const Contact: React.FC = () => {
           className="flex items-center gap-3 hover:text-[#4b9328] transition-colors"
         >
           <FaLocationArrow size={16} className="text-[#4b9328] group-hover:text-[#4b9328]" />
-          <h2 className="text-1xl font-semibold">Get Directions</h2>
+          <h2 className="text-1xl text-[#333] font-semibold">Get Directions</h2>
         </a>
       </div>
     </div>

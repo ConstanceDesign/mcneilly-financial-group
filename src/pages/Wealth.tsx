@@ -29,21 +29,15 @@ const Wealth: React.FC = () => {
         <meta property="og:image" content="/images/wealth-hero.jpg" />
 
 
-  
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary to-[#1f7a45] text-white">
+      <section className="relative bg-gray-200">
         <img
           src={heroImage}
           alt="Investing for the future"
-          className="w-full h-96 object-cover opacity-20 absolute inset-0 z-0"
+          className="w-full h-96 object-cover"
         />
-        <div className="relative z-10 flex flex-col items-center justify-center text-center h-96 px-4">
-          <h1 className="text-5xl md:text-6xl font-bold tracking-wide drop-shadow-lg">
-            Useful Links
-          </h1>
-          <p className="mt-4 text-lg md:text-xl text-softGray drop-shadow-md">
-            Secure your future with expert financial guidance.
-          </p>
+        <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-40">
+          <h1 className="text-4xl text-white font-bold text-center px-4 py-2">Secure Your Future Through Smart Saving and Investing</h1>
         </div>
       </section>
 
