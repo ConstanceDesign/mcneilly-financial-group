@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import heroImage from '../images/about-hero2.jpg';
+import heroImage from '../images/about-hero.jpg';
 import LeadParagraph from 'components/LeadParagraph';
 import {
   FaEnvelope,
@@ -72,20 +72,20 @@ const About: React.FC = () => {
   Above all, accessibility is key to our client-first commitment. We ensure timely responses via phone, email, or in-person meetings. Patrick personally guarantees that all phone calls are returned the same business day. Email inquiries are answered or acknowledged within 24 hours. We make sure our clients feel heard, supported, and valued.
 </p>
             {/* Signature */}
-            <div className="pt-7">
+            <div>
             <p
-                className="text-5xl"
+                className="text-[45px] mt-6"
                 style={{ fontFamily: 'Allura, cursive' }}
               >
                 Patrick McNeilly
               </p>
-              <p className="text-md mt-0 font-light">
+              <p className="text-[18px]/1 font-light">
                 Patrick McNeilly B.A., B. Comm.
               </p>
             </div>
 
                            {/* CTA Button */}
-                           <div className="mt-8 pb-8">
+                           <div className="mt-15 pb-8">
                         <Link
                         to="/contact"
                         aria-label="Schedule a consultation"
