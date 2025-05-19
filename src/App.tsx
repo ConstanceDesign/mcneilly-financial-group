@@ -27,6 +27,7 @@ import Accessibility from 'pages/Accessibility';
 import Disclaimer from 'pages/Disclaimer';
 import PrivacyPolicy from 'pages/PrivacyPolicy';
 import TermsOfUse from 'pages/TermsOfUse';
+import ScrollToTop from '@components/ScrollToTop';
 
 const App: React.FC = () => (
   <Router>
@@ -39,7 +40,7 @@ const App: React.FC = () => (
       <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
     </div>
         }
-      >
+      ><ScrollToTop/>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />

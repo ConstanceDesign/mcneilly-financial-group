@@ -18,31 +18,39 @@ const Wealth: React.FC = () => {
       content: (
         <>
           <p>A guaranteed investment vehicle with a fixed interest rate and guaranteed return of principal at maturity.</p>
-          <p className="text-sm text-gray-600">RISK: CDIC-insured up to $100,000</p>
-          <p className="text-sm text-gray-600">TAX: Taxable on interest earned</p>
+          <p className="mt-3 text-sm font-semibold text-[#4b9328]">RISK: CDIC-insured up to $100,000</p>
+          <p className="mt-1 text-sm font-semibold text-[#4b9328]">TAX: Taxable on interest earned</p>
         </>
       ),
     },
     {
+      title: 'Bonds',
+      content: 'Fixed-income investments where you lend money to a government or corporation in exchange for regular interest payments and the return of your principal at maturity.'
+    },
+    {
+      title: 'Segregated Funds',
+      content: 'Insurance-based investment products that offer market growth potential like mutual funds, but with added benefits such as death benefit guarantees and creditor protection.'
+    },
+    {
+      title: 'Mutual Funds',
+      content: 'Investment pools managed by professionals that combine money from many investors to buy a diversified portfolio of stocks, bonds, or other securities.'
+    },
+    {
       title: 'RRSPs - Registered Retirement Savings Plans',
-      content: 'We offer both Traditional and Roth IRAs with investment strategies tailored to your goals and tax situation. Our advisors help you choose the right account type and investment mix.'
+      content: 'A tax-advantaged account for retirement savings, reducing taxable income while growing wealth.'
+    },
+    {
+      title: 'Group RRSPs - Employer-Sponsored',
+      content: 'Employer-sponsored RRSPs with payroll contributions and collective management benefits.'
     },
     {
       title: 'RESPs - Registered Education Savings Plans',
-      content: 'Plan ahead for educational expenses with tax-advantaged 529 plans. We help families save and invest wisely for their children’s future education.'
+      content: 'Plan ahead for educational expenses with a tax-deferred plan for post-secondary education savings with government grants and growth potential.'
     },
     {
       title: 'Universal Life Insurance',
-      content: 'Access a broad range of investment options including stocks, bonds, ETFs, and mutual funds. We’ll help you design a portfolio aligned with your goals and risk tolerance.'
-    },
-    {
-      title: 'Managed Accounts',
-      content: 'Let our experienced advisors handle the day-to-day investment decisions. We provide discretionary portfolio management tailored to your financial plan.'
-    },
-    {
-      title: 'Annuities and Insurance',
-      content: 'Explore income-generating and risk-management products to complement your investment strategy. We explain the benefits and trade-offs of each solution.'
-    },
+      content: 'Flexible life insurance with built-in investment options to grow value alongside protection.'
+    }
   ];
 
   return (
@@ -70,7 +78,7 @@ const Wealth: React.FC = () => {
               Saving is the foundation of financial security. At McNeilly Financial Group, we emphasize thoughtful investing to protect your future, preserve capital, and grow wealth over time.
             </LeadParagraph>
 
-            <h2 className="text-2xl font-semibold pt-6">Why Should I Save?</h2>
+            <h2 className="text-2xl font-semibold pt-10">Why Should I Save?</h2>
             <ul className="list-disc pl-6 space-y-2">
               <li>To protect against the unforeseen and uncontrollable</li>
               <li>To lower the risk of inflation depleting savings</li>
@@ -79,10 +87,10 @@ const Wealth: React.FC = () => {
               <li>To supplement other sources of income</li>
             </ul>
 
-            <h2 className="text-2xl font-semibold pt-6">How Can an Investment Professional Help?</h2>
+            <h2 className="text-2xl font-semibold pt-6">An Investment Professional Can:</h2>
             <ul className="list-disc pl-6 space-y-2">
-            <li>Help you set clear and customized financial goals</li>
-              <li>Assess your comfort with risk and building a strategy</li>
+            <li>Help set clear and customized financial goals</li>
+              <li>Assess your comfort with risk to build a strategy</li>
               <li>Provide access to a range of investment solutions</li>
               <li>Optimize your tax efficiency</li>
               <li>Monitor, review, and adjust strategies over time</li>
@@ -90,53 +98,94 @@ const Wealth: React.FC = () => {
           </article>
 
  {/* Right Column */}
-          <article className="text-lg space-y-6 leading-relaxed md:pt-0">
+          <article className="text-lg space-y-6 leading-relaxed pt-10 sm:pt-8 md:pt-8 lg:pt-0">
             <h2 className="text-2xl pb-3 font-semibold">Our Investment Solutions Include:</h2>
-            <motion.article
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          viewport={{ once: true }}
-          className="text-lg space-y-6 leading-relaxed md:pt-0"
-        >
-          <div className="space-y-4 divide-y divide-lime-200 border border-lime-200 rounded-md overflow-hidden">
-            {investmentOptions.map((item, index) => (
-              <div key={index}>
-                <button
-                  onClick={() => toggleAccordion(index)}
-                  className="w-full flex justify-between items-center p-4 text-left text-lime-900 hover:bg-lime-50 focus:outline-none focus-visible:ring focus-visible:ring-lime-300"
-                  aria-expanded={activeIndex === index}
-                  aria-controls={`accordion-content-${index}`}
-                >
-                  <span className="font-semibold">{item.title}</span>
-                  {activeIndex === index ? <FaChevronUp /> : <FaChevronDown />}
-                </button>
-                <AnimatePresence initial={false}>
-                  {activeIndex === index && (
-                    <motion.div
-                      key={`content-${index}`}
-                      id={`accordion-content-${index}`}
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="p-4 text-lg text-gray-700 overflow-hidden"
-                    >
-                      {item.content}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ))}
-          </div>
-        </motion.article>
 
-        <p className="pt-1">
+            <motion.article
+  initial={{ opacity: 0, y: 40 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6, delay: 0.1 }}
+  viewport={{ once: true }}
+  className="text-lg space-y-6 leading-relaxed md:pt-0"
+>
+  <div className="border-2 border-[#c2e1a1] rounded-xs overflow-hidden">
+    {investmentOptions.map((item, index) => {
+      const isActive = activeIndex === index;
+      return (
+        <div key={index}>
+          <motion.button
+            layout
+            onClick={() => toggleAccordion(index)}
+            className={`
+              w-full flex justify-between items-center p-4 text-left font-semibold transition-all duration-300 group
+              ${isActive ? 'bg-[#c2e1a1] text-[#333] text-lg' : 'text-[#4b9328] hover:bg-lime-50'}
+              focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#c2e1a1]
+            `}
+            aria-expanded={isActive}
+            aria-controls={`accordion-content-${index}`}
+          >
+            <span className="transition-colors duration-300 group-hover:no-underline">
+              {item.title}
+            </span>
+            <motion.span
+              animate={{ rotate: isActive ? 180 : 0 }}
+              transition={{ duration: 0.3 }}
+              className="text-xl"
+            >
+              <FaChevronDown />
+            </motion.span>
+          </motion.button>
+
+          {/* Divider between button and content */}
+          {isActive && (
+            <motion.div
+              layout
+              className="border-t-2 border-[#c2e1a1]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 }}
+            />
+          )}
+
+          <AnimatePresence initial={false}>
+            {isActive && (
+              <motion.div
+                key={`content-${index}`}
+                id={`accordion-content-${index}`}
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.4 }}
+                className="p-4 text-lg bg-lime-50 overflow-hidden"
+              >
+                {item.content}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Bottom divider except after last item */}
+          {index < investmentOptions.length - 1 && (
+            <motion.div
+              layout
+              className="border-t-2 border-[#c2e1a1]"
+              initial={false}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 }}
+            />
+          )}
+        </div>
+      );
+    })}
+  </div>
+</motion.article>
+
+
+        <p className="pt-2">
             McNeilly Financial Group tailors investment strategies to meet your unique objectives, offering peace of mind through clarity, communication, and ongoing support.
             </p>
 
             {/* CTA Button */}
-            <div className="mt-8 pb-8">
+            <div className="mt-4 pb-8">
               <Link
                 to="/contact"
                 aria-label="Schedule a consultation"
@@ -150,64 +199,6 @@ const Wealth: React.FC = () => {
               </Link>
             </div>
           </article>
-        </section>
-
-        {/* Accordion Section */}
-        <section className="pt-16">
-          <h2 className="text-2xl font-semibold mb-6 text-center">Explore Investment Options</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              {
-                title: 'GICs - Guaranteed Investment Certificates',
-                content: (
-                  <>
-                    <p>A guaranteed investment vehicle with a fixed interest rate and guaranteed return of principal at maturity.</p>
-                    <p className="text-sm text-gray-600">RISK: CDIC-insured up to $60,000</p>
-                    <p className="text-sm text-gray-600">TAX: Taxable on interest earned</p>
-                  </>
-                ),
-              },
-              {
-                title: 'Labour Sponsored Funds',
-                content: <p>Investment funds focusing on small-to-medium businesses in Canada, offering federal and provincial tax credits.</p>,
-              },
-              {
-                title: 'RRSP - Registered Retirement Savings Plan',
-                content: <p>A tax-advantaged account for retirement savings, reducing taxable income while growing wealth.</p>,
-              },
-              {
-                title: 'Group RRSP',
-                content: <p>Employer-sponsored RRSPs with payroll contributions and collective management benefits.</p>,
-              },
-              {
-                title: 'RESP - Registered Education Savings Plan',
-                content: (
-                  <>
-                    <p>A tax-deferred plan for post-secondary education savings with government grants and growth potential.</p>
-                    <p className="text-sm text-gray-600">Average university cost: $74,000 (adjusted for inflation)</p>
-                  </>
-                ),
-              },
-              {
-                title: 'Universal Life Insurance',
-                content: <p>Flexible life insurance with built-in investment options to grow value alongside protection.</p>,
-              },
-            ].map((item, index) => (
-              <div key={index} className="bg-gray-100 rounded-lg shadow">
-                <button
-                  className="w-full text-left p-4 font-semibold text-lg bg-gray-200 rounded-t-lg focus:outline-none"
-                  onClick={() => toggleAccordion(index)}
-                >
-                  {item.title}
-                </button>
-                {activeIndex === index && (
-                  <div className="p-4 text-lg text-gray-700">
-                    {item.content}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
         </section>
       </main>
     </div>
