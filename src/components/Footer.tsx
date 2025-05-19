@@ -48,6 +48,7 @@ const Footer: React.FC = () => {
 
 
         {/* Container 1: Sterling Logo */}
+        {/* <div className="w-full lg:max-w-[300px] max-w-[300px] sm:max-w-[300px] md:max-w-[300px] text-left pb-23"></div> */}
         <div className="lg:w-1/5 flex flex-col items-center text-center">
       <img
         src="/images/sterling-logo.png"

@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement } from 'chart.js';
 import PrintButton from './PrintButton';
+import { FaCalculator } from 'react-icons/fa';
 
 // Register Chart.js components
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
@@ -81,11 +82,14 @@ const FinancialCalculator: React.FC = () => {
   };
 
   return (
-    <div className="bg-white p-6 max-w-lg mx-auto rounded-lg shadow-lg">
+    <div className="bg-white p-6 max-w-xs mx-auto rounded-xs shadow">
       <div ref={printRef}>
-        <img src="/advisor-logo.png" alt="Advisor Logo" className="w-36 mb-6" />
+        {/* <img src="/advisor-logo.png" alt="Advisor Logo" className="w-36 mb-6" /> */}
 
-        <h2 className="text-2xl font-bold text-center mb-4">Canadian Investment Calculator</h2>
+        <h2 className="text-2xl font-bold text-center mb-4">Canadian Investment Planning Calculator</h2>
+        <p className="text-md mt-6 text-center md:text-left">
+                Estimate retirement / life insurance
+              </p>
 
         <label className="block mb-2">
           Account Type:
@@ -94,8 +98,8 @@ const FinancialCalculator: React.FC = () => {
             onChange={e => setAccountType(e.target.value)} 
             className="w-full p-2 border border-gray-300 rounded"
           >
-            <option value="TFSA">TFSA</option>
             <option value="RRSP">RRSP</option>
+            <option value="TFSA">TFSA</option>
           </select>
         </label>
 
@@ -181,12 +185,19 @@ const FinancialCalculator: React.FC = () => {
           />
         </label>
 
-        <button 
-          onClick={calculate} 
-          className="bg-green-600 text-white py-3 px-6 rounded-lg w-full hover:bg-green-800 transition duration-300"
-        >
-          Calculate
-        </button>
+
+{/* Calculate Button */}
+<button
+  onClick={calculate}
+  aria-label="Calculate"
+  className="relative flex-1 xl:w-full group overflow-hidden px-6 py-5 rounded-xs text-lg text-[#333] font-bold tracking-wide flex justify-between items-center transition-all duration-300 hover:bg-[#62a342] hover:text-white shadow"
+>
+  <span className="absolute inset-0 w-full h-full bg-[#c2e1a1] transition-transform duration-300 transform group-hover:translate-x-full group-hover:opacity-0"></span>
+  <span className="relative z-10 flex items-center justify-between w-full">
+    <span>Calculate</span>
+    <FaCalculator className="text-xl ml-3" />
+  </span>
+</button>
 
         {result && <p className="mt-4 text-center">{result}</p>}
 
@@ -198,7 +209,7 @@ const FinancialCalculator: React.FC = () => {
         )}
       </div>
 
-      <PrintButton targetRef={printRef} />
+      {/* <PrintButton targetRef={printRef as React.RefObject<HTMLDivElement>} /> */}
     </div>
   );
 };

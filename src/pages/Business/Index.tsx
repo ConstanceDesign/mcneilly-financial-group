@@ -61,7 +61,7 @@ const Business: React.FC = () => {
         />
         <div className="relative z-10 flex flex-col items-center justify-center text-center h-96 px-4">
           <h1 className="text-5xl font-bold text-white drop-shadow-2xl px-4 py-2">
-            About Our Financial Philosophy
+            Business Insurance Solutions
           </h1>
         </div>
       </section>
