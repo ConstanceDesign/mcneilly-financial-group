@@ -23,6 +23,7 @@ const config: Config = {
         serif: ['Cormorant Garamond', 'serif'],
         cormorant: ['Inter', 'serif'],
         allura: ['Allura', 'cursive'],
+
       },
       fontSize: {
         'xxl': '2rem', 
