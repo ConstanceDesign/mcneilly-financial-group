@@ -1,40 +1,35 @@
-import React from "react";
-import PersonalLayout from "components/PersonalLayout";
+import React from 'react';
 
-const TermInsurance: React.FC = () => {
-  return (
-    <PersonalLayout pageTitle="Term Insurance">
-      <section className="space-y-6">
-        <p>
-          Term life insurance provides coverage for a specific period — such as 10, 20, or 30 years — and pays a death benefit if the insured dies within the term. It’s often the most affordable type of life insurance, especially for young families or individuals seeking high coverage amounts at lower premiums.
-        </p>
+const TermInsurance: React.FC = () => (
+  <div className="lg:w-full">
+    <h1 className="text-3xl font-bold mb-6">Term Life Insurance</h1>
+    <p className="mb-4">
+      Term life insurance provides affordable, temporary protection for a specific number of years (e.g., 10, 20, or 30 years). It is an ideal choice for individuals and families looking to cover financial responsibilities during critical life stages, such as paying off a mortgage or raising children.
+    </p>
+    <p className="mb-4">
+      Understanding your insurance needs—including how long coverage is required, and how those needs may change over time—is crucial. A financial needs analysis helps determine the appropriate coverage amount and term length.
+    </p>
 
-        <h2 className="text-2xl font-semibold text-gray-800 mt-8">Understand the Need</h2>
+    <h2 className="text-2xl font-semibold mt-8 mb-4">Key Considerations</h2>
+    <ul className="list-disc list-inside space-y-2 mb-4">
+      <li>Ideal for debt coverage, income replacement, and education funding during working years</li>
+      <li>Lower premiums compared to permanent life insurance</li>
+      <li>Renewable and convertible options allow future flexibility</li>
+    </ul>
 
-        <p>
-          Before purchasing term insurance, it’s important to assess why it is needed, for how long, and how your needs may change over time. A detailed financial needs analysis, including assets, liabilities, income needs, dependents, and future obligations, should be performed.
-        </p>
+    <h2 className="text-2xl font-semibold mt-8 mb-4">Avoiding Common Pitfalls</h2>
+    <ul className="list-disc list-inside space-y-2 mb-4">
+      <li><strong>Expiring Coverage:</strong> Renewing term policies can be costly. Plan ahead for your long-term needs.</li>
+      <li><strong>Preferred Underwriting Confusion:</strong> Health classifications like "preferred" or "standard" can affect your premium. Work with a qualified advisor to navigate the process.</li>
+    </ul>
 
-        <h2 className="text-2xl font-semibold text-gray-800 mt-8">Choose the Right Product</h2>
-
-        <p>
-          Once the need is clear, select a term product that matches your financial goals. As your children grow and dependency periods shorten, your insurance needs may decrease — meaning shorter or adjustable terms could save you significant money over time.
-        </p>
-
-        <h2 className="text-2xl font-semibold text-gray-800 mt-8">Key Considerations</h2>
-
-        <ul className="list-disc list-inside space-y-2">
-          <li><span className="font-semibold">Preferred Underwriting:</span> Understand how your health status affects premium rates and eligibility. Medical underwriting classifications can vary significantly.</li>
-          <li><span className="font-semibold">Policy Options:</span> Look for options like waiver of premium (if disabled), accidental death riders, child riders, and future conversion privileges.</li>
-          <li><span className="font-semibold">Renewability and Conversion:</span> Know what happens at the end of the term — many policies automatically renew at higher rates but may also offer a permanent conversion feature without new underwriting.</li>
-        </ul>
-
-        <p>
-          Working with a qualified advisor helps ensure you choose a term insurance product that fits your current situation — and gives flexibility for the future.
-        </p>
-      </section>
-    </PersonalLayout>
-  );
-};
+    <p className="mb-4">
+      Riders such as waiver of premium, accidental death, and child protection can enhance your policy. Be sure to explore all available options before choosing your plan.
+    </p>
+    <p className="mb-4">
+      Term life insurance is most effective when paired with a customized strategy. Let our advisors help you design a solution that balances affordability, flexibility, and peace of mind.
+    </p>
+  </div>
+);
 
 export default TermInsurance;

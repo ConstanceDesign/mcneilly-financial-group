@@ -1,39 +1,33 @@
-import React from "react";
-import PersonalLayout from "components/PersonalLayout";
+import React from 'react';
 
-const MortgageInsurance: React.FC = () => {
-  return (
-    <PersonalLayout pageTitle="Mortgage Insurance">
-      <section className="space-y-6">
-        <p>
-          Mortgage insurance is designed to protect a homeowner’s ability to maintain ownership of their home if they die prematurely or become disabled. In either case, it helps ensure that your family will not lose their home due to an inability to continue mortgage payments.
-        </p>
+const MortgageInsurance: React.FC = () => (
+  <div className="lg:w-full">
+    <h1 className="text-3xl font-bold mb-6">Mortgage Insurance Options</h1>
+    <p className="mb-4">
+      Mortgage insurance protects your loved ones by paying off your mortgage if you pass away. There are two common approaches: lender-provided mortgage insurance or personally owned term life insurance.
+    </p>
+    <p className="mb-4">
+      While bank-issued mortgage insurance may seem convenient, individually owned policies often provide better value, more flexibility, and greater control over your coverage and beneficiaries.
+    </p>
 
-        <p>
-          There are two primary types of mortgage insurance:
-        </p>
+    <h2 className="text-2xl font-semibold mt-8 mb-4">Bank Mortgage Insurance – Pros & Cons</h2>
+    <ul className="list-disc list-inside space-y-2 mb-4">
+      <li><strong>Pros:</strong> Easy to obtain, no medical exam upfront, bundled with mortgage payments</li>
+      <li><strong>Cons:</strong> Lender owns the policy, decreasing coverage, limited portability, and beneficiary is always the bank</li>
+    </ul>
 
-        <ul className="list-disc list-inside space-y-2">
-          <li><span className="font-semibold">Mortgage Life Insurance:</span> Pays off the outstanding mortgage balance if the insured homeowner dies during the coverage period.</li>
-          <li><span className="font-semibold">Mortgage Disability Insurance:</span> Provides funds to cover mortgage payments if the insured becomes disabled and unable to work.</li>
-        </ul>
+    <h2 className="text-2xl font-semibold mt-8 mb-4">Personally Owned Term Life Insurance</h2>
+    <ul className="list-disc list-inside space-y-2 mb-4">
+      <li>You own the policy and name your own beneficiary</li>
+      <li>Coverage amount stays level and can be tailored to your needs</li>
+      <li>Policy stays with you even if you change lenders or pay off your mortgage early</li>
+      <li>Can include features like conversion to permanent insurance and living benefit riders</li>
+    </ul>
 
-        <p>
-          Mortgage insurance policies are often structured so that benefits decrease in line with the declining mortgage balance. This ensures that the coverage matches the actual liability over time.
-        </p>
-
-        <h2 className="text-2xl font-semibold text-gray-800 mt-8">Why Consider Mortgage Insurance?</h2>
-
-        <p>
-          Protecting your family home can be one of the most important aspects of your overall financial security plan. Mortgage insurance can provide peace of mind, knowing that your loved ones will have a place to live even if something happens to you.
-        </p>
-
-        <p>
-          Some people prefer to use term life or disability insurance policies to cover mortgage obligations instead of specialized mortgage insurance products because of the greater flexibility and potential cost savings.
-        </p>
-      </section>
-    </PersonalLayout>
-  );
-};
+    <p className="mb-4">
+      Choosing the right mortgage protection strategy can make a lasting difference in your family's financial security. Our advisors can help you compare options and make an informed choice.
+    </p>
+  </div>
+);
 
 export default MortgageInsurance;

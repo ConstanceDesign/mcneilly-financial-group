@@ -1,37 +1,37 @@
-import React from "react";
-import PersonalLayout from "components/PersonalLayout";
+import React from 'react';
 
-const HealthInsurance: React.FC = () => {
-  return (
-    <PersonalLayout pageTitle="Health Insurance">
-      <section className="space-y-6">
-        <p>
-          Health insurance is a form of protection that provides financial coverage for medical expenses resulting from illness or injury. It can also cover preventative services like vaccinations, screenings, and check-ups.
-        </p>
+const PersonalHealthInsurance: React.FC = () => (
+  <div className="lg:w-full">
+    <h1 className="text-3xl font-bold mb-6">Private Health Insurance</h1>
+    <p className="mb-4">
+      While Canada’s public health care system covers many services, it does not include dental, vision, or most prescription drugs. Private health insurance helps fill those gaps, offering peace of mind for everyday and unexpected medical expenses.
+    </p>
 
-        <p>
-          There are several types of health insurance policies available, each designed to meet different needs. Group health insurance is often provided by employers, while individuals and families can purchase private health insurance plans. Government programs like Medicare and Medicaid also provide coverage for eligible individuals.
-        </p>
+    <h2 className="text-2xl font-semibold mt-8 mb-4">Who Needs It?</h2>
+    <ul className="list-disc list-inside space-y-2 mb-4">
+      <li>Self-employed individuals or contractors without group benefits</li>
+      <li>Families seeking coverage for prescriptions, dental, and vision</li>
+      <li>Retirees or part-time workers looking for additional protection</li>
+    </ul>
 
-        <p>
-          Choosing the right health insurance policy depends on factors such as your medical needs, budget, and whether you prefer a wider range of healthcare providers or lower out-of-pocket costs.
-        </p>
+    <h2 className="text-2xl font-semibold mt-8 mb-4">Common Coverage Options</h2>
+    <ul className="list-disc list-inside space-y-2 mb-4">
+      <li>Prescription medications</li>
+      <li>Dental cleanings and major procedures</li>
+      <li>Vision care including glasses and exams</li>
+      <li>Paramedical services (e.g., physiotherapy, massage)</li>
+      <li>Catastrophic or critical illness coverage</li>
+    </ul>
 
-        <h2 className="text-2xl font-semibold text-gray-800 mt-8">Key Considerations When Choosing Health Insurance</h2>
+    <h2 className="text-2xl font-semibold mt-8 mb-4">Eligibility & Enrollment Tips</h2>
+    <p className="mb-4">
+      Most insurers require that you’re a Canadian resident covered under your provincial plan. Enrolling while you're healthy helps avoid exclusions for pre-existing conditions. If you're part of a couple or family, look for bundled options to save on premiums.
+    </p>
 
-        <ul className="list-disc list-inside space-y-2">
-          <li><span className="font-semibold">Coverage Options:</span> Look at what services are covered — hospitalization, doctor visits, prescription drugs, mental health services, etc.</li>
-          <li><span className="font-semibold">Network Restrictions:</span> Some policies require you to use a specific network of doctors and hospitals.</li>
-          <li><span className="font-semibold">Cost:</span> Consider premiums, deductibles, co-payments, and out-of-pocket maximums.</li>
-          <li><span className="font-semibold">Flexibility:</span> Some plans require referrals for specialists, others do not.</li>
-        </ul>
+    <p className="text-sm text-gray-600 italic mt-4">
+      Discuss your health needs and budget with a licensed advisor to choose the right plan. Customizable health insurance can complement your government coverage and reduce out-of-pocket costs.
+    </p>
+  </div>
+);
 
-        <p>
-          Health insurance not only protects your finances, but it also gives you access to preventive care that can help you stay healthier and catch health issues early when they are more treatable.
-        </p>
-      </section>
-    </PersonalLayout>
-  );
-};
-
-export default HealthInsurance;
+export default PersonalHealthInsurance;

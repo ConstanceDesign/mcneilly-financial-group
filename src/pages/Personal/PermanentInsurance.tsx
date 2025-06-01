@@ -1,34 +1,39 @@
-import React from "react";
-import PersonalLayout from "components/PersonalLayout";
+import React from 'react';
 
-const PermanentInsurance: React.FC = () => {
-  return (
-    <PersonalLayout pageTitle="Permanent Insurance">
-      <section className="space-y-6">
-        <p>
-          Permanent life insurance provides lifetime protection and typically includes a savings component, known as the policy’s cash value. Unlike term insurance, which provides coverage for a specific period, permanent insurance remains active as long as premiums are paid.
-        </p>
+const PermanentInsurance: React.FC = () => (
+  <div className="lg:w-full">
+    <h1 className="text-3xl font-bold mb-6">Permanent Life Insurance</h1>
+    <p className="mb-4">
+      Permanent life insurance provides lifelong coverage and guarantees a tax-free death benefit to your beneficiaries. Unlike term insurance, permanent policies can also build cash value over time, making them a flexible tool for estate planning, final expenses, and legacy building.
+    </p>
+    <p className="mb-4">
+      This type of insurance is ideal for individuals who want to ensure long-term financial protection, leave a legacy for loved ones, or offset final expenses and outstanding debts in retirement.
+    </p>
 
-        <p>
-          The most common use of permanent insurance is to cover final expenses, such as funeral costs. A typical recommended amount for final expenses is around $10,000.
-        </p>
+    <h2 className="text-2xl font-semibold mt-8 mb-4">Why Choose Permanent Insurance?</h2>
+    <ul className="list-disc list-inside space-y-2 mb-4">
+      <li>Coverage never expires as long as premiums are paid</li>
+      <li>Can build tax-advantaged cash value</li>
+      <li>May supplement retirement income or be used for emergency needs</li>
+      <li>Ensures final expenses are covered and estate plans are secure</li>
+    </ul>
 
-        <h2 className="text-2xl font-semibold text-gray-800 mt-8">Other Uses for Permanent Insurance</h2>
+    <h2 className="text-2xl font-semibold mt-8 mb-4">Common Use Cases</h2>
+    <ul className="list-disc list-inside space-y-2 mb-4">
+      <li>Final expense planning (e.g., funeral costs, outstanding debts)</li>
+      <li>Leaving an inheritance to children or grandchildren</li>
+      <li>Providing income for a surviving spouse</li>
+      <li>Charitable giving through beneficiary designation</li>
+    </ul>
 
-        <p>
-          Beyond final expenses, permanent insurance can help cover outstanding debts, provide for a surviving spouse or family, or supplement retirement income through the cash value component.
-        </p>
+    <p className="mb-4">
+      Many people start with term insurance early in life and later convert to permanent coverage. This allows for affordable early protection with the option to secure lifetime coverage without additional medical underwriting later.
+    </p>
 
-        <p>
-          However, at McNeilly Financial Group Inc., we often find that individuals may over-prioritize permanent insurance early in life, neglecting the importance of living benefits. These benefits, such as disability insurance, address much more probable risks than early death.
-        </p>
-
-        <p>
-          A common recommended strategy is to purchase term insurance while young, to allocate more budget to living benefits, and later use term-to-permanent conversion options if health declines or if permanent insurance becomes more appropriate.
-        </p>
-      </section>
-    </PersonalLayout>
-  );
-};
+    <p className="mb-4">
+      Our advisors will help you evaluate your budget and long-term goals to determine the best permanent insurance product for your situation. Whether you’re planning your legacy or safeguarding your family’s future, we’re here to guide you every step of the way.
+    </p>
+  </div>
+);
 
 export default PermanentInsurance;

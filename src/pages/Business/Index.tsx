@@ -11,31 +11,31 @@ import {
 import heroImage from '../../images/business-hero.jpg';
 
 // Import internal content components (ensure these export ReactNode)
-import GroupInsuranceContent from './GroupInsuranceContent';
-import DisabilityInsuranceContent from './DisabilityInsuranceContent';
-import HealthInsuranceContent from './HealthInsuranceContent';
-import BusinessOverheadContent from './BusinessOverheadContent';
-import BuySellContent from './BuySellContent';
-import KeyPersonContent from './KeyPersonContent';
+import GroupInsurance from './GroupInsurance';
+import BusinessDisabilityInsurance from './BusinessDisabilityInsurance';
+import BusinessHealthInsurance from './BusinessHealthInsurance';
+import BusinessOverhead from './BusinessOverhead';
+import BuySell from './BuySell';
+import KeyPerson from './KeyPerson';
 
 type TabKey = 'group' | 'buySell' | 'keyPerson' | 'overhead' | 'disability' | 'health';
 
 const tabs: { id: TabKey; label: string; icon: ReactNode }[] = [
-  { id: 'group', label: 'Group Insurance', icon: <FaUsers /> },
+  { id: 'group', label: 'Group', icon: <FaUsers /> },
   { id: 'buySell', label: 'Buy-Sell', icon: <FaHandshake /> },
   { id: 'keyPerson', label: 'Key Person', icon: <FaUserShield /> },
   { id: 'overhead', label: 'Business Overhead', icon: <FaFileInvoiceDollar /> },
-  { id: 'disability', label: 'Disability Insurance', icon: <FaWheelchair /> },
-  { id: 'health', label: 'Health Insurance', icon: <FaHeartbeat /> },
+  { id: 'disability', label: 'Disability', icon: <FaWheelchair /> },
+  { id: 'health', label: 'Health', icon: <FaHeartbeat /> },
 ];
 
 const tabComponents: Record<TabKey, ReactNode> = {
-  group: <GroupInsuranceContent />,
-  buySell: <BuySellContent />,
-  keyPerson: <KeyPersonContent />,
-  overhead: <BusinessOverheadContent />,
-  disability: <DisabilityInsuranceContent />,
-  health: <HealthInsuranceContent />,
+  group: <GroupInsurance />,
+  buySell: <BuySell />,
+  keyPerson: <KeyPerson />,
+  overhead: <BusinessOverhead />,
+  disability: <BusinessDisabilityInsurance />,
+  health: <BusinessHealthInsurance />,
 };
 
 const tabIcons: Record<TabKey, ReactNode> = {
