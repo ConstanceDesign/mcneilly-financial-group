@@ -1,9 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, RefObject } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement } from 'chart.js';
 import { FaCalculator, FaPrint, FaFilePdf, FaFileCsv, FaEnvelope } from 'react-icons/fa';
-import { exportCSV, exportPDF } from '../utils/exportHelpers';
-import { useReactToPrint } from 'react-to-print';
+import { exportCSV, exportPDF, usePrintHandler } from '../utils/exportHelpers';
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
 
@@ -22,12 +21,8 @@ const FinancialCalculator: React.FC = () => {
   const [summary, setSummary] = useState('');
   const [chartData, setChartData] = useState<any>(null);
 
-  const printRef = useRef<HTMLDivElement | null>(null);
-  const handlePrint = useReactToPrint({
-    content: () => printRef.current,
-    documentTitle: 'Investment Projection',
-    removeAfterPrint: true,
-  });
+  const chartRef: RefObject<HTMLElement> = useRef(null);
+  const handlePrint = usePrintHandler(chartRef);
 
   const calculate = () => {
     const P = parseFloat(principal) || 0;
@@ -41,12 +36,13 @@ const FinancialCalculator: React.FC = () => {
       return;
     }
 
-    const lumpSum = P * Math.pow(1 + r / n, n * t);
+    const lumpSum = P * Math.pow((1 + r / n), n * t);
     const contrib = m * ((Math.pow(1 + r / n, n * t) - 1) / (r / n));
     let total = lumpSum + contrib;
 
     if (adjustForInflation) {
-      total /= Math.pow(1 + 0.02, t);
+      const inflationRate = 0.02;
+      total = total / Math.pow(1 + inflationRate, t);
     }
 
     let contributionLimit = 7000;
@@ -55,10 +51,9 @@ const FinancialCalculator: React.FC = () => {
       contributionLimit = Math.min(incomeNum * 0.18, 32490);
     }
 
-    const warning =
-      P + m * t * 12 > contributionLimit
-        ? `Note: Your total contribution exceeds the 2025 ${accountType} limit of $${contributionLimit.toLocaleString()} CAD.`
-        : '';
+    const warning = (P + m * t * 12 > contributionLimit)
+      ? `Note: Your total contribution exceeds the 2025 ${accountType} limit of $${contributionLimit.toLocaleString()} CAD.`
+      : '';
 
     const fullResult = `Future Value: $${total.toFixed(2)} CAD. ${warning}`;
     setResult(fullResult);
@@ -67,11 +62,13 @@ const FinancialCalculator: React.FC = () => {
     const labels = [];
     const dataPoints = [];
     for (let year = 1; year <= t; year++) {
-      const fv = P * Math.pow(1 + r / n, n * year) +
-        m * ((Math.pow(1 + r / n, n * year) - 1) / (r / n));
-      const adjusted = adjustForInflation ? fv / Math.pow(1 + 0.02, year) : fv;
+      const futureValue = (P * Math.pow(1 + r / n, n * year)) +
+        (m * ((Math.pow(1 + r / n, n * year) - 1) / (r / n)));
+      const adjusted = adjustForInflation
+        ? futureValue / Math.pow(1 + 0.02, year)
+        : futureValue;
       labels.push(`Year ${year}`);
-      dataPoints.push(parseFloat(adjusted.toFixed(2)));
+      dataPoints.push(adjusted.toFixed(2));
     }
 
     setChartData({
@@ -95,11 +92,16 @@ const FinancialCalculator: React.FC = () => {
   };
 
   return (
-    <div ref={printRef} className="bg-white p-6 max-w-xl mx-auto rounded-xs shadow">
+    <div className="bg-white p-6 max-w-xl mx-auto rounded-xs shadow" ref={chartRef}>
       <h2 className="text-2xl font-bold text-center mb-4">Canadian Investment Planning Calculator</h2>
 
       <label className="block mb-2">Prepared For:
-        <input type="text" value={clientName} onChange={e => setClientName(e.target.value)} className="w-full p-2 border border-gray-300 rounded" />
+        <input
+          type="text"
+          value={clientName}
+          onChange={e => setClientName(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded"
+        />
       </label>
 
       <label className="block mb-2">Account Type:
@@ -115,49 +117,63 @@ const FinancialCalculator: React.FC = () => {
         </label>
       )}
 
-      {/* Inputs */}
-      {([
-  ['Initial Investment (CAD):', principal, setPrincipal],
-  ['Monthly Contribution (CAD):', monthly, setMonthly],
-  ['Annual Interest Rate (%):', rate, setRate],
-  ['Years to Grow:', years, setYears],
-  ['Your Current Age:', currentAge, setCurrentAge],
-  ['Planned Retirement Age:', retirementAge, setRetirementAge]
-] as [string, string, React.Dispatch<React.SetStateAction<string>>][]).map(
-  ([label, value, setter], i) => (
-    <label className="block mb-2" key={i}>
-      {label}
-      <input
-        type="number"
-        value={value}
-        onChange={e => setter(e.target.value)}
-        className="w-full p-2 border rounded"
-      />
-    </label>
-  )
-)}
+      <label className="block mb-2">Initial Investment (CAD):
+        <input type="number" value={principal} onChange={e => setPrincipal(e.target.value)} className="w-full p-2 border rounded" />
+      </label>
+
+      <label className="block mb-2">Monthly Contribution (CAD):
+        <input type="number" value={monthly} onChange={e => setMonthly(e.target.value)} className="w-full p-2 border rounded" />
+      </label>
+
+      <label className="block mb-2">Annual Interest Rate (%):
+        <input type="number" value={rate} onChange={e => setRate(e.target.value)} className="w-full p-2 border rounded" />
+      </label>
+
+      <label className="block mb-2">Years to Grow:
+        <input type="number" value={years} onChange={e => setYears(e.target.value)} className="w-full p-2 border rounded" />
+      </label>
+
+      <label className="block mb-2">Your Current Age:
+        <input type="number" value={currentAge} onChange={e => setCurrentAge(e.target.value)} className="w-full p-2 border rounded" />
+      </label>
+
+      <label className="block mb-2">Planned Retirement Age:
+        <input type="number" value={retirementAge} onChange={e => setRetirementAge(e.target.value)} className="w-full p-2 border rounded" />
+      </label>
 
       <label className="block mb-4">
         <input type="checkbox" checked={adjustForInflation} onChange={e => setAdjustForInflation(e.target.checked)} className="mr-2" />
         Adjust for Inflation
       </label>
 
-      <button onClick={calculate} className="btn flex items-center gap-2"><FaCalculator /> Calculate</button>
+      <button onClick={calculate} className="btn">Calculate <FaCalculator /></button>
 
       {result && <p className="mt-4 text-center">{result}</p>}
 
       {chartData && (
         <div className="mt-6">
           <h3 className="text-xl font-semibold text-center">Projected Growth Over Time</h3>
-          <Line data={chartData} options={{ responsive: true }} />
+          <Line data={chartData} options={{
+            responsive: true,
+            plugins: {
+              tooltip: {
+                callbacks: {
+                  label: context => {
+                    const value = typeof context.raw === 'number' ? context.raw : parseFloat(String(context.raw));
+                    return `$${value.toLocaleString()}`;
+                  }
+                }
+              }
+            }
+          }} />
         </div>
       )}
 
       <div className="mt-6 flex flex-wrap gap-3 justify-center">
-        <button onClick={() => exportCSV(chartData)} className="btn flex items-center gap-2"><FaFileCsv /> CSV</button>
-        <button onClick={() => printRef.current && exportPDF(printRef.current, clientName)} className="btn flex items-center gap-2"><FaFilePdf /> PDF</button>
-        <button onClick={handlePrint} className="btn flex items-center gap-2"><FaPrint /> Print</button>
-        <button onClick={handleEmailReport} className="btn flex items-center gap-2"><FaEnvelope /> Email</button>
+        <button onClick={() => exportCSV(chartData)}><FaFileCsv /> CSV</button>
+        <button onClick={() => exportPDF(chartRef, clientName)}><FaFilePdf /> PDF</button>
+        <button onClick={handlePrint}><FaPrint /> Print</button>
+        <button onClick={handleEmailReport}><FaEnvelope /> Email</button>
       </div>
     </div>
   );

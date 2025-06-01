@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import heroImage from '../images/wealth-hero.jpg';
 import LeadParagraph from 'components/LeadParagraph';
-import { FaChevronDown, FaChevronUp, FaEnvelope } from 'react-icons/fa';
+import { FaChevronDown, FaEnvelope } from 'react-icons/fa';
 
 const Wealth: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -72,7 +72,14 @@ const Wealth: React.FC = () => {
 
       {/* Content Section */}
       <main className="px-10 py-12 md:px-20 lg:py-16 max-w-7xl mx-auto">
-        <section className="grid grid-cols-1 lg:grid-cols-2 lg:gap-30 md:gap-5 sm:gap-5">
+        <motion.section
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.6 }}
+          className="grid grid-cols-1 lg:grid-cols-2 lg:gap-30 md:gap-5 sm:gap-5"
+        >
+          {/* Left Column */}
           <article className="text-lg space-y-6 leading-relaxed">
             <LeadParagraph>
               Saving is the foundation of financial security. At McNeilly Financial Group, we emphasize thoughtful investing to protect your future, preserve capital, and grow wealth over time.
@@ -89,7 +96,7 @@ const Wealth: React.FC = () => {
 
             <h2 className="text-2xl font-semibold pt-6">An Investment Professional Can:</h2>
             <ul className="list-disc pl-6 space-y-2">
-            <li>Help set clear and customized financial goals</li>
+              <li>Help set clear and customized financial goals</li>
               <li>Assess your comfort with risk to build a strategy</li>
               <li>Provide access to a range of investment solutions</li>
               <li>Optimize your tax efficiency</li>
@@ -97,91 +104,74 @@ const Wealth: React.FC = () => {
             </ul>
           </article>
 
- {/* Right Column */}
+          {/* Right Column */}
           <article className="text-lg space-y-6 leading-relaxed pt-10 sm:pt-8 md:pt-8 lg:pt-0">
             <h2 className="text-2xl pb-3 font-semibold">Our Investment Solutions Include:</h2>
 
-            <motion.article
-  initial={{ opacity: 0, y: 40 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.6, delay: 0.1 }}
-  viewport={{ once: true }}
-  className="text-lg space-y-6 leading-relaxed md:pt-0"
->
-  <div className="border-2 border-[#c2e1a1] rounded-xs overflow-hidden">
-    {investmentOptions.map((item, index) => {
-      const isActive = activeIndex === index;
-      return (
-        <div key={index}>
-          <motion.button
-            layout
-            onClick={() => toggleAccordion(index)}
-            className={`
-              w-full flex justify-between items-center p-4 text-left font-semibold transition-all duration-300 group
-              ${isActive ? 'bg-[#c2e1a1] text-[#333] text-lg' : 'text-[#4b9328] hover:bg-lime-50'}
-              focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#c2e1a1]
-            `}
-            aria-expanded={isActive}
-            aria-controls={`accordion-content-${index}`}
-          >
-            <span className="transition-colors duration-300 group-hover:no-underline">
-              {item.title}
-            </span>
-            <motion.span
-              animate={{ rotate: isActive ? 180 : 0 }}
-              transition={{ duration: 0.3 }}
-              className="text-xl"
-            >
-              <FaChevronDown />
-            </motion.span>
-          </motion.button>
-
-          {/* Divider between button and content */}
-          {isActive && (
-            <motion.div
-              layout
-              className="border-t-2 border-[#c2e1a1]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.2 }}
-            />
-          )}
-
-          <AnimatePresence initial={false}>
-            {isActive && (
-              <motion.div
-                key={`content-${index}`}
-                id={`accordion-content-${index}`}
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.4 }}
-                className="p-4 text-lg bg-lime-50 overflow-hidden"
+            <AnimatePresence mode="wait">
+              <motion.article
+                key={activeIndex}
+                className="text-lg space-y-6 leading-relaxed md:pt-0"
               >
-                {item.content}
-              </motion.div>
-            )}
-          </AnimatePresence>
+                <div className="border-2 border-[#c2e1a1] rounded-xs overflow-hidden">
+                  {investmentOptions.map((item, index) => {
+                    const isActive = activeIndex === index;
+                    return (
+                      <div key={index}>
+                        <button
+                          onClick={() => toggleAccordion(index)}
+                          className={`
+                            w-full flex justify-between items-center p-4 text-left font-semibold transition-all duration-300 group
+                            ${isActive ? 'bg-[#c2e1a1] text-[#333] text-lg' : 'text-[#4b9328] hover:bg-lime-50'}
+                            focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#c2e1a1]
+                          `}
+                          aria-expanded={isActive}
+                          aria-controls={`accordion-content-${index}`}
+                        >
+                          <span className="transition-colors duration-300 group-hover:no-underline">
+                            {item.title}
+                          </span>
+                          <motion.span
+                            animate={{ rotate: isActive ? 180 : 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="text-xl"
+                          >
+                            <FaChevronDown />
+                          </motion.span>
+                        </button>
 
-          {/* Bottom divider except after last item */}
-          {index < investmentOptions.length - 1 && (
-            <motion.div
-              layout
-              className="border-t-2 border-[#c2e1a1]"
-              initial={false}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.4 }}
-            />
-          )}
-        </div>
-      );
-    })}
-  </div>
-</motion.article>
+                        {isActive && (
+                          <div className="border-t-2 border-[#c2e1a1]" />
+                        )}
 
+                        <AnimatePresence initial={false}>
+                          {isActive && (
+                            <motion.div
+                              key={`content-${index}`}
+                              id={`accordion-content-${index}`}
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              transition={{ duration: 0.4 }}
+                              className="p-4 text-lg bg-lime-50 overflow-hidden"
+                            >
+                              {item.content}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
 
-        <p className="pt-2">
-            McNeilly Financial Group tailors investment strategies to meet your unique objectives, offering peace of mind through clarity, communication, and ongoing support.
+                        {index < investmentOptions.length - 1 && (
+                          <div className="border-t-2 border-[#c2e1a1]" />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </motion.article>
+            </AnimatePresence>
+
+            <p className="pt-2">
+              McNeilly Financial Group tailors investment strategies to meet your unique objectives, offering peace of mind through clarity, communication, and ongoing support.
             </p>
 
             {/* CTA Button */}
@@ -199,7 +189,7 @@ const Wealth: React.FC = () => {
               </Link>
             </div>
           </article>
-        </section>
+        </motion.section>
       </main>
     </div>
   );
