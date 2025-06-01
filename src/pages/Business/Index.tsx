@@ -3,126 +3,48 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   FaUsers,
   FaHandshake,
-  FaKey,
-  FaBuilding,
+  FaUserShield,
   FaWheelchair,
   FaHeartbeat,
+  FaFileInvoiceDollar,
 } from 'react-icons/fa';
 import heroImage from '../../images/business-hero.jpg';
 
+// Import internal content components (ensure these export ReactNode)
+import GroupInsuranceContent from './GroupInsuranceContent';
+import DisabilityInsuranceContent from './DisabilityInsuranceContent';
+import HealthInsuranceContent from './HealthInsuranceContent';
+import BusinessOverheadContent from './BusinessOverheadContent';
+import BuySellContent from './BuySellContent';
+import KeyPersonContent from './KeyPersonContent';
+
 type TabKey = 'group' | 'buySell' | 'keyPerson' | 'overhead' | 'disability' | 'health';
 
-const tabs = [
-  { id: 'group', label: 'Group', icon: <FaUsers /> },
+const tabs: { id: TabKey; label: string; icon: ReactNode }[] = [
+  { id: 'group', label: 'Group Insurance', icon: <FaUsers /> },
   { id: 'buySell', label: 'Buy-Sell', icon: <FaHandshake /> },
-  { id: 'keyPerson', label: 'Key Person', icon: <FaKey /> },
-  { id: 'overhead', label: 'Business Overhead', icon: <FaBuilding /> },
-  { id: 'disability', label: 'Disability', icon: <FaWheelchair /> },
-  { id: 'health', label: 'Health', icon: <FaHeartbeat /> },
+  { id: 'keyPerson', label: 'Key Person', icon: <FaUserShield /> },
+  { id: 'overhead', label: 'Business Overhead', icon: <FaFileInvoiceDollar /> },
+  { id: 'disability', label: 'Disability Insurance', icon: <FaWheelchair /> },
+  { id: 'health', label: 'Health Insurance', icon: <FaHeartbeat /> },
 ];
 
-const tabData: Record<TabKey, { title: string; icon: ReactNode; content: ReactNode; image: string }> = {
-  group: {
-    title: 'Group Insurance',
-    icon: <FaUsers className="inline mr-2" />,
-    image: '/images/group-insurance.jpg',
-    content: (
-      <>
-        <p className="mb-4">A strong group insurance plan is one of the best ways to attract and retain top talent.</p>
-        <ul className="list-disc pl-6 space-y-2">
-          <li>Boosts employee satisfaction and loyalty</li>
-          <li>Flexible, cost-effective plans</li>
-          <li>Covers employees and their dependents</li>
-        </ul>
-      </>
-    ),
-  },
-  buySell: {
-    title: 'Buy-Sell Agreements',
-    icon: <FaHandshake className="inline mr-2" />,
-    image: '/images/buy-sell-agreement.jpg',
-    content: (
-      <>
-        <p className="mb-4">A Buy-Sell agreement funded with life insurance ensures that business ownership transitions smoothly if a partner passes away.</p>
-        <ul className="list-disc pl-6 space-y-2">
-          <li>Ensures liquidity for succession</li>
-          <li>Prevents disputes among heirs and partners</li>
-          <li>Keeps operations running smoothly</li>
-        </ul>
-      </>
-    ),
-  },
-  keyPerson: {
-    title: 'Key Person Insurance',
-    icon: <FaKey className="inline mr-2" />,
-    image: '/images/key-person.jpg',
-    content: (
-      <>
-        <p className="mb-4">Key Person Insurance protects your business from the loss of critical staff.</p>
-        <ul className="list-disc pl-6 space-y-2">
-          <li>Protects revenue and business continuity</li>
-          <li>Funds recruitment and training</li>
-          <li>Retains key employees</li>
-        </ul>
-      </>
-    ),
-  },
-  overhead: {
-    title: 'Business Overhead Insurance',
-    icon: <FaBuilding className="inline mr-2" />,
-    image: '/images/business-overhead.jpg',
-    content: (
-      <>
-        <p className="mb-4">This insurance pays for business expenses while you recover from illness or injury.</p>
-        <ul className="list-disc pl-6 space-y-2">
-          <li>May be tax-deductible</li>
-          <li>Covers rent, salaries, utilities</li>
-          <li>Maintains cash flow during recovery</li>
-        </ul>
-      </>
-    ),
-  },
-  disability: {
-    title: 'Disability Insurance',
-    icon: <FaWheelchair className="inline mr-2" />,
-    image: '/images/disability-insurance.jpg',
-    content: (
-      <>
-        <p className="mb-4">Protects your income if you're unable to work due to injury or illness.</p>
-        <h3 className="text-lg font-semibold mt-6 mb-2">Disability Risk by Age</h3>
-        <table className="min-w-full text-md border mt-2">
-          <thead className="bg-[#127038]">
-            <tr>
-              <th className="py-1 px-2 text-white font-semibold">Age</th>
-              <th className="py-1 px-2 text-white font-semibold">Male</th>
-              <th className="py-1 px-2 text-white font-semibold">Female</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td className="bg-gray-100 py-1 px-2 text-center">25</td><td className="bg-gray-100 py-1 px-2 text-center">40.7%</td><td className="bg-gray-100 py-1 px-2 text-center">46.8%</td></tr>
-            <tr><td className="bg-gray-100 py-1 px-2 text-center">30</td><td className="bg-gray-100 py-1 px-2 text-center">38.9%</td><td className="bg-gray-100 py-1 px-2 text-center">44.6%</td></tr>
-            <tr><td className="bg-gray-100 py-1 px-2 text-center">35</td><td className="bg-gray-100 py-1 px-2 text-center">37.1%</td><td className="bg-gray-100 py-1 px-2 text-center">41.9%</td></tr>
-            <tr><td className="bg-gray-100 py-1 px-2 text-center">40</td><td className="bg-gray-100 py-1 px-2 text-center">35.1%</td><td className="bg-gray-100 py-1 px-2 text-center">38.3%</td></tr>
-          </tbody>
-        </table>
-      </>
-    ),
-  },
-  health: {
-    title: 'Health Insurance',
-    icon: <FaHeartbeat className="inline mr-2" />,
-    image: '/images/health-insurance.jpg',
-    content: (
-      <>
-        <p className="mb-4">Health insurance provides essential protection against medical expenses.</p>
-        <ul className="list-disc pl-6 space-y-2">
-          <li>Look for high lifetime coverage</li>
-          <li>Tax-advantaged plans for small businesses</li>
-          <li>Best to enroll while healthy</li>
-        </ul>
-      </>
-    ),
-  },
+const tabComponents: Record<TabKey, ReactNode> = {
+  group: <GroupInsuranceContent />,
+  buySell: <BuySellContent />,
+  keyPerson: <KeyPersonContent />,
+  overhead: <BusinessOverheadContent />,
+  disability: <DisabilityInsuranceContent />,
+  health: <HealthInsuranceContent />,
+};
+
+const tabIcons: Record<TabKey, ReactNode> = {
+  group: <FaUsers />,
+  buySell: <FaHandshake />,
+  keyPerson: <FaUserShield />,
+  overhead: <FaFileInvoiceDollar />,
+  disability: <FaWheelchair />,
+  health: <FaHeartbeat />,
 };
 
 const fadeInUp = {
@@ -156,7 +78,7 @@ const Business: React.FC = () => {
           {tabs.map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as TabKey)}
+              onClick={() => setActiveTab(tab.id)}
               role="tab"
               aria-selected={activeTab === tab.id}
               aria-controls={`${tab.id}-panel`}
@@ -186,21 +108,11 @@ const Business: React.FC = () => {
             transition={{ duration: 0.4 }}
             className="bg-[#c2e1a1] p-6 rounded-lg shadow-sm"
           >
-            <div className="flex flex-col lg:flex-row items-center gap-8">
-              <div className="lg:w-1/2">
-                <h2 className="text-2xl font-semibold mb-4 flex items-center">
-                  {tabData[activeTab].icon}
-                  {tabData[activeTab].title}
-                </h2>
-                {tabData[activeTab].content}
-              </div>
-              <div className="lg:w-1/2">
-                <img
-                  src={tabData[activeTab].image}
-                  alt={tabData[activeTab].title}
-                  className="rounded-lg shadow-lg w-full h-auto max-h-[300px] object-cover"
-                />
-              </div>
+            <div className="flex flex-col gap-4">
+              <h2 className="text-3xl font-bold flex items-center gap-3 mb-6">
+                {tabIcons[activeTab]} {tabs.find(t => t.id === activeTab)?.label}
+              </h2>
+              {tabComponents[activeTab]}
             </div>
           </motion.section>
         </AnimatePresence>

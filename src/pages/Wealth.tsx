@@ -170,7 +170,7 @@ const Wealth: React.FC = () => {
               className="border-t-2 border-[#c2e1a1]"
               initial={false}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.4 }}
             />
           )}
         </div>
