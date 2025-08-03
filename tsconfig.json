@@ -1,7 +1,11 @@
 {
+  "compilerOptions": {
+    "typeRoots": ["./node_modules/@types", "./src/types"]
+  },
   "files": [],
   "references": [
     { "path": "./tsconfig.frontend.json" },
     { "path": "./tsconfig.server.json" }
   ]
 }
+

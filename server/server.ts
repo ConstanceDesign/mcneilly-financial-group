@@ -28,8 +28,11 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.post('/api/contact', (req, res) => {
 app.use('/api/contact', contactRoutes);
 app.use('/api', reportRoutes);
+
+});
 
 app.get('/health', (req, res) => {
   res.status(200).json({ message: 'Server is running' });

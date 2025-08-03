@@ -35,7 +35,7 @@ const Home: React.FC = () => {
       {/* Hero Section */}
       <section
         aria-label="Parallax hero"
-        className="relative w-full h-[40rem] bg-gradient-to-br from-primary to-[#1f7a45] overflow-hidden"
+        className="relative w-full h-[45rem] bg-gradient-to-br from-primary to-[#1f7a45] overflow-hidden"
       >
         <div
           className="absolute inset-0 bg-fixed bg-center bg-cover opacity-35 z-0"
