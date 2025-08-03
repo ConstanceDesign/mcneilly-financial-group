@@ -23,6 +23,6 @@
         "@utils/*": ["utils/*"]
       }
     },
-    "include": ["src"],
+    "include": ["src", "tsconfig.base.json"],
     "exclude": ["node_modules", "dist"]
   }
