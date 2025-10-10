@@ -5,7 +5,7 @@ const GroupInsuranceContent: React.FC = () => {
     <div className="flex flex-col lg:flex-row items-start gap-10">
       {/* Text Content */}
       <div className="lg:w-1/2">
-        <h1 className="text-3xl font-bold mb-6 text-[#0a4020]">Group Insurance Plans</h1>
+        {/* <h1 className="text-3xl font-bold mb-6 text-[#0a4020]">Group Insurance Plans</h1> */}
         <p className="mb-4">
           A strong group insurance plan is one of the most effective ways to attract and retain top talent.
           Offering health, life, and disability coverage demonstrates your commitment to your employees and
@@ -39,7 +39,7 @@ const GroupInsuranceContent: React.FC = () => {
           Whether you have two employees or two hundred, we help navigate the options and ensure your plan
           grows with your company.
         </p>
-        <div className="mt-6 p-4 bg-green-100 border-l-4 border-green-600 rounded">
+        <div className="mt-6 p-4 bg-[#f0f0f0] shadow py-6 pr-6 border-l-7 border-[#13763c]">
           <strong className="block font-semibold text-green-800 mb-2">Expert Tip:</strong>
           <p className="text-green-900">
             Employers offering even basic coverage gain a competitive hiring edge in today’s market. It’s a
