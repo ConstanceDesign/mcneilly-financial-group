@@ -7,6 +7,7 @@ import {
   FaHeartbeat,
   FaWheelchair,
   FaGraduationCap,
+  FaComments,
 } from 'react-icons/fa';
 import heroImage from '../images/home-hero.jpg';
 
@@ -71,14 +72,15 @@ const Home: React.FC = () => {
             <div className="mt-8 flex flex-wrap gap-3">
               <button
                 onClick={handleContactClick}
-                className="bg-[#4b9328] hover:bg-[#3a7422] text-white px-6 py-3 rounded-lg font-semibold shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+                className="flex items-center justify-center gap-2 bg-[#4b9328] hover:bg-[#8cbe3f] text-white hover:text-white tracking-wide text-base px-3 py-3 rounded-xs font-bold shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 duration-300 hover:scale-110"
                 aria-label="Schedule a free consultation"
-              >
-                Free Consultation
+              ><FaComments size={18} />
+               <span className="tracking-wide text-[1.10rem] uppercase">Free Consultation</span>
               </button>
+
               <a
                 href="#calculator"
-                className="bg-white/10 hover:bg-white/20 text-white backdrop-blur px-5 py-3 rounded-lg font-semibold border border-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+                className="bg-white/10 hover:bg-white/20 text-white backdrop-blur px-3 py-3 rounded-lg font-semibold border border-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
               >
                 Try our Registered Investment Calculator
               </a>
