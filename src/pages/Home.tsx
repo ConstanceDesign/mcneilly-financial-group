@@ -8,6 +8,7 @@ import {
   FaWheelchair,
   FaGraduationCap,
   FaComments,
+  FaCalculator,
 } from 'react-icons/fa';
 import heroImage from '../images/home-hero.jpg';
 
@@ -69,10 +70,10 @@ const Home: React.FC = () => {
               Secure your future with expert guidance, smart planning, and tools that make decisions easier.
             </p>
 
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap gap-4">
               <button
                 onClick={handleContactClick}
-                className="flex items-center justify-center gap-2 bg-[#4b9328] hover:bg-[#8cbe3f] text-white hover:text-white tracking-wide text-base px-3 py-3 rounded-xs font-bold shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 duration-300 hover:scale-110"
+                className="flex items-center justify-center gap-2 bg-[#4b9328] hover:bg-[#8cbe3f] text-white hover:text-white tracking-wide px-3 py-3 rounded-xs font-bold text-base shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 duration-300 hover:scale-105"
                 aria-label="Schedule a free consultation"
               ><FaComments size={18} />
                <span className="tracking-wide text-[1.10rem] uppercase">Free Consultation</span>
@@ -80,9 +81,10 @@ const Home: React.FC = () => {
 
               <a
                 href="#calculator"
-                className="bg-white/10 hover:bg-white/20 text-white backdrop-blur px-3 py-3 rounded-lg font-semibold border border-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
-              >
-                Try our Registered Investment Calculator
+                className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white backdrop-blur px-3 py-3 rounded-xs tracking-wide font-bold text-base border border-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 duration-300 hover:scale-105"
+              aria-label="Try our registered investment calculator"
+              ><FaCalculator size={16} />
+               <span className="tracking-wide text-[1.10rem] uppercase">Registered Investment Calculator</span>
               </a>
             </div>
           </div>
