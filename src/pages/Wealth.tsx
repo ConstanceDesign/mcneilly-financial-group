@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import heroImage from '../images/wealth-hero.jpg';
 import LeadParagraph from 'components/LeadParagraph';
-import { FaChevronDown, FaEnvelope } from 'react-icons/fa';
+import { FaChevronDown, FaComments } from 'react-icons/fa';
 
 const Wealth: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
+  const handleContactClick = () => {
+    window.location.href = '/contact';
+  };
 
   const toggleAccordion = (index: number) => {
     setActiveIndex(prev => (prev === index ? null : index));
@@ -64,7 +67,7 @@ const Wealth: React.FC = () => {
           className="h-full w-full object-cover opacity-25 absolute inset-0 z-0"
         />
         <div className="relative z-10 flex flex-col items-center justify-center text-center h-96 px-4">
-          <h1 className="text-5xl font-bold text-white drop-shadow-2xl px-4 py-2">
+          <h1 className="text-[2.4rem] font-serif leading-tight md:text-6xl md:leading-[1.1] font-bold drop-shadow-sm text-white px-4 py-2">
             Secure Your Future By Investing
           </h1>
         </div>
@@ -85,7 +88,7 @@ const Wealth: React.FC = () => {
               Saving is the foundation of financial security. At McNeilly Financial Group, we emphasize thoughtful investing to protect your future, preserve capital, and grow wealth over time.
             </LeadParagraph>
 
-            <h2 className="text-2xl font-semibold pt-10">Why Should I Save?</h2>
+            <h2 className="text-2xl font-serif font-semibold pt-10">Why Should I Save?</h2>
             <ul className="list-disc pl-6 space-y-2">
               <li>To protect against the unforeseen and uncontrollable</li>
               <li>To lower the risk of inflation depleting savings</li>
@@ -94,7 +97,7 @@ const Wealth: React.FC = () => {
               <li>To supplement other sources of income</li>
             </ul>
 
-            <h2 className="text-2xl font-semibold pt-6">An Investment Professional Can:</h2>
+            <h2 className="text-2xl font-serif font-semibold pt-6">An Investment Professional Can:</h2>
             <ul className="list-disc pl-6 space-y-2">
               <li>Help set clear and customized financial goals</li>
               <li>Assess your comfort with risk to build a strategy</li>
@@ -106,7 +109,7 @@ const Wealth: React.FC = () => {
 
           {/* Right Column */}
           <article className="text-lg space-y-6 leading-relaxed pt-10 sm:pt-8 md:pt-8 lg:pt-0">
-            <h2 className="text-2xl pb-3 font-semibold">Our Investment Solutions Include:</h2>
+            <h2 className="text-2xl pb-3 font-serif font-semibold">Our Investment Solutions Include:</h2>
 
             <AnimatePresence mode="wait">
               <motion.article
@@ -121,8 +124,8 @@ const Wealth: React.FC = () => {
                         <button
                           onClick={() => toggleAccordion(index)}
                           className={`
-                            w-full flex justify-between items-center p-4 text-left font-semibold transition-all duration-300 group
-                            ${isActive ? 'bg-[#c2e1a1] text-[#333] text-lg' : 'text-[#4b9328] hover:bg-lime-50'}
+                            w-full flex justify-between items-center p-3.75 text-left font-bold transition-all duration-300 group
+                            ${isActive ? 'bg-[#dceec3] text-[#0f5028] text-lg' : 'text-[#4b9328]'}
                             focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#c2e1a1]
                           `}
                           aria-expanded={isActive}
@@ -153,7 +156,7 @@ const Wealth: React.FC = () => {
                               animate={{ opacity: 1 }}
                               exit={{ opacity: 0 }}
                               transition={{ duration: 0.4 }}
-                              className="p-4 text-lg bg-lime-50 overflow-hidden"
+                              className="p-4 text-lg overflow-hidden"
                             >
                               {item.content}
                             </motion.div>
@@ -175,18 +178,16 @@ const Wealth: React.FC = () => {
             </p>
 
             {/* CTA Button */}
-            <div className="mt-4 pb-8">
-              <Link
-                to="/contact"
-                aria-label="Schedule a consultation"
-                className="relative flex-1 xl:w-2/3 group overflow-hidden px-6 py-5 rounded-xs text-lg text-[#333] font-bold tracking-wide flex justify-between items-center transition-all duration-300 hover:bg-[#62a342] hover:text-white shadow"
-              >
-                <span className="absolute inset-0 w-full h-full bg-[#c2e1a1] transition-transform duration-300 transform group-hover:translate-x-full group-hover:opacity-0"></span>
-                <span className="relative z-10 flex items-center justify-between w-full">
-                  <span>Schedule a Consultation</span>
-                  <FaEnvelope className="text-xl ml-3" />
-                </span>
-              </Link>
+
+            <div className="mt-8 flex flex-wrap gap-4">
+              <button
+                onClick={handleContactClick}
+                className="flex items-center justify-center gap-2 bg-[#4b9328] hover:bg-[#8cbe3f] text-white hover:text-white tracking-wide px-3 py-2 rounded-xs font-bold text-base shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 duration-300 hover:scale-105"
+                aria-label="Contact us for a free consultation"
+              ><FaComments size={20} />
+               <span className="tracking-wide text-[1.10rem] uppercase">Free Consultation</span>
+              </button>
+
             </div>
           </article>
         </motion.section>

@@ -77,7 +77,7 @@ const Links: React.FC = () => {
           className="h-full w-full object-cover opacity-25 absolute inset-0 z-0"
         />
         <div className="relative z-10 flex flex-col items-center justify-center text-center h-96 px-4">
-        <h1 className="text-5xl  text-white font-bold drop-shadow-2xl text-center px-4 py-2">Explore Trusted Links to Financial Resources </h1>
+        <h1 className="text-[2.4rem] font-serif leading-tight md:text-6xl md:leading-[1.1] font-bold drop-shadow-sm text-white px-4 py-2">Explore Trusted Links to Financial Resources </h1>
         </div>
       </section>
 

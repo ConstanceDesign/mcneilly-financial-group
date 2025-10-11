@@ -66,7 +66,7 @@ const Personal: React.FC = () => {
           className="absolute inset-0 w-full h-full object-cover opacity-30 z-0"
         />
         <div className="relative z-10 text-center px-4">
-          <h1 className="text-5xl text-white font-bold drop-shadow-2xl text-center px-4 py-2">
+          <h1 className="text-[2.4rem] font-serif leading-tight md:text-6xl md:leading-[1.1] font-bold drop-shadow-sm text-white px-4 py-2">
             Personal Insurance Options
           </h1>
         </div>

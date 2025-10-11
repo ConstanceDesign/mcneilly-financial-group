@@ -137,7 +137,7 @@ const Footer: React.FC = () => {
         </div>
         <button
           onClick={scrollToTop}
-          className="flex items-center gap-2 bg-[#4b9328] text-white font-bold uppercase tracking-wide text-sm px-3 py-1.5 rounded transition duration-300 hover:bg-[#8cbe3f] hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#8cbe3f]"
+          className="flex items-center gap-2 bg-[#4b9328] text-white font-bold uppercase tracking-wide text-sm px-3 py-1.5 rounded-xs transition duration-300 hover:bg-[#8cbe3f] hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#8cbe3f]"
         >
           <FaArrowUp />
           Back to Top
