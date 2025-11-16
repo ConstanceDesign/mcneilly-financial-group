@@ -1,55 +1,139 @@
 import React from 'react';
+import {
+  FaUsers,
+  FaShieldAlt,
+  FaHeartbeat,
+  FaCheckCircle,
+  FaChartLine,
+  FaLightbulb,
+} from 'react-icons/fa';
 
 const GroupInsuranceContent: React.FC = () => {
   return (
-    <div className="flex flex-col lg:flex-row items-start gap-10">
+    <section
+      aria-labelledby="group-insurance-heading"
+      className="flex flex-col lg:flex-row items-start gap-10 lg:gap-12"
+    >
       {/* Text Content */}
-      <div className="lg:w-1/2">
-        {/* <h1 className="text-3xl font-bold mb-6 text-[#0a4020]">Group Insurance Plans</h1> */}
-        <p className="mb-4">
-          A strong group insurance plan is one of the most effective ways to attract and retain top talent.
-          Offering health, life, and disability coverage demonstrates your commitment to your employees and
-          their families—helping foster loyalty, reduce turnover, and improve overall job satisfaction.
-        </p>
-        <p className="mb-4">
-          Today's workforce is dynamic, and it's more important than ever to offer meaningful benefits. We
-          work with a wide range of carriers to help businesses like yours implement group plans that are
-          cost-effective, flexible, and sustainable over time.
-        </p>
-        <p className="mb-4">
-          Our approach considers your company's budget, future claims experience, legislative trends, and
-          changes in the healthcare landscape to create plans tailored to your needs.
+      <div className="lg:w-1/2 space-y-5 text-[#333333]">
+        {/* Title + Icon */}
+        <div className="inline-flex items-center gap-3 mb-1">
+          <FaUsers className="text-[#4b9328] text-2xl" aria-hidden="true" />
+          <h1
+            id="group-insurance-heading"
+            className="text-3xl font-semibold tracking-tight text-[#0f5028]"
+          >
+            Group Insurance Plans
+          </h1>
+        </div>
+
+        <p className="leading-relaxed">
+          A strong group insurance plan is one of the most effective ways to attract and retain top
+          talent. Offering health, life, and disability coverage demonstrates your commitment to your
+          employees and their families—helping foster loyalty, reduce turnover, and improve overall
+          job satisfaction.
         </p>
 
-        <h2 className="text-2xl font-semibold mt-8 mb-4 text-[#127038]">Benefits of Group Coverage</h2>
-        <ul className="list-disc list-inside space-y-2 text-gray-800">
-          <li>Boosts employee satisfaction, engagement, and retention</li>
-          <li>Plans can include health, dental, vision, life, and disability insurance</li>
-          <li>Tax-deductible premiums for employers</li>
-          <li>Options for small business cost-sharing and customization</li>
-          <li>Coverage extends to dependents and family members</li>
-        </ul>
-      </div>
-
-      {/* Secondary Content or Callout */}
-      <div className="lg:w-1/2 space-y-4">
-        <h2 className="text-xl font-semibold text-[#127038]">Why Work With Us?</h2>
-        <p>
-          We partner with top-tier insurance providers to secure the best value and service for your team.
-          Whether you have two employees or two hundred, we help navigate the options and ensure your plan
-          grows with your company.
+        <p className="leading-relaxed">
+          Today&apos;s workforce is dynamic, and it&apos;s more important than ever to offer meaningful
+          benefits. We work with a wide range of carriers to help businesses like yours implement group
+          plans that are cost-effective, flexible, and sustainable over time.
         </p>
-        <div className="mt-6 p-4 bg-[#f0f0f0] shadow py-6 pr-6 border-l-7 border-[#13763c]">
-          <strong className="block font-semibold text-green-800 mb-2">Expert Tip:</strong>
-          <p className="text-green-900">
-            Employers offering even basic coverage gain a competitive hiring edge in today’s market. It’s a
-            sign of stability and long-term vision.
-          </p>
+
+        <p className="leading-relaxed">
+          Our approach considers your company&apos;s budget, future claims experience, legislative trends,
+          and changes in the healthcare landscape to create plans tailored to your needs.
+        </p>
+
+        {/* Benefits */}
+        <div className="pt-4 border-t border-[#d4d4d4]">
+          <div className="flex items-center gap-2 mb-3">
+            <FaShieldAlt className="text-[#4b9328]" aria-hidden="true" />
+            <h2 className="text-2xl font-semibold text-[#0f5028]">
+              Benefits of Group Coverage
+            </h2>
+          </div>
+          <ul className="space-y-2 text-[#333333]">
+            <li className="flex items-start gap-2">
+              <FaCheckCircle className="mt-1 text-[#4b9328]" aria-hidden="true" />
+              <span>Boosts employee satisfaction, engagement, and retention</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <FaCheckCircle className="mt-1 text-[#4b9328]" aria-hidden="true" />
+              <span>Plans can include health, dental, vision, life, and disability insurance</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <FaCheckCircle className="mt-1 text-[#4b9328]" aria-hidden="true" />
+              <span>Tax-deductible premiums for employers</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <FaCheckCircle className="mt-1 text-[#4b9328]" aria-hidden="true" />
+              <span>Options for small business cost-sharing and customization</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <FaCheckCircle className="mt-1 text-[#4b9328]" aria-hidden="true" />
+              <span>Coverage can extend to dependents and family members</span>
+            </li>
+          </ul>
         </div>
       </div>
-    </div>
+
+      {/* Secondary Content / Callout */}
+      <div className="lg:w-1/2 space-y-5 text-[#333333]">
+        <div className="flex items-center gap-2">
+          <FaChartLine className="text-[#4b9328]" aria-hidden="true" />
+          <h2 className="text-xl font-semibold text-[#0f5028]">Why Work With Us?</h2>
+        </div>
+
+        <p className="leading-relaxed">
+          We partner with top-tier insurance providers to secure strong value and reliable service
+          for your team. Whether you have two employees or two hundred, we help you navigate the
+          options and ensure your plan evolves as your company grows.
+        </p>
+
+        {/* Expert Tip Callout */}
+        <div className="mt-4 rounded-xl border border-[#8cbe3f] bg-[#f1f7ea] p-5 shadow-sm">
+          <div className="flex items-center gap-2 mb-2">
+            <FaLightbulb className="text-[#4b9328]" aria-hidden="true" />
+            <span className="text-xs font-semibold tracking-wide uppercase text-[#0f5028]">
+              Expert Tip
+            </span>
+          </div>
+          <p className="text-sm sm:text-base text-[#0f5028] font-medium leading-relaxed">
+            Employers offering even a well-designed basic benefits package gain a competitive hiring edge
+            in today&apos;s market. It&apos;s a clear signal of stability, care, and long-term vision.
+          </p>
+        </div>
+
+        {/* Optional extra reassurance block */}
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <div className="rounded-lg border border-[#d4d4d4] bg-white/90 p-4 shadow-sm">
+            <div className="flex items-center gap-2 mb-1">
+              <FaHeartbeat className="text-[#4b9328]" aria-hidden="true" />
+              <h3 className="text-sm font-semibold text-[#0f5028]">
+                Support Your People
+              </h3>
+            </div>
+            <p className="text-sm text-[#555555] leading-relaxed">
+              Thoughtful benefits help your employees feel seen, supported, and confident in their future.
+            </p>
+          </div>
+          <div className="rounded-lg border border-[#d4d4d4] bg-white/90 p-4 shadow-sm">
+            <div className="flex items-center gap-2 mb-1">
+              <FaShieldAlt className="text-[#4b9328]" aria-hidden="true" />
+              <h3 className="text-sm font-semibold text-[#0f5028]">
+                Protect Your Business
+              </h3>
+            </div>
+            <p className="text-sm text-[#555555] leading-relaxed">
+              A well-structured plan balances cost control with meaningful coverage, supporting both your
+              bottom line and your team.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 };
 
 export default GroupInsuranceContent;
-
