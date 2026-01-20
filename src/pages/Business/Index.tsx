@@ -60,7 +60,7 @@ const Business: React.FC = () => {
           <h1 className="text-[2rem] md:text-5xl lg:text-6xl font-bold leading-tight md:leading-[1.1] drop-shadow-sm">
             Business Insurance Solutions
           </h1>
-          <p className="mt-4 max-w-2xl mx-auto text-sm md:text-base text-[#e8f7e1]">
+          <p className="mt-4 max-w-2xl mx-auto text-1xl md:text-base text-[#e8f7e1] font-semibold">
             Protect your company, your partners, and your team with coordinated strategies for
             benefits, income protection, and succession planning.
           </p>
@@ -68,9 +68,9 @@ const Business: React.FC = () => {
       </section>
 
       {/* Tabs + Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-12">
         {/* Tabs */}
-        <div className="flex justify-center flex-wrap gap-3 md:gap-4 mb-10" role="tablist">
+        <div className="flex justify-center flex-wrap gap-3 md:gap-4 mb-12" role="tablist">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
             return (

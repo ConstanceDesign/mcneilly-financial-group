@@ -1,11 +1,12 @@
-import type { Config } from 'tailwindcss';
-
-const config: Config = {
+/** @type {import('tailwindcss').Config} */
+const config = {
   content: [
-    './src/**/*.{html,js,jsx,ts,tsx}',
+    './index.html',
+    './src/**/*.{js,ts,jsx,tsx}',
   ],
+
   safelist: [
-    'print-area',         
+    'print-area',
     'text-center',
     'text-xl',
     'text-2xl',
@@ -22,6 +23,7 @@ const config: Config = {
     'cursor-not-allowed',
     'animate-spin',
   ],
+
   theme: {
     extend: {
       colors: {
@@ -36,23 +38,23 @@ const config: Config = {
         sans: ['Inter', 'sans-serif'],
         inter: ['Inter', 'sans-serif'],
         serif: ['Cormorant Garamond', 'serif'],
-        cormorant: ['Inter', 'serif'],
+        cormorant: ['Cormorant Garamond', 'serif'],
         allura: ['Allura', 'cursive'],
       },
       fontSize: {
-        'xxl': '2rem',
-        'xl': '1.5rem',
-        'lg': '1.2rem',
-        'xs': '0.25rem',
+        xxl: '2rem',
+        xl: '1.5rem',
+        lg: '1.2rem',
+        sm: '1rem',
       },
       maxWidth: {
-        '1200': '1200px',
+        1200: '1200px',
       },
       height: {
         '40vmin': '40vmin',
       },
       screens: {
-        'xs': '320px',
+        xs: '320px',
       },
       animation: {
         'fade-in-out': 'fadeInOut 2s ease-in-out',
@@ -65,10 +67,11 @@ const config: Config = {
       },
     },
   },
+
   plugins: [
     require('@tailwindcss/forms'),
     require('daisyui'),
   ],
 };
 
-export default config;
+module.exports = config;
