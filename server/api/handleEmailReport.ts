@@ -1,8 +1,15 @@
 const [isSending, setIsSending] = useState(false);
 
 const handleEmailReport = async () => {
-  if (!clientName || !summary || !printRef.current) {
-    alert('Please enter client name, calculate, and generate chart first.');
+  if (!clientName || !printRef.current) {
+    alert('Please enter client name and calculate first.');
+    return;
+  }
+
+  // Build a safe summary if you don’t already have one
+  const safeSummary = summary?.trim();
+  if (!safeSummary) {
+    alert('Please calculate first so a summary is available.');
     return;
   }
 
@@ -14,20 +21,20 @@ const handleEmailReport = async () => {
     const res = await fetch('/api/send-report', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        clientName,
-        summary,
-        chartData,
-        pdfBase64,
-      }),
+      body: JSON.stringify({ clientName, summary: safeSummary, chartData, pdfBase64 }),
     });
 
-    const result = await res.json();
+    let payload: any = null;
+    try {
+      payload = await res.json();
+    } catch {
+      payload = { message: await res.text() };
+    }
 
     if (res.ok) {
-      alert('Email sent successfully!');
+      alert(payload.message || 'Email sent successfully!');
     } else {
-      alert(`Failed: ${result.error}`);
+      alert(payload.error || payload.message || 'Email failed.');
     }
   } catch (err) {
     console.error(err);
