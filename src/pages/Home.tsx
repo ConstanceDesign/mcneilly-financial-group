@@ -248,10 +248,6 @@ const Home: React.FC = () => {
 
           {/* Calculator */}
           <div id="calculator" ref={printRef} aria-label="Financial calculator">
-            <h2 className="text-3xl font-bold mb-2 font-serif text-[#0f5028]">Financial Calculator</h2>
-            <p className="text-lg pb-8 max-w-prose text-[#333]">
-              Project your savings and investments over time. Adjust contributions, rates, and inflation to compare outcomes.
-            </p>
 
             {/* ✅ Frame the calculator so it feels like a “tool card” */}
             <div className="rounded-xl border border-gray-200 bg-white shadow-sm p-4 sm:p-5">
