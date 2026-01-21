@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { sendEmail } from '../services/emailService';
+import { sendContactEmail } from '../services/emailService';
 import axios from 'axios';
 
 export const sendContactMessage = async (req: Request, res: Response): Promise<void> => {
@@ -34,7 +34,7 @@ export const sendContactMessage = async (req: Request, res: Response): Promise<v
       return;
     }
 
-    await sendEmail(
+    await sendContactEmail({ name, email, message });
       process.env.CONTACT_EMAIL as string,
       `New Contact Form Submission from ${name}`,
       `Name: ${name}\nEmail: ${email}\nMessage: ${message}`
