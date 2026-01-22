@@ -22,31 +22,22 @@ const Navbar: React.FC = () => {
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
-  // Close mobile menu on route change (prevents “stuck open”)
+  // Close mobile menu on route change (a11y + UX)
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    if (isMenuOpen) document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isMenuOpen]);
-
   return (
-    <nav className="bg-[#0f5028] text-white sticky top-0 z-50 shadow-md" aria-label="Primary site navigation">
-      {/* Skip link (a11y) */}
+    <nav
+      className="sticky top-0 z-50 bg-[#0f5028] text-white shadow-md"
+      aria-label="Primary navigation"
+    >
+      {/* Skip link */}
       <a
         href="#main"
         className="
           sr-only focus:not-sr-only
           focus:absolute focus:left-4 focus:top-3
-          focus:z-999
           focus:rounded focus:bg-white focus:px-3 focus:py-2
           focus:text-[#0f5028] focus:font-semibold
         "
@@ -54,10 +45,16 @@ const Navbar: React.FC = () => {
         Skip to main content
       </a>
 
-      <div className="mx-auto max-w-7xl px-6 sm:px-6">
-        <div className="h-23 flex items-center justify-between">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="flex h-23 items-center justify-between">
           {/* Logo */}
-          <NavLink to="/" className="flex items-center" aria-label="McNeilly Financial Group home">
+          <NavLink
+            to="/"
+            aria-label="McNeilly Financial Group home"
+            className={`flex items-center transition-opacity duration-200 ${
+              isMenuOpen ? 'pointer-events-none opacity-0' : 'opacity-100'
+            }`}
+          >
             <img
               src="/images/mcneillyfinancialgroup-logo.png"
               alt="McNeilly Financial Group"
@@ -65,65 +62,72 @@ const Navbar: React.FC = () => {
             />
           </NavLink>
 
-          {/* Desktop links */}
+          {/* Desktop navigation */}
           <div className="hidden xl:flex items-center gap-8">
-            <ul className="flex items-center gap-8 uppercase tracking-widest text-[1.02rem]">
+            <ul className="flex items-center gap-8 uppercase tracking-widest text-[1rem]">
               {navItems.map(({ to, label }) => (
                 <li key={to}>
                   <NavLink
                     to={to}
                     className={({ isActive }) =>
-                      `group relative inline-block transition-transform duration-200 hover:scale-[1.03] focus:outline-none
-                       ${isActive ? 'text-white' : 'text-white/95'}`
+                      `group relative inline-block focus:outline-none ${
+                        isActive ? 'text-white' : 'text-white/95'
+                      }`
                     }
                   >
-                    <span className="relative inline-block">
-                      {label}
+                    {({ isActive }) => (
+                      <span className="relative inline-block">
+                        {label}
 
-                      {/* hover underline */}
-                      <span
-                        className="
-                          absolute -bottom-1 left-0 h-0.5 w-0
-                          bg-[#8cbe3f]
-                          transition-all duration-300
-                          group-hover:w-full
-                        "
-                        aria-hidden="true"
-                      />
+                        {/* hover underline */}
+                        <span
+                          className="
+                            absolute -bottom-1 left-0 h-0.5 w-0
+                            bg-[#8cbe3f]
+                            transition-all duration-300
+                            group-hover:w-full
+                          "
+                          aria-hidden="true"
+                        />
 
-                      {/* active underline */}
-                      <span
-                        className={({ isActive }: { isActive: boolean }) => ''}
-                        aria-hidden="true"
-                      />
-                    </span>
+                        {/* active underline */}
+                        {isActive && (
+                          <span
+                            className="absolute -bottom-1 left-0 h-0.5 w-full bg-[#8cbe3f]"
+                            aria-hidden="true"
+                          />
+                        )}
+                      </span>
+                    )}
                   </NavLink>
                 </li>
               ))}
             </ul>
 
-            {/* Login */}
+            {/* Client Login */}
             <a
               href={LOGIN_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="
-                inline-flex items-center justify-center gap-2
-                h-10 px-4
+                inline-flex items-center gap-2
+                px-4 py-2.5
                 rounded-xs
-                bg-[#4b9328] hover:bg-[#8cbe3f]
-                text-white font-bold uppercase tracking-wide
-                transition-transform duration-200 hover:scale-[1.04]
+                bg-white/13 hover:bg-white/20
+                border border-white/23
+                text-white text-[0.95rem]
+                font-semibold uppercase tracking-widest
+                transition
                 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70
               "
-              aria-label="Client login opens in a new tab"
+              aria-label="Client login (opens in a new tab)"
             >
-              <FaUserCircle size={18} aria-hidden="true" />
-              <span className="text-[1rem]">Login</span>
+              <FaUserCircle size={16} aria-hidden="true" />
+              Client Login
             </a>
           </div>
 
-          {/* Hamburger (mobile) */}
+          {/* Mobile menu toggle */}
           <div className="xl:hidden">
             <button
               type="button"
@@ -152,7 +156,11 @@ const Navbar: React.FC = () => {
                 strokeLinejoin="round"
                 aria-hidden="true"
               >
-                {isMenuOpen ? <path d="M6 18L18 6M6 6l12 12" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
+                {isMenuOpen ? (
+                  <path d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path d="M4 6h16M4 12h16M4 18h16" />
+                )}
               </svg>
             </button>
           </div>

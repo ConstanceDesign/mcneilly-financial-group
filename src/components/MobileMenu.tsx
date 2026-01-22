@@ -115,7 +115,7 @@ const MobileMenu: React.FC<Props> = ({ isMenuOpen, menuRef, closeMenu }) => {
             transition={{ type: 'tween', duration: 0.25 }}
             tabIndex={-1}
           >
-            {/* Brand header (match desktop navbar height + edge-to-edge) */}
+            {/* Brand header */}
             <div className="relative">
               <div
                 className="absolute inset-0 bg-linear-to-br from-[#0f5028] to-[#1f7a45]"
@@ -123,7 +123,7 @@ const MobileMenu: React.FC<Props> = ({ isMenuOpen, menuRef, closeMenu }) => {
               />
               <div className="absolute inset-0 bg-[#0f5028]" aria-hidden="true" />
 
-              {/* ✅ h-28 to match desktop navbar height, px only (no negative margins = no seam) */}
+              {/* Navbar */}
               <div className="relative h-23 px-6 flex items-center justify-between">
                 <img
                   src="/images/mcneillyfinancialgroup-logo.png"
@@ -161,7 +161,7 @@ const MobileMenu: React.FC<Props> = ({ isMenuOpen, menuRef, closeMenu }) => {
               </div>
             </div>
 
-            {/* ✅ Client Login block (separate background, below logo, before menu) */}
+            {/* Client Login Block */}
             <div className="px-6 py-6 bg-[#4b9328]">
               <a
                 href={LOGIN_URL}
@@ -250,7 +250,7 @@ const MobileMenu: React.FC<Props> = ({ isMenuOpen, menuRef, closeMenu }) => {
               </motion.ul>
             </nav>
 
-            {/* Bottom reassurance / trust badge */}
+            {/* Bottom Reassurance */}
             <div className="mt-auto px-6 pb-6 pt-4 bg-black/10 border-t border-black/10">
               <img
                 src="/images/sterling-mutuals-logo.png"
