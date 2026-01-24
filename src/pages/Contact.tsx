@@ -214,7 +214,7 @@ const Contact: React.FC = () => {
         <section className="bg-gradient-to-r from-[#0f5028] to-[#4b9328] text-white">
           <div className="max-w-7xl mx-auto px-6 py-16 text-center">
             <h1 className="font-serif text-4xl md:text-5xl font-semibold tracking-tight">
-              Contact Our Team
+              Let's Talk
             </h1>
             <p className="mt-4 max-w-2xl mx-auto text-sm md:text-base text-[#e8f7e1] leading-relaxed">
               Clear, conservative guidance for retirement, insurance, and long-term planning — in
