@@ -18,11 +18,15 @@ import {
   FaRedo,
   FaCheckCircle,
 } from 'react-icons/fa';
-import { exportCSV, exportPDF, handlePrintWrapper, ProjectionMeta } from '../utils/exportHelpers';
+import {
+  exportCSV,
+  exportPDF,
+  handlePrintWrapper,
+  ProjectionMeta,
+  getPDFBase64,
+} from '../utils/exportHelpers';
 import { useReactToPrint } from 'react-to-print';
 import ExportStatus from './ExportStatus';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
 
@@ -38,7 +42,8 @@ const toNumber = (val: string) => {
 const formatCAD = (n: number) =>
   new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD' }).format(n);
 
-const LOGO_URL = '/images/mcneillyfinancialgroup-logo.png'; // ✅ put file in /public/sterling-logo.png
+// ✅ Ensure this file exists in /public/images/...
+const LOGO_URL = '/images/mcneillyfinancialgroup-logo.png';
 
 const FinancialCalculator: React.FC = () => {
   const [accountType, setAccountType] = useState<AccountType>('RRSP');
@@ -61,7 +66,7 @@ const FinancialCalculator: React.FC = () => {
   const [csvExported, setCsvExported] = useState(false);
   const [printTriggered, setPrintTriggered] = useState(false);
 
-  // ✅ This is ONLY the report area. Print/PDF target this ref.
+  // ✅ Print/PDF target: report only
   const reportRef = useRef<HTMLDivElement>(null);
 
   const printOnlyReportCSS = `
@@ -80,34 +85,13 @@ const FinancialCalculator: React.FC = () => {
     }
   `;
 
-  /* ---------- PRINT ---------- */
+  /* ---------- PRINT (react-to-print contentRef API) ---------- */
   const reactToPrint = useReactToPrint({
-    content: () => reportRef.current,
+    contentRef: reportRef,
     documentTitle: `${clientName || 'Investment Projection'} - ${accountType}`,
     removeAfterPrint: true,
     pageStyle: printOnlyReportCSS,
   });
-
-  /* ---------- PDF BASE64 (for email) ---------- */
-  const getPDFBase64 = async (): Promise<string> => {
-    if (!reportRef.current) throw new Error('Nothing to export');
-
-    const canvas = await html2canvas(reportRef.current, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: '#ffffff',
-    });
-
-    const imgData = canvas.toDataURL('image/png');
-
-    const pdf = new jsPDF('p', 'pt', 'a4');
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfHeight = (imgProps.height * pageWidth) / imgProps.width;
-
-    pdf.addImage(imgData, 'PNG', 0, 40, pageWidth, pdfHeight);
-    return pdf.output('datauristring');
-  };
 
   /* ---------- CONTRIBUTION LIMIT (simple estimate) ---------- */
   const contributionLimit = useMemo(() => {
@@ -199,7 +183,8 @@ const FinancialCalculator: React.FC = () => {
     try {
       setIsSending(true);
 
-      const pdfBase64 = await getPDFBase64();
+      // ✅ Uses the same export-safe logic (style-tag stripping + canvas copy)
+      const pdfBase64 = await getPDFBase64(reportRef.current);
 
       const res = await fetch('/api/send-report', {
         method: 'POST',
@@ -241,6 +226,11 @@ const FinancialCalculator: React.FC = () => {
     setWarning(null);
     setChartData(null);
     setHasCalculated(false);
+
+    setEmailSent(false);
+    setPdfExported(false);
+    setCsvExported(false);
+    setPrintTriggered(false);
   };
 
   const meta: ProjectionMeta = {
@@ -373,10 +363,11 @@ const FinancialCalculator: React.FC = () => {
               onChange={(e) => setAdjustForInflation(e.target.checked)}
               className="h-4 w-4 rounded border-gray-300 text-[#4b9328] focus:ring-[#8cbe3f]"
             />
-            <span className="text-sm text-[#0f5028] font-semibold">Adjust for inflation (2%/year)</span>
+            <span className="text-sm text-[#0f5028] font-semibold">
+              Adjust for inflation (2%/year)
+            </span>
           </label>
 
-          {/* ✅ Calculate + Reset side-by-side */}
           <div className="grid grid-cols-2 gap-3 pt-2">
             <button
               type="submit"
@@ -397,24 +388,16 @@ const FinancialCalculator: React.FC = () => {
               Reset
             </button>
           </div>
-
-          <p className="text-xs text-slate-500 pt-1">
-            Tip: After calculating, print/export the “Investment Projection Report” below.
-          </p>
         </form>
       </div>
 
       {/* ---------------- REPORT CARD (PRINT/PDF TARGET) ---------------- */}
-      <div
-        ref={reportRef}
-        className="print-area bg-white p-6 rounded shadow border border-[#d4d4d4]"
-      >
-        {/* Branded header */}
+      <div ref={reportRef} className="print-area bg-white p-6 rounded shadow border border-[#d4d4d4]">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <img
               src={LOGO_URL}
-              alt="Sterling / McNeilly logo"
+              alt="McNeilly Financial Group logo"
               className="h-10 w-auto object-contain"
               loading="eager"
             />
@@ -431,7 +414,6 @@ const FinancialCalculator: React.FC = () => {
           </div>
         </div>
 
-        {/* Summary of inputs (so print/PDF doesn’t need the form) */}
         <div className="mt-4 rounded-lg border border-[#d4d4d4] bg-[#f8f9f7] p-4">
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-[#0f5028]">
             <span className="inline-flex items-center gap-2">
@@ -468,7 +450,6 @@ const FinancialCalculator: React.FC = () => {
           </div>
         </div>
 
-        {/* Results */}
         <div className="mt-4 space-y-2">
           {(result || warning) ? (
             <div className="rounded-lg border border-[#d4d4d4] bg-[#f8f9f7] p-4">
@@ -482,7 +463,6 @@ const FinancialCalculator: React.FC = () => {
           )}
         </div>
 
-        {/* Chart */}
         {chartData && (
           <div className="mt-4 h-[280px] rounded-lg border border-gray-200 bg-white p-3">
             <Line
@@ -506,7 +486,7 @@ const FinancialCalculator: React.FC = () => {
           </div>
         )}
 
-        {/* ✅ Export buttons BELOW chart at bottom of report */}
+        {/* ✅ Export buttons */}
         <div data-export-ignore="true" className="mt-5">
           <div className="flex flex-wrap gap-3">
             <button

@@ -6,18 +6,18 @@ import Papa from 'papaparse';
 /* -------------------------------- TYPES -------------------------------- */
 
 export type ProjectionMeta = {
-  reportTitle?: string;          // e.g., "Investment Projection Report"
-  firmLine?: string;             // e.g., "McNeilly Financial Group"
-  logoUrl?: string;              // e.g., "/sterling-logo.png" (from /public)
-  preparedFor?: string;          // client name
-  accountType?: string;          // RRSP/TFSA/FHSA
+  reportTitle?: string;
+  firmLine?: string;
+  logoUrl?: string;
+  preparedFor?: string;
+  accountType?: string;
   income?: string;
   startingAmount?: string;
   monthlyContribution?: string;
   annualReturnRate?: string;
   yearsToGrow?: string;
   inflationAdjusted?: boolean;
-  generatedOnISO?: string;       // optional: new Date().toISOString()
+  generatedOnISO?: string;
 };
 
 export type ChartDataLike = {
@@ -26,14 +26,7 @@ export type ChartDataLike = {
 };
 
 /* ------------------------------ CSV EXPORT ------------------------------ */
-/**
- * CSV output format:
- * - A short metadata header section (as normal rows)
- * - A blank line
- * - A Year-by-year table: Year, Value (CAD)
- *
- * This keeps it readable in Excel while preserving context.
- */
+
 export const exportCSV = (
   data: ChartDataLike,
   meta: ProjectionMeta,
@@ -49,14 +42,11 @@ export const exportCSV = (
     const values = data.datasets[0]?.data || [];
 
     const generatedOn =
-      meta.generatedOnISO ||
-      new Date().toISOString().replace('T', ' ').replace(/\.\d+Z$/, ' UTC');
+      meta.generatedOnISO || new Date().toISOString().replace('T', ' ').replace(/\.\d+Z$/, ' UTC');
 
-    // Metadata block as rows (Excel-friendly)
     const metaRows: Array<Record<string, string>> = [
       { Field: 'Report', Value: meta.reportTitle || 'Investment Projection Report' },
       { Field: 'Firm', Value: meta.firmLine || 'McNeilly Financial Group' },
-      { Field: 'Logo', Value: meta.logoUrl ? `Included in PDF/Print (${meta.logoUrl})` : 'N/A' },
       { Field: 'Generated On', Value: generatedOn },
       { Field: 'Prepared For', Value: meta.preparedFor || '' },
       { Field: 'Account Type', Value: meta.accountType || '' },
@@ -73,43 +63,25 @@ export const exportCSV = (
       'Value (CAD)': values[i] ?? '',
     }));
 
-    // Build CSV in two parts with a blank line in between
     const metaCsv = Papa.unparse(metaRows, { quotes: false });
     const projectionCsv = Papa.unparse(projectionRows, { quotes: false });
 
     const csv = `${metaCsv}\n\n${projectionCsv}\n`;
-
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    saveAs(blob, fileName);
+    saveAs(new Blob([csv], { type: 'text/csv;charset=utf-8;' }), fileName);
   } catch (err) {
     console.error('CSV export failed:', err);
     alert('CSV export failed. See console for details.');
   }
 };
 
-/* --------------------------- PDF / PRINT HELPERS ------------------------ */
-
-const waitForImages = async (root: HTMLElement) => {
-  const imgs = Array.from(root.querySelectorAll('img'));
-  await Promise.all(
-    imgs.map(
-      (img) =>
-        new Promise<void>((resolve) => {
-          if ((img as HTMLImageElement).complete) return resolve();
-          img.addEventListener('load', () => resolve(), { once: true });
-          img.addEventListener('error', () => resolve(), { once: true });
-        })
-    )
-  );
-};
-
+/* --------------------------- CANVAS COPY (CHART FIX) -------------------- */
 /**
  * Chart.js canvas often goes blank when cloning DOM for html2canvas.
  * This copies the live canvas pixels onto the cloned canvas nodes.
  */
-const copyCanvasToClone = (source: HTMLElement, cloned: Document) => {
-  const srcCanvases = Array.from(source.querySelectorAll('canvas'));
-  const cloneCanvases = Array.from(cloned.querySelectorAll('canvas'));
+const copyCanvasToClone = (sourceRoot: HTMLElement, clonedDoc: Document) => {
+  const srcCanvases = Array.from(sourceRoot.querySelectorAll('canvas'));
+  const cloneCanvases = Array.from(clonedDoc.querySelectorAll('canvas'));
 
   srcCanvases.forEach((srcCanvas, i) => {
     const cloneCanvas = cloneCanvases[i] as HTMLCanvasElement | undefined;
@@ -131,11 +103,31 @@ const copyCanvasToClone = (source: HTMLElement, cloned: Document) => {
   });
 };
 
-/* -------------------------------- PDF ---------------------------------- */
+/* -------------------- STRIP UNSUPPORTED COLOR FUNCTIONS ------------------ */
 /**
- * Exports ONLY the provided report element (not the whole page).
- * Adds a branded header (logo + firm name) and ensures charts render.
+ * html2canvas can't parse okLCH/okLab/color-mix in many builds.
+ * In dev (Vite), CSS is injected into <style> tags, so we must sanitize those
+ * during the cloned export run.
  */
+const stripUnsupportedColorFnsFromStyleTags = (clonedDoc: Document) => {
+  const RE_OKLCH = /\boklch\([^)]+\)/g;
+  const RE_OKLAB = /\boklab\([^)]+\)/g;
+  const RE_COLORMIX = /\bcolor-mix\([^)]+\)/g;
+
+  clonedDoc.querySelectorAll('style').forEach((styleEl) => {
+    const css = styleEl.textContent || '';
+    if (!css) return;
+
+    // Export-only safety: replace unsupported functions with safe values
+    styleEl.textContent = css
+      .replace(RE_OKLCH, '#000')
+      .replace(RE_OKLAB, '#000')
+      .replace(RE_COLORMIX, '#000');
+  });
+};
+
+/* ------------------------------ PDF EXPORT ------------------------------ */
+
 export const exportPDF = async (
   reportElement: HTMLElement,
   meta: ProjectionMeta,
@@ -144,21 +136,18 @@ export const exportPDF = async (
   try {
     if (!reportElement) throw new Error('Missing report element for PDF export.');
 
-    // Render report to canvas (with chart fix using onclone)
     const canvas = await html2canvas(reportElement, {
       scale: 2,
       useCORS: true,
       backgroundColor: '#ffffff',
-      logging: false,
-      onclone: (clonedDoc) => {
-        // hide anything marked export-ignore (buttons, etc.)
+      onclone: (clonedDoc: Document) => {
         clonedDoc.querySelectorAll('[data-export-ignore="true"]').forEach((n) => n.remove());
 
-        // copy Chart.js canvas pixels
-        copyCanvasToClone(reportElement, clonedDoc);
+        // ✅ critical fix for oklch() crashes
+        stripUnsupportedColorFnsFromStyleTags(clonedDoc);
 
-        // If you include the logo <img> inside the report already, it will render.
-        // No further action required here.
+        // ✅ critical fix for chart canvas blanking
+        copyCanvasToClone(reportElement, clonedDoc);
       },
     });
 
@@ -168,7 +157,7 @@ export const exportPDF = async (
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
 
-    // Basic header text (keeps it clean and readable)
+    // Header
     const title = meta.reportTitle || 'Investment Projection Report';
     const firm = meta.firmLine || 'McNeilly Financial Group';
     const preparedFor = meta.preparedFor ? `Prepared for: ${meta.preparedFor}` : '';
@@ -187,14 +176,13 @@ export const exportPDF = async (
       pdf.setFontSize(11);
       pdf.setTextColor(80, 80, 80);
       pdf.text(preparedFor, 40, y + 36);
-      y += 18;
     }
 
-    y += 54;
+    y += 64;
 
-    // Image fits width; paginate vertically if needed
+    // Fit image to page width, paginate vertically
     const imgProps = pdf.getImageProperties(imgData);
-    const imgWidth = pageWidth - 80; // side margins
+    const imgWidth = pageWidth - 80;
     const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
 
     let remaining = imgHeight;
@@ -212,6 +200,52 @@ export const exportPDF = async (
     console.error('PDF export failed:', err);
     alert('PDF export failed. See console for details.');
   }
+};
+
+/* --------------------------- PDF BASE64 (EMAIL) -------------------------- */
+
+export const getPDFBase64 = async (targetElement: HTMLElement): Promise<string> => {
+  if (!targetElement) throw new Error('No target element provided');
+
+  const canvas = await html2canvas(targetElement, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: '#ffffff',
+    onclone: (clonedDoc: Document) => {
+      clonedDoc.querySelectorAll('[data-export-ignore="true"]').forEach((n) => n.remove());
+
+      // ✅ critical fix for oklch() crashes
+      stripUnsupportedColorFnsFromStyleTags(clonedDoc);
+
+      // ✅ chart pixels preserved
+      copyCanvasToClone(targetElement, clonedDoc);
+    },
+  });
+
+  const imgData = canvas.toDataURL('image/png');
+
+  const pdf = new jsPDF('p', 'pt', 'a4');
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const imgProps = pdf.getImageProperties(imgData);
+  const imgWidth = pageWidth;
+  const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+  const top = 24;
+  const usableHeight = pageHeight - top - 24;
+
+  let remainingHeight = imgHeight;
+  let offsetY = 0;
+
+  while (remainingHeight > 0) {
+    pdf.addImage(imgData, 'PNG', 0, top - offsetY, imgWidth, imgHeight);
+    remainingHeight -= usableHeight;
+    offsetY += usableHeight;
+    if (remainingHeight > 0) pdf.addPage();
+  }
+
+  return pdf.output('datauristring');
 };
 
 /* ------------------------------ PRINT WRAP ------------------------------ */

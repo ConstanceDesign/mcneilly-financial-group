@@ -139,8 +139,6 @@ const Business: React.FC = () => {
           className="absolute inset-0 bg-[radial-gradient(circle_at_85%_35%,rgba(0,0,0,0.10),transparent_55%)]"
         />
 
-        
-
         {/* Content */}
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="py-12 md:py-16 lg:py-18">

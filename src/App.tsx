@@ -54,10 +54,10 @@ const NotFound: React.FC = () => (
 
 const App: React.FC = () => (
   <Router>
-    <Navbar />
+    {/* Keep the site background consistent behind all pages */}
+    <div className="min-h-screen bg-[#f8f9f7] flex flex-col">
+      <Navbar />
 
-    <div className="flex flex-col min-h-screen">
-      {/* Skip link target for accessibility */}
       <main
         id="main"
         tabIndex={-1}
@@ -68,8 +68,12 @@ const App: React.FC = () => (
 
         <Suspense
           fallback={
-            <div className="flex justify-center items-center min-h-[60vh]" aria-busy="true" aria-label="Loading">
-              <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+            <div
+              className="flex justify-center items-center min-h-[60vh]"
+              aria-busy="true"
+              aria-label="Loading"
+            >
+              <div className="w-16 h-16 border-4 border-[#4b9328] border-t-transparent rounded-full animate-spin" />
             </div>
           }
         >
@@ -85,16 +89,28 @@ const App: React.FC = () => (
               <Route path="buy-sell" element={<BuySell />} />
               <Route path="key-person" element={<KeyPerson />} />
               <Route path="business-overhead" element={<BusinessOverhead />} />
-              <Route path="business-disability-insurance" element={<BusinessDisabilityInsurance />} />
-              <Route path="business-health-insurance" element={<BusinessHealthInsurance />} />
+              <Route
+                path="business-disability-insurance"
+                element={<BusinessDisabilityInsurance />}
+              />
+              <Route
+                path="business-health-insurance"
+                element={<BusinessHealthInsurance />}
+              />
             </Route>
 
             {/* Personal */}
             <Route path="/personal" element={<Personal />}>
               <Route path="term-insurance" element={<TermInsurance />} />
               <Route path="critical-illness" element={<CriticalIllness />} />
-              <Route path="personal-health-insurance" element={<PersonalHealthInsurance />} />
-              <Route path="personal-disability-insurance" element={<PersonalDisabilityInsurance />} />
+              <Route
+                path="personal-health-insurance"
+                element={<PersonalHealthInsurance />}
+              />
+              <Route
+                path="personal-disability-insurance"
+                element={<PersonalDisabilityInsurance />}
+              />
               <Route path="mortgage-insurance" element={<MortgageInsurance />} />
               <Route path="permanent-insurance" element={<PermanentInsurance />} />
             </Route>

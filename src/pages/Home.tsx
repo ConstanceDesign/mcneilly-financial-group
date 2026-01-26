@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState, Suspense } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   FaPiggyBank,
   FaFileAlt,
@@ -14,41 +15,76 @@ import {
 } from 'react-icons/fa';
 import heroImage from '../images/home-hero.jpg';
 
-// ✅ Lazy-load to avoid “calculator missing” at build or hydration time
+import Reveal from '../components/motion/Reveal';
+import BackgroundShapeSweep from '../components/motion/BackgroundShapeSweep';
+
 const FinancialCalculator = React.lazy(() => import('../components/FinancialCalculator'));
 
 const Home: React.FC = () => {
+  const navigate = useNavigate();
+
+  // NOTE: This ref is intentionally kept here because many export implementations
+  // use a stable "report" ref for Print/PDF capture.
   const printRef = useRef<HTMLDivElement>(null);
 
-  // ✅ Desktop-only parallax offset (respects reduced motion)
   const [heroOffset, setHeroOffset] = useState(0);
+
+  const handleContactClick = () => {
+    navigate('/contact');
+  };
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const isDesktop = window.matchMedia('(min-width: 768px)').matches;
-
     if (prefersReducedMotion || !isDesktop) return;
 
     const onScroll = () => setHeroOffset(window.scrollY * 0.12);
-
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const handleContactClick = () => {
-    window.location.href = '/contact';
-  };
-
   const services = useMemo(
     () => [
-      { title: 'Retirement Planning', icon: <FaPiggyBank />, desc: 'Smart strategies to ensure a comfortable future.' },
-      { title: 'Education Savings', icon: <FaGraduationCap />, desc: 'Plan for your child’s future education.' },
-      { title: 'Estate Planning', icon: <FaFileAlt />, desc: 'Safeguard your legacy with a clear plan.' },
-      { title: 'Tax Planning', icon: <FaFileInvoiceDollar />, desc: 'Minimize burdens and maximize returns.' },
-      { title: 'Investments', icon: <FaChartLine />, desc: 'Diversify your portfolio and grow wealth.' },
-      { title: 'Life Insurance', icon: <FaHeartbeat />, desc: 'Protect your family’s financial future.' },
-      { title: 'Health Insurance', icon: <FaHeartbeat />, desc: 'Peace of mind for unexpected health challenges.' },
-      { title: 'Disability Insurance', icon: <FaWheelchair />, desc: 'Support and protection in case of injury or illness.' },
+      {
+        title: 'Retirement Planning',
+        icon: <FaPiggyBank />,
+        desc: 'Disciplined strategies built around your goals and timeline.',
+      },
+      {
+        title: 'Education Savings',
+        icon: <FaGraduationCap />,
+        desc: 'Practical RESP planning to support your child’s future.',
+      },
+      {
+        title: 'Estate Planning',
+        icon: <FaFileAlt />,
+        desc: 'Clear, coordinated planning to protect your legacy.',
+      },
+      {
+        title: 'Tax Planning',
+        icon: <FaFileInvoiceDollar />,
+        desc: 'Smarter structure to reduce drag and keep more of what you earn.',
+      },
+      {
+        title: 'Investments',
+        icon: <FaChartLine />,
+        desc: 'Diversification and guidance aligned to risk and purpose.',
+      },
+      {
+        title: 'Life Insurance',
+        icon: <FaHeartbeat />,
+        desc: 'Coverage designed to protect family, lifestyle, and obligations.',
+      },
+      {
+        title: 'Health Insurance',
+        icon: <FaHeartbeat />,
+        desc: 'Support for unexpected health costs and real-world disruptions.',
+      },
+      {
+        title: 'Disability Insurance',
+        icon: <FaWheelchair />,
+        desc: 'Income protection if injury or illness interrupts work.',
+      },
     ],
     []
   );
@@ -58,152 +94,147 @@ const Home: React.FC = () => {
       {/* HERO */}
       <section
         aria-label="McNeilly Financial Group homepage hero"
-        className="relative w-full overflow-hidden h-[640px] sm:h-[660px] md:h-220"
+        className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-hidden"
       >
-        {/* Background base */}
-        <div className="absolute inset-0 bg-linear-to-br from-[#0f5028] to-[#1f7a45]" aria-hidden="true" />
-
-        {/* ✅ Image w/ desktop parallax + responsive focal point so the sailboat stays visible */}
-        <img
-          src={heroImage}
-          alt="Sailboat at sunrise on calm water"
-          className="
-            absolute inset-0 w-full h-full object-cover
-            object-[72%_center]
-            sm:object-[70%_center]
-            md:object-[62%_center]
-            lg:object-[58%_center]
-            opacity-95
-            brightness-[1.08] contrast-[1.05] saturate-[1.08]
-            will-change-transform
-          "
-          style={{ transform: `translateY(${heroOffset}px) scale(1.06)` }}
-          loading="eager"
-          fetchPriority="high"
-        />
-
-        {/* ✅ Less gloomy: lighter left readability mask */}
-        <div className="absolute inset-0 bg-linear-to-r from-black/40 via-black/14 to-black/0" aria-hidden="true" />
-
-        {/* Subtle vignette for depth (still light) */}
-        <div className="absolute inset-0 bg-linear-to-t from-black/12 via-transparent to-transparent" aria-hidden="true" />
-
-        {/* Warm wash */}
+        {/* Image + overlays */}
         <div
-          className="absolute inset-0 bg-linear-to-b from-amber-200/14 via-transparent to-emerald-900/8 mix-blend-overlay"
-          aria-hidden="true"
-        />
-
-        {/* Content */}
-        <div className="relative z-10 h-full max-w-7xl mx-auto px-4 sm:px-6 flex items-center">
-          {/* ✅ Mobile-responsive “glass” panel:
-              - on mobile: full-width, padded, soft background
-              - on md+: frosted glass + border + shadow
-          */}
-          <div
+          className="
+            relative
+            min-h-[100svh]
+            sm:min-h-0
+            sm:h-[560px]
+            lg:h-[560px]
+          "
+        >
+          <img
+            src={heroImage}
+            alt="Sailboat at sunrise on calm water"
             className="
-              w-full max-w-[44rem]
-              rounded-xl
-              bg-black/25
-              backdrop-blur-[2px]
-              px-5 py-6
-              sm:px-6 sm:py-7
-              text-white
-              shadow-md
-              md:bg-white/12 md:backdrop-blur-md
-              md:border md:border-white/20
-              md:shadow-lg
-              md:px-8 md:py-9
+              absolute inset-0 h-full w-full object-cover
+              [object-position:68%_52%]
+              sm:[object-position:63%_50%]
+              lg:[object-position:58%_50%]
+              xl:[object-position:55%_50%]
             "
-          >
-            {/* SEO: one clear H1 */}
-            <h1 className="font-sans text-[2.15rem] leading-[1.08] sm:text-[2.45rem] md:text-6xl md:leading-[1.05] font-extrabold drop-shadow-sm">
-              <span className="block tracking-wide">Plan smarter.</span>
-              <span className="block mt-2">Secure your future.</span>
-              <span className="block mt-2">Grow with confidence.</span>
-            </h1>
+            style={{
+              transform: `translateY(${heroOffset}px) scale(1.06)`,
+            }}
+            loading="eager"
+            fetchPriority="high"
+          />
 
-            <p className="mt-4 sm:mt-6 text-[1rem] sm:text-[1.08rem] md:text-xl leading-relaxed max-w-[42rem] text-white/95">
-              McNeilly Financial Group delivers trusted financial advice and comprehensive wealth strategies for
-              individuals, families, and business owners across Canada. With disciplined planning and personalized
-              guidance, we help you build, protect, and grow your wealth.
-            </p>
+          {/* Editorial wash (UNCHANGED) */}
+          <div
+            aria-hidden="true"
+            className="
+              absolute inset-0
+              bg-[linear-gradient(90deg,rgba(244,242,236,0.94),rgba(244,242,236,0.82),rgba(15,80,40,0.14))]
+            "
+          />
 
-            {/* CTAs: stack on mobile, row on sm+ */}
-            <div className="mt-6 sm:mt-8 grid grid-cols-1 sm:flex sm:flex-wrap gap-3 sm:gap-4">
-              <button
-                type="button"
-                onClick={handleContactClick}
-                className="
-                  group inline-flex w-full sm:w-auto
-                  items-center justify-center gap-2
-                  bg-[#4b9328] hover:bg-[#8cbe3f]
-                  text-white px-5 py-3
-                  rounded-xs font-bold text-base
-                  shadow-sm hover:shadow-md
-                  focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80
-                  transition duration-300 hover:-translate-y-[1px] hover:scale-[1.02]
-                "
-                aria-label="Schedule a free consultation"
-              >
-                <FaComments size={20} aria-hidden="true" />
-                <span className="text-[1.02rem] uppercase tracking-wide">Free Consultation</span>
-                <FaArrowRight
-                  className="ml-1 opacity-90 group-hover:translate-x-0.5 transition-transform"
-                  aria-hidden="true"
-                />
-              </button>
+          {/* Right-edge stabilizer (UNCHANGED) */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-[radial-gradient(circle_at_85%_35%,rgba(0,0,0,0.10),transparent_55%)]"
+          />
 
-              <a
-                href="#calculator"
-                className="
-                  group inline-flex w-full sm:w-auto
-                  items-center justify-center gap-2
-                  bg-white/12 hover:bg-white/18
-                  text-white backdrop-blur
-                  px-5 py-3 rounded-xs
-                  font-bold text-base
-                  border border-white/35 hover:border-white/55
-                  focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80
-                  transition duration-300 hover:-translate-y-[1px] hover:scale-[1.02]
-                "
-                aria-label="Jump to the investment calculator"
-              >
-                <FaCalculator size={16} aria-hidden="true" />
-                <span className="text-[1.02rem] uppercase tracking-wide">Investment Calculator</span>
-                <FaArrowRight
-                  className="ml-1 opacity-90 group-hover:translate-x-0.5 transition-transform"
-                  aria-hidden="true"
-                />
-              </a>
+          {/* Content */}
+          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-full">
+            <div className="h-full flex items-center">
+              <div className="w-full max-w-2xl">
+                <p className="text-[12px] sm:text-xs font-semibold uppercase tracking-[0.28em] text-[#0f5028]">
+                  <span className="block sm:inline">Financial Planning</span>
+                  <span className="hidden sm:inline"> • </span>
+                  <span className="block sm:inline">Wealth Strategies</span>
+                  <span className="hidden sm:inline"> • </span>
+                  <span className="block sm:inline">Protection</span>
+                </p>
+
+                <h1 className="mt-4 font-semibold tracking-tight text-[#102019] leading-[1.06] text-[2.45rem] sm:text-5xl lg:text-6xl">
+                  Plan with clarity.
+                  <br />
+                  Protect what matters.
+                  <br />
+                  Grow with confidence.
+                </h1>
+
+                <p className="mt-5 max-w-xl text-[15.5px] sm:text-base text-[#1f2937]/75 leading-relaxed">
+                  Trusted guidance for individuals, families, and business owners across Canada—built on clear strategy,
+                  practical protection, and long-term discipline.
+                </p>
+
+                <div className="mt-10 sm:mt-6 grid grid-cols-1 sm:flex sm:flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={handleContactClick}
+                    className="
+                      inline-flex items-center justify-center gap-2
+                      px-5 py-3.5 rounded-xs
+                      bg-[#2f7a2e] hover:bg-[#3a8b34]
+                      text-white font-bold uppercase tracking-wide
+                      shadow-sm hover:shadow-md
+                      transition
+                      focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/30
+                    "
+                    aria-label="Schedule a free consultation"
+                  >
+                    <FaComments aria-hidden="true" />
+                    Free Consultation <FaArrowRight aria-hidden="true" />
+                  </button>
+
+                  <a
+                    href="#calculator"
+                    className="
+                      inline-flex items-center justify-center gap-2
+                      px-5 py-3.5 rounded-xs
+                      bg-white/40 hover:bg-white/50
+                      backdrop-blur-sm
+                      border border-white/70
+                      text-[#102019] font-extrabold uppercase tracking-wide
+                      whitespace-nowrap sm:whitespace-normal
+                      shadow-sm hover:shadow-md
+                      transition
+                      focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/30
+                    "
+                    aria-label="Jump to the investment calculator"
+                  >
+                    <FaCalculator aria-hidden="true" />
+                    Investment Calculator <FaArrowRight aria-hidden="true" />
+                  </a>
+                </div>
+
+                <ul
+                  className="
+                    mt-6
+                    flex flex-col gap-2
+                    text-[15px] sm:text-sm font-semibold text-[#102019]/80
+                    sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-2
+                    lg:flex-nowrap lg:gap-x-8 lg:whitespace-nowrap
+                  "
+                  aria-label="Service highlights"
+                >
+                  <li className="inline-flex items-center gap-2">
+                    <FaCheckCircle className="text-[#2f7a2e]" aria-hidden="true" />
+                    Clear, documented planning
+                  </li>
+                  <li className="inline-flex items-center gap-2">
+                    <FaCheckCircle className="text-[#2f7a2e]" aria-hidden="true" />
+                    Canada-wide support
+                  </li>
+                  <li className="inline-flex items-center gap-2">
+                    <FaCheckCircle className="text-[#2f7a2e]" aria-hidden="true" />
+                    Regulated, transparent guidance
+                  </li>
+                </ul>
+
+                <a
+                  href="#main-content"
+                  className="sr-only focus:not-sr-only focus:inline-flex focus:mt-4 focus:bg-white/80 focus:px-3 focus:py-2 focus:rounded-xs focus:outline-none focus:ring-2 focus:ring-[#0f5028]/30"
+                >
+                  Skip to main content
+                </a>
+              </div>
             </div>
-
-            {/* Proof points: wrap nicely on mobile */}
-            <div
-              className="mt-4 sm:mt-5 flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-x-6 sm:gap-y-2 font-semibold text-sm sm:text-base text-white/90"
-              aria-label="Service highlights"
-            >
-              <span className="inline-flex items-center gap-2">
-                <FaCheckCircle className="text-[#8cbe3f]" aria-hidden="true" />
-                Personalized planning
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <FaCheckCircle className="text-[#8cbe3f]" aria-hidden="true" />
-                Canada-wide support
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <FaCheckCircle className="text-[#8cbe3f]" aria-hidden="true" />
-                Regulated, transparent guidance
-              </span>
-            </div>
-
-            {/* Accessibility: allow keyboard users to jump to content */}
-            <a
-              href="#main-content"
-              className="sr-only focus:not-sr-only focus:inline-flex focus:mt-4 focus:bg-white/20 focus:px-3 focus:py-2 focus:rounded-xs focus:outline-none focus:ring-2 focus:ring-white/80"
-            >
-              Skip to main content
-            </a>
           </div>
         </div>
       </section>
@@ -213,92 +244,117 @@ const Home: React.FC = () => {
         <section className="py-16 px-4 bg-[#f8f9f7]" aria-label="Our services and financial tools">
           <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-start">
             {/* Services */}
-            <div>
-              <div className="flex items-end justify-between gap-4">
-                <div>
-                  <h2 className="text-3xl font-bold mb-2 font-serif text-[#0f5028]">Our Services</h2>
-                  <p className="text-lg max-w-prose text-[#333]">
-                    Tailored planning and transparent advice to help you build, protect, and grow with confidence.
-                  </p>
-                </div>
+            <div className="relative" aria-label="Financial planning services">
+              <BackgroundShapeSweep className="pointer-events-none absolute inset-0 overflow-hidden" opacity={0.14} />
 
-                <a
-                  href="/contact"
-                  className="hidden sm:inline-flex items-center gap-2 text-[#0f5028] font-semibold hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/40 rounded-xs px-2 py-1"
-                  aria-label="Contact us to discuss your financial plan"
-                >
-                  Talk to an advisor <FaArrowRight aria-hidden="true" />
-                </a>
-              </div>
+              <Reveal>
+                <div className="flex items-end justify-between gap-4 relative">
+                  <div>
+                    <h2 className="text-3xl font-bold mb-2 font-serif text-[#0f5028]">Our Services</h2>
+                    <p className="text-lg max-w-prose text-[#333]">
+                      Practical, well-structured guidance—built around your goals, your family, and your timeline.
+                    </p>
+                  </div>
 
-              <div className="grid sm:grid-cols-2 gap-6 pt-8" role="list" aria-label="Financial planning services">
-                {services.map((service) => (
-                  <article
-                    key={service.title}
-                    className="
-                      group relative overflow-hidden
-                      rounded-xs border border-[#cfe0b9]
-                      bg-linear-to-b from-[#e6f3d3] to-[#dceec3]
-                      p-5 shadow-sm
-                      transition
-                      hover:shadow-lg hover:-translate-y-0.5
-                      focus-within:ring-2 focus-within:ring-[#8cbe3f]
-                    "
-                    role="listitem"
-                    aria-label={service.title}
+                  <Link
+                    to="/contact"
+                    className="hidden sm:inline-flex items-center gap-2 text-[#0f5028] font-semibold hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/40 rounded-xs px-2 py-1"
+                    aria-label="Contact us to discuss your financial plan"
                   >
-                    <div
-                      className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-white/35 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"
-                      aria-hidden="true"
-                    />
+                    Talk to an advisor <FaArrowRight aria-hidden="true" />
+                  </Link>
+                </div>
+              </Reveal>
 
-                    <div className="flex items-center gap-3 mb-2">
-                      <span
+              <div className="grid sm:grid-cols-2 gap-6 pt-8" role="list" aria-label="Service list">
+                {services.map((service) => {
+                  const base = service.title.replace(/\s+/g, '-').toLowerCase();
+                  const titleId = `${base}-title`;
+                  const descId = `${base}-desc`;
+
+                  return (
+                    <Reveal key={service.title} delay={0.05}>
+                      <article
                         className="
-                          inline-flex items-center justify-center
-                          h-10 w-10 rounded-lg bg-white/55
-                          text-[#1f7a45] text-xl shadow-sm
+                          group relative overflow-hidden
+                          rounded-xs border border-[#cfe0b9]
+                          bg-[linear-gradient(180deg,#e9f5d9_0%,#dceec3_100%)]
+                          p-5 shadow-sm
+                          transition
+                          hover:shadow-lg hover:-translate-y-0.5
+                          focus-within:ring-2 focus-within:ring-[#8cbe3f]
                         "
-                        aria-hidden="true"
+                        role="listitem"
+                        aria-labelledby={titleId}
+                        aria-describedby={descId}
                       >
-                        {service.icon}
-                      </span>
-                      <h3 className="text-lg font-semibold text-[#0f5028]">{service.title}</h3>
-                    </div>
+                        <div
+                          className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-white/32 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"
+                          aria-hidden="true"
+                        />
 
-                    <p className="text-[#0f5028] font-normal leading-relaxed">{service.desc}</p>
+                        <div className="flex items-center gap-3 mb-2">
+                          <span
+                            className="
+                              inline-flex items-center justify-center
+                              h-10 w-10 rounded-lg bg-white/60
+                              text-[#1f7a45] text-xl shadow-sm
+                            "
+                            aria-hidden="true"
+                          >
+                            {service.icon}
+                          </span>
+                          <h3 id={titleId} className="text-lg font-semibold text-[#0f5028]">
+                            {service.title}
+                          </h3>
+                        </div>
 
-                    <div className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-[#0f5028]/90">
-                      <span className="opacity-80 group-hover:opacity-100 transition-opacity">Learn more</span>
-                      <FaArrowRight
-                        className="opacity-70 group-hover:translate-x-0.5 transition-transform"
-                        aria-hidden="true"
-                      />
-                    </div>
-                  </article>
-                ))}
+                        <p id={descId} className="text-[#0f5028] font-normal leading-relaxed">
+                          {service.desc}
+                        </p>
+
+                        <div className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-[#0f5028]/90">
+                          <span className="opacity-80 group-hover:opacity-100 transition-opacity">Learn more</span>
+                          <FaArrowRight className="opacity-70 group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
+                        </div>
+                      </article>
+                    </Reveal>
+                  );
+                })}
               </div>
             </div>
 
             {/* Calculator */}
-            <div id="calculator" ref={printRef} aria-label="Investment calculator">
-              <div className="rounded-xl border border-gray-200 bg-white shadow-sm p-4 sm:p-5">
-                <Suspense
-                  fallback={
-                    <div className="p-6" aria-live="polite" aria-busy="true">
-                      <p className="animate-pulse text-gray-600">Loading calculator…</p>
-                    </div>
-                  }
-                >
-                  <FinancialCalculator />
-                </Suspense>
-              </div>
+            <Reveal>
+              <div id="calculator" aria-label="Investment calculator" ref={printRef}>
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm p-4 sm:p-5">
+                  <Suspense
+                    fallback={
+                      <div className="p-6" aria-live="polite" aria-busy="true" aria-label="Loading calculator">
+                        <p className="animate-pulse text-gray-600">Loading calculator…</p>
+                      </div>
+                    }
+                  >
+                    <FinancialCalculator />
+                  </Suspense>
+                </div>
 
-              <p className="mt-4 text-sm text-[#333]/80 leading-relaxed">
-                Estimates are for illustration only and may not reflect actual results. For a personalized plan, request
-                a free consultation.
-              </p>
-            </div>
+                <p className="mt-4 text-sm text-[#333]/80 leading-relaxed">
+                  Estimates are for illustration only and may not reflect actual results. For a personalized plan,
+                  request a free consultation.
+                </p>
+
+                <div className="mt-4">
+                  <Link
+                    to="/disclaimer"
+                    className="text-sm font-semibold text-[#0f5028] hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/40 rounded-xs px-1 py-1 inline-block"
+                    aria-label="Read the disclaimer"
+                  >
+                    Read the disclaimer
+                  </Link>
+                </div>
+              </div>
+            </Reveal>
           </div>
         </section>
       </main>
