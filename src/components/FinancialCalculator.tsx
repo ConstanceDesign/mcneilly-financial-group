@@ -270,7 +270,7 @@ const FinancialCalculator: React.FC = () => {
             <label className="block">
               <span className="text-sm font-semibold text-[#0f5028]">Client name</span>
               <input
-                className="mt-1 w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f]"
+                className="mt-1 w-full rounded-xs border border-black/25 px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f]/40"
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
                 placeholder="e.g., Alex Martin"
@@ -279,9 +279,9 @@ const FinancialCalculator: React.FC = () => {
             </label>
 
             <label className="block">
-              <span className="text-sm font-semibold text-[#0f5028]">Account type</span>
+              <span className="text-[16px] text-[#1f2937]">Account type</span>
               <select
-                className="mt-1 w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f]"
+                className="mt-1 w-full rounded border border-black/25 px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f]/40"
                 value={accountType}
                 onChange={(e) => setAccountType(e.target.value as AccountType)}
                 aria-label="Select account type"

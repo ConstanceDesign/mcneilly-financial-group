@@ -1,17 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import axios from 'axios';
 import ReCAPTCHA from 'react-google-recaptcha';
-import {
-  FaEnvelope,
-  FaUndo,
-  FaPhoneAlt,
-  FaMapMarkerAlt,
-  FaClock,
-  FaLinkedin,
-  FaCheckCircle,
-  FaChevronRight,
-  FaMap,
-} from 'react-icons/fa';
+import { motion, useReducedMotion } from 'framer-motion';
+import { FaEnvelope, FaUndo, FaCheckCircle, FaMapMarkerAlt } from 'react-icons/fa';
+import heroImage from '../images/contact5-hero.jpg';
 
 declare global {
   interface Window {
@@ -23,6 +15,9 @@ declare global {
   }
 }
 
+type FieldKey = 'name' | 'email' | 'phone' | 'message';
+type FieldErrors = Partial<Record<FieldKey, string>>;
+
 const Contact: React.FC = () => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
@@ -33,6 +28,15 @@ const Contact: React.FC = () => {
 
   const isV3 = Boolean(V3_SITE_KEY);
   const isV2 = Boolean(V2_SITE_KEY);
+
+  // ✅ Office contact (set these in .env for production)
+  const OFFICE_EMAIL = (import.meta.env.VITE_OFFICE_EMAIL as string | undefined) || 'pmcneilly@sterlingmutuals.com';
+  const OFFICE_FAX = (import.meta.env.VITE_OFFICE_FAX as string | undefined) || '(519) 979 5432';
+  const OFFICE_PHONE = (import.meta.env.VITE_OFFICE_PHONE as string | undefined) || '(519) 979-5396';
+
+  // tel: versions (mobile-friendly)
+  const OFFICE_PHONE_TEL = '+15199795396';
+  const OFFICE_FAX_TEL = '+15199795432';
 
   const [formData, setFormData] = useState({
     name: '',
@@ -46,8 +50,15 @@ const Contact: React.FC = () => {
 
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
   const alertRef = useRef<HTMLDivElement>(null);
+
+  // Focus-first-invalid
+  const nameRef = useRef<HTMLInputElement | null>(null);
+  const emailRef = useRef<HTMLInputElement | null>(null);
+  const phoneRef = useRef<HTMLInputElement | null>(null);
+  const messageRef = useRef<HTMLTextAreaElement | null>(null);
 
   const today = useMemo(() => {
     const d = new Date();
@@ -117,33 +128,61 @@ const Contact: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    const key = name as FieldKey;
+
     setFormData((prev) => ({ ...prev, [name]: value }));
     setError(null);
+
+    setFieldErrors((prev) => {
+      if (!prev[key]) return prev;
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+
     setSubmitted(false);
   };
 
   const validate = () => {
-    if (!formData.name.trim()) return 'Please enter your name.';
-    if (!formData.email.trim()) return 'Please enter your email.';
-    if (!formData.message.trim()) return 'Please enter a message.';
-    return null;
+    const errs: FieldErrors = {};
+
+    if (!formData.name.trim()) errs.name = 'Please enter your name.';
+    if (!formData.email.trim()) errs.email = 'Please enter your email.';
+    if (!formData.message.trim()) errs.message = 'Please enter a message.';
+
+    const firstKey = (Object.keys(errs)[0] as FieldKey | undefined) || null;
+
+    const focusFirst = () => {
+      if (!firstKey) return;
+      if (firstKey === 'name') nameRef.current?.focus();
+      if (firstKey === 'email') emailRef.current?.focus();
+      if (firstKey === 'phone') phoneRef.current?.focus();
+      if (firstKey === 'message') messageRef.current?.focus();
+    };
+
+    return { errs, firstKey, focusFirst };
   };
 
   const handleReset = () => {
     setFormData({ name: '', email: '', phone: '', message: '' });
     setCaptchaToken(null);
     setError(null);
+    setFieldErrors({});
     setSubmitted(false);
     track('contact_reset', { event_category: 'Contact', event_label: 'Reset' });
+
+    setTimeout(() => nameRef.current?.focus(), 0);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const v = validate();
-    if (v) {
-      setError(v);
-      track('contact_submit_error', { event_category: 'Contact', event_label: v });
+    const { errs, firstKey, focusFirst } = validate();
+    if (firstKey) {
+      setFieldErrors(errs);
+      setError(errs[firstKey] || 'Please check the form.');
+      track('contact_submit_error', { event_category: 'Contact', event_label: errs[firstKey] || 'validation_error' });
+      setTimeout(() => focusFirst(), 0);
       return;
     }
 
@@ -153,7 +192,6 @@ const Contact: React.FC = () => {
 
       let tokenToSend: string | null = captchaToken;
 
-      // v3 preferred
       if (isV3) {
         tokenToSend = await getV3Token();
       } else if (isV2) {
@@ -181,11 +219,14 @@ const Contact: React.FC = () => {
         setSubmitted(true);
         setFormData({ name: '', email: '', phone: '', message: '' });
         setCaptchaToken(null);
+        setFieldErrors({});
 
         track('form_submit', {
           event_category: 'Contact',
           event_label: 'Contact Form Submission',
         });
+
+        setTimeout(() => alertRef.current?.focus(), 0);
       } else {
         setError('Unable to send your message. Please try again.');
       }
@@ -201,306 +242,384 @@ const Contact: React.FC = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-[#E5E5E5] text-[#333333] font-sans">
-      {/* Print-only header */}
-      <div className="hidden print:block p-6">
-        <h1 className="text-2xl font-semibold text-[#0f5028]">Contact Request</h1>
-        <p className="text-sm text-gray-800 mt-1">Date: {today}</p>
-      </div>
+  // Motion
+  const reduceMotion = useReducedMotion();
 
+  const cardIn = reduceMotion
+    ? undefined
+    : {
+        initial: { opacity: 0, y: 14 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, amount: 0.2 },
+        transition: { duration: 0.5, ease: 'easeOut' },
+      };
+
+  const colIn = (delay = 0) =>
+    reduceMotion
+      ? undefined
+      : {
+          initial: { opacity: 0, y: 10 },
+          whileInView: { opacity: 1, y: 0 },
+          viewport: { once: true, amount: 0.2 },
+          transition: { duration: 0.45, ease: 'easeOut', delay },
+        };
+
+  // 2026 surface system
+  const pageBg = 'bg-[#f4f2ec]';
+
+  const softCard =
+    'rounded-xl border border-black/10 bg-white/60 backdrop-blur-sm shadow-sm ' +
+    'p-5 sm:p-6';
+
+  const primaryCardAccent =
+    'relative overflow-hidden ' +
+    'before:absolute before:inset-x-0 before:top-0 before:h-[2px] ' +
+    'before:bg-[linear-gradient(90deg,rgba(47,122,46,0.0),rgba(47,122,46,0.55),rgba(47,122,46,0.0))]';
+
+  const label = 'block text-[15px] font-semibold tracking-[0.01em] text-[#0f5028]';
+  const input =
+    'mt-1 w-full rounded-xs border border-black/25 bg-white/85 px-3 py-2.5 ' +
+    'text-[16px] text-[#1f2937] placeholder:text-[#1f2937]/60 ' +
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/25 ' +
+    'focus-visible:border-[#0f5028]/25 ' +
+    'focus-visible:shadow-[0_0_0_3px_rgba(47,122,46,0.08)]';
+
+  const inputError = 'border-red-400 focus-visible:ring-red-200/60 focus-visible:border-red-300';
+
+  const primaryBtn =
+    'btn inline-flex items-center justify-center gap-2 ' +
+    'px-5 py-3 rounded-xs ' +
+    'bg-[#2f7a2e] hover:bg-[#3a8b34] ' +
+    'text-white font-bold uppercase tracking-wide ' +
+    'shadow-sm hover:shadow-md ' +
+    'transition ' +
+    'hover:shadow-[0_10px_22px_rgba(15,80,40,0.18)] ' +
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/25 ' +
+    'disabled:opacity-50 disabled:cursor-not-allowed';
+
+  const secondaryBtn =
+    'btn inline-flex items-center justify-center gap-2 ' +
+    'px-4 py-3 rounded-xs ' +
+    'bg-white/30 hover:bg-white/40 backdrop-blur-sm ' +
+    'border border-black/10 ' +
+    'text-[#2f7a2e] font-bold uppercase tracking-wide ' +
+    'shadow-none hover:shadow-sm ' +
+    'transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/25';
+
+  // Secondary map buttons (so they don’t fight SEND MESSAGE / Client Login)
+  const mapBtn =
+    'btn inline-flex items-center justify-center gap-2 w-full ' +
+    'px-5 py-3.5 rounded-xs ' +
+    'bg-white/45 hover:bg-white/55 backdrop-blur-sm ' +
+    'border border-[#2f7a2e]/30 hover:border-[#2f7a2e]/45 ' +
+    'text-[#0f5028] font-bold uppercase tracking-wide ' +
+    'shadow-sm hover:shadow-md transition ' +
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/25';
+
+  const destinationEncoded = '1608%20Sylvestre%20Dr%20%232D%2C%20Tecumseh%2C%20ON%20N8N%202L9';
+  const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${destinationEncoded}`;
+  const appleMapsUrl = `https://maps.apple.com/?daddr=${destinationEncoded}`;
+
+  return (
+    <div className={`min-h-screen ${pageBg} text-[#1f2937] font-inter`}>
       {/* HERO */}
-      <header className="print:hidden">
-        <section className="bg-gradient-to-r from-[#0f5028] to-[#4b9328] text-white">
-          <div className="max-w-7xl mx-auto px-6 py-16 text-center">
-            <h1 className="font-serif text-4xl md:text-5xl font-semibold tracking-tight">
-              Let's Talk
+      <section className="relative overflow-hidden">
+        <img
+          src={heroImage}
+          alt="Business owners reviewing insurance plans"
+          className="absolute inset-0 h-full w-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[linear-gradient(90deg,rgba(244,242,236,0.92),rgba(244,242,236,0.80),rgba(15,80,40,0.14))]"
+        />
+
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[radial-gradient(circle_at_85%_35%,rgba(0,0,0,0.10),transparent_55%)]"
+        />
+
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="py-7 md:py-10 lg:py-12">
+            <p className="text-[12px] sm:text-xs font-semibold uppercase tracking-[0.28em] text-[#0f5028]">
+              Consultation • Planning • Protection
+            </p>
+
+            <h1 className="mt-2.5 font-sans text-[2.15rem] sm:text-5xl lg:text-6xl font-semibold tracking-tight text-[#102019]">
+              Let&apos;s Talk About
+              <br className="hidden sm:block" />
+              Your Financial Plan
             </h1>
-            <p className="mt-4 max-w-2xl mx-auto text-sm md:text-base text-[#e8f7e1] leading-relaxed">
-              Clear, conservative guidance for retirement, insurance, and long-term planning — in
-              person or virtually.
+
+            <p className="mt-4 max-w-xl text-[15.5px] sm:text-base text-[#1f2937]/75 leading-relaxed">
+              Clear, conservative financial guidance for retirement, insurance,
+              <br className="hidden sm:block" />
+              and long-term planning — in person or virtually.
             </p>
           </div>
-        </section>
-      </header>
+        </div>
+      </section>
 
-      <main className="max-w-7xl mx-auto px-6 py-14 space-y-8">
-        {/* CARD 1: FORM + HOW WE WORK (same section) */}
-        <section className="bg-white rounded-xl shadow-md border border-[#d4d4d4] p-8">
-          <div className="grid gap-10 lg:grid-cols-[3fr,2fr]">
-            {/* LEFT: FORM */}
-            <div>
-              <header className="flex items-center gap-3 mb-2">
-                <FaEnvelope className="text-[#4b9328] text-2xl" aria-hidden="true" />
-                <h2 className="font-serif text-2xl font-semibold text-[#0f5028]">
-                  Send Us a Message
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-7 pb-11 md:pt-9 md:pb-13">
+        <div className="grid gap-7 xl:gap-9 xl:grid-cols-12 items-start">
+          {/* LEFT: FORM */}
+          <motion.section {...(cardIn || {})} className={`${softCard} xl:col-span-7`}>
+            <motion.div {...(colIn(0) || {})}>
+              <header>
+                <h2 className="mt-2 font-sans text-2xl font-semibold tracking-tight text-[#0f5028]">
+                  Start a conversation
                 </h2>
+                <p className="mt-1.5 text-[#1f2937]/70">We reply personally within one business day.</p>
               </header>
 
-              <p className="text-sm md:text-base text-slate-700 leading-relaxed mb-6">
-                Share a few details and we’ll follow up with practical next steps — no pressure,
-                ever.
-              </p>
+              <div className="mt-4 h-px w-full bg-black/10" />
+            </motion.div>
 
-              {(error || submitted) && (
-                <div
-                  ref={alertRef}
-                  tabIndex={-1}
-                  role="status"
-                  aria-live="polite"
-                  className={`mb-5 rounded-lg border p-4 outline-none ${
-                    error
-                      ? 'border-red-300 bg-red-50 text-red-800'
-                      : 'border-[#8cbe3f] bg-[#f1f7ea] text-[#0f5028]'
-                  }`}
-                >
-                  <div className="flex items-start gap-2">
-                    <FaCheckCircle
-                      className={`mt-1 text-sm ${error ? 'text-red-600' : 'text-[#4b9328]'}`}
-                      aria-hidden="true"
-                    />
-                    <div className="text-sm md:text-base font-medium leading-relaxed">
-                      {error ? error : 'Thank you — your message has been sent.'}
-                    </div>
+            {(error || submitted) && (
+              <div
+                ref={alertRef}
+                tabIndex={-1}
+                role="status"
+                aria-live="polite"
+                className={`mt-4 rounded-lg border p-4 outline-none ${
+                  error ? 'border-red-300 bg-red-50 text-red-800' : 'border-[#0f5028]/25 bg-white/70 text-[#0f5028]'
+                }`}
+              >
+                <div className="flex items-start gap-2">
+                  <FaCheckCircle
+                    className={`mt-1 text-sm ${error ? 'text-red-600' : 'text-[#2f7a2e]'}`}
+                    aria-hidden="true"
+                  />
+                  <div className="text-sm md:text-base font-medium leading-relaxed">
+                    {error ? error : 'Thank you — your message has been sent.'}
                   </div>
                 </div>
-              )}
+              </div>
+            )}
 
-              <form onSubmit={handleSubmit} className="space-y-5 print:hidden">
-                <div className="grid md:grid-cols-2 gap-4">
+            {submitted ? (
+              <div className="mt-5">
+                <div className="rounded-lg border border-[#0f5028]/20 bg-white/70 p-4">
+                  <p className="text-[#0f5028] font-semibold">Message sent.</p>
+
+                  <div className="mt-4">
+                    <button type="button" onClick={handleReset} className={secondaryBtn} aria-label="Send another message">
+                      <FaUndo aria-hidden="true" />
+                      SEND ANOTHER
+                    </button>
+                  </div>
+                </div>
+
+                <p className="mt-4 text-xs text-[#1f2937]/65 leading-relaxed">
+                  Please do not include highly sensitive personal information. We will confirm the most secure way to share details during
+                  follow-up. Contact information is used solely to respond to your inquiry and is not used for marketing or solicitation
+                  purposes.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-3.5 print:hidden mt-5" noValidate>
+                <div className="grid gap-3.5">
                   <label className="block">
-                    <span className="block text-sm font-semibold text-[#0f5028]">Name</span>
+                    <span className={label}>Name</span>
                     <input
+                      ref={nameRef}
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
                       autoComplete="name"
-                      className="mt-1 w-full rounded-xs border border-gray-300 px-3 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f]"
+                      className={`${input} ${fieldErrors.name ? inputError : ''}`}
                       placeholder="Your full name"
+                      required
+                      aria-required="true"
+                      aria-invalid={Boolean(fieldErrors.name)}
+                      disabled={loading}
                     />
                   </label>
 
-                  <label className="block">
-                    <span className="block text-sm font-semibold text-[#0f5028]">Email</span>
-                    <input
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      autoComplete="email"
-                      className="mt-1 w-full rounded-xs border border-gray-300 px-3 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f]"
-                      placeholder="you@example.com"
-                    />
-                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3.5">
+                    <label className="block md:col-span-8">
+                      <span className={label}>Email</span>
+                      <input
+                        ref={emailRef}
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        autoComplete="email"
+                        className={`${input} ${fieldErrors.email ? inputError : ''}`}
+                        placeholder="you@example.com"
+                        required
+                        aria-required="true"
+                        aria-invalid={Boolean(fieldErrors.email)}
+                        disabled={loading}
+                      />
+                    </label>
+
+                    <label className="block md:col-span-4">
+                      <span className={label}>
+                        Phone <span className="text-xs font-normal text-[#1f2937]/55">(optional)</span>
+                      </span>
+                      <input
+                        ref={phoneRef}
+                        name="phone"
+                        type="tel"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        autoComplete="tel"
+                        inputMode="tel"
+                        className={input}
+                        placeholder="(519) 123-4567"
+                        aria-invalid={Boolean(fieldErrors.phone)}
+                        disabled={loading}
+                      />
+                    </label>
+                  </div>
                 </div>
 
+                {/* ✅ Removed the extra “message box wrapper” to lift the button row */}
                 <label className="block">
-                  <span className="block text-sm font-semibold text-[#0f5028]">
-                    Phone <span className="text-xs font-normal text-slate-500">(optional)</span>
-                  </span>
-                  <input
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    autoComplete="tel"
-                    inputMode="tel"
-                    className="mt-1 w-full rounded-xs border border-gray-300 px-3 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f]"
-                    placeholder="(519) 123-4567"
-                  />
-                </label>
-
-                <label className="block">
-                  <span className="block text-sm font-semibold text-[#0f5028]">Message</span>
+                  <span className={label}>Message</span>
                   <textarea
+                    ref={messageRef}
                     name="message"
-                    rows={6}
+                    rows={5}
                     value={formData.message}
                     onChange={handleChange}
-                    className="mt-1 w-full rounded-xs border border-gray-300 px-3 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f] resize-y"
+                    className={`${input} ${fieldErrors.message ? inputError : ''} resize-y`}
                     placeholder="Tell us a bit about your goals or questions."
+                    required
+                    aria-required="true"
+                    aria-invalid={Boolean(fieldErrors.message)}
+                    disabled={loading}
                   />
                 </label>
 
-                {/* reCAPTCHA */}
                 {!isV3 && (
-                  <div className="pt-2">
+                  <div className="pt-1.5">
                     {isV2 ? (
                       <ReCAPTCHA sitekey={V2_SITE_KEY!} onChange={(t) => setCaptchaToken(t)} />
                     ) : (
                       <p className="text-xs text-red-600">
-                        reCAPTCHA is not configured. Set VITE_RECAPTCHA_V3_SITE_KEY (preferred) or
-                        VITE_RECAPTCHA_SITE_KEY.
+                        reCAPTCHA is not configured. Set VITE_RECAPTCHA_V3_SITE_KEY (preferred) or VITE_RECAPTCHA_SITE_KEY.
                       </p>
                     )}
                   </div>
                 )}
 
-                <div className="flex flex-wrap gap-3 pt-2">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="btn flex items-center gap-2 justify-center bg-[#4b9328] hover:bg-[#8cbe3f] text-white font-bold px-4 py-2 rounded shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/40 disabled:opacity-50 disabled:cursor-not-allowed"
-                    aria-label="Send message"
-                  >
+                <div className="pt-1.5 flex flex-wrap gap-3">
+                  <button type="submit" disabled={loading} className={primaryBtn} aria-label="Send message">
                     <FaEnvelope aria-hidden="true" />
-                    {loading ? 'Sending…' : 'Send Message'}
+                    {loading ? 'SENDING…' : 'SEND MESSAGE'}
                   </button>
 
-                  <button
-                    type="button"
-                    onClick={handleReset}
-                    className="btn flex items-center gap-2 justify-center bg-white border border-gray-300 hover:bg-gray-50 text-[#0f5028] font-bold px-4 py-2 rounded shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/40"
-                    aria-label="Reset form"
-                  >
+                  <button type="button" onClick={handleReset} className={secondaryBtn} aria-label="Reset form" disabled={loading}>
                     <FaUndo aria-hidden="true" />
-                    Reset
+                    RESET
                   </button>
                 </div>
 
-                <p className="text-xs text-slate-500 leading-relaxed pt-2">
-                  Please do not include highly sensitive personal information. We’ll confirm the best
-                  way to share details during follow-up.
+                <p className="text-xs text-[#1f2937]/65 leading-relaxed">
+                  Please do not include highly sensitive personal information. We will confirm the most secure way to share details during
+                  follow-up. Contact information is used solely to respond to your inquiry and is not used for marketing or solicitation
+                  purposes.
                 </p>
               </form>
-            </div>
+            )}
+          </motion.section>
 
-            {/* RIGHT: HOW WE WORK (same card) */}
-            <aside aria-label="How we work with you" className="space-y-4">
-              <header className="inline-flex items-center gap-3">
-                <FaCheckCircle className="text-[#4b9328] text-xl" aria-hidden="true" />
-                <h3 className="font-serif text-xl font-semibold text-[#0f5028]">
-                  How We Work With You
-                </h3>
+          {/* RIGHT: OFFICE INFO */}
+          <motion.section {...(cardIn || {})} className={`${softCard} xl:col-span-5`}>
+            <motion.div {...(colIn(0) || {})}>
+              <header>
+                <h2 className="mt-2 font-sans text-2xl font-semibold tracking-tight text-[#0f5028]">
+                  Call or visit our office
+                </h2>
+                <p className="mt-1.5 text-[#1f2937]/70">Appointments by request.</p>
               </header>
 
-              <div className="rounded-xl border border-[#8cbe3f] bg-[#f1f7ea] p-5 shadow-sm">
-                <ul className="space-y-2 text-sm md:text-base text-[#0f5028] font-medium leading-relaxed">
-                  <li className="flex items-start gap-2">
-                    <FaChevronRight className="mt-1.5 text-xs text-[#4b9328]" aria-hidden="true" />
-                    <span>We start with your goals, timeline, and risk comfort — not products.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <FaChevronRight className="mt-1.5 text-xs text-[#4b9328]" aria-hidden="true" />
-                    <span>We explain options clearly, then outline practical next steps.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <FaChevronRight className="mt-1.5 text-xs text-[#4b9328]" aria-hidden="true" />
-                    <span>Meetings are available in person or virtually across Ontario.</span>
-                  </li>
-                </ul>
-              </div>
+              <div className="mt-4 h-px w-full bg-black/10" />
+            </motion.div>
 
-              <div className="text-sm md:text-base text-slate-700 leading-relaxed">
-                <p>
-                  If you’re not sure where to start, send a brief note. We’ll point you to the most
-                  useful first step.
-                </p>
-              </div>
-            </aside>
-          </div>
-        </section>
+            <motion.div {...(colIn(0.06) || {})} className="mt-4">
+              <div className="text-sm md:text-base text-[#1f2937]/70 leading-relaxed">
+                <p className="font-semibold text-lg text-[#0f5028]">McNeilly Financial Group</p>
+                <p className="mt-2 leading-7">1608 Sylvestre Drive, Suite 2D</p>
+                <p className="leading-7">Tecumseh, Ontario N8N 2L9</p>
 
-        {/* CARD 2: OUR OFFICE (LEFT) + MAP (RIGHT) */}
-        <section className="bg-white rounded-xl shadow-md border border-[#d4d4d4] p-8">
-          <div className="grid gap-8 lg:grid-cols-2 items-start">
-            {/* LEFT: OUR OFFICE */}
-            <div>
-              <header className="flex items-center gap-2 mb-4">
-                <FaMap className="text-[#4b9328] text-xl" aria-hidden="true" />
-                <h2 className="font-serif text-2xl font-semibold text-[#0f5028]">Our Office</h2>
-              </header>
-
-              <div className="text-sm md:text-base text-slate-700 leading-relaxed space-y-4">
-                <div className="rounded-xl border border-[#d4d4d4] bg-[#f8f9f7] p-5">
-                  <p className="font-semibold text-[#0f5028]">McNeilly Financial Group</p>
-                  <p>1608 Sylvestre Drive, Suite 2D</p>
-                  <p>Tecumseh, Ontario</p>
-                  <p>N8N 2L9</p>
-
-                  <div className="mt-4 space-y-2">
-                    <div className="flex items-center gap-2">
-                      <FaPhoneAlt className="text-[#4b9328]" aria-hidden="true" />
-                      <span>(519) 979-5396</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <FaClock className="text-[#4b9328]" aria-hidden="true" />
-                      <span>Mon–Fri, 9:00 AM – 5:00 PM</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <FaLinkedin className="text-[#0a66c2]" aria-hidden="true" />
+                <div className="mt-4 space-y-3.5">
+                  <div className="space-y-1">
+                    <span className={label}>Phone</span>
                     <a
-                      href="https://www.linkedin.com/company/mcneilly-financial-group"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-semibold hover:underline"
-                      onClick={() =>
-                        track('contact_link_click', {
-                          event_category: 'Contact',
-                          event_label: 'LinkedIn',
-                        })
-                      }
+                      href={`tel:${OFFICE_PHONE_TEL}`}
+                      className="text-[#1f2937]/75 underline underline-offset-4 decoration-black/15 hover:decoration-black/30 transition"
+                      onClick={() => track('phone_click', { event_category: 'Engagement', event_label: 'Office Phone' })}
+                      aria-label={`Call ${OFFICE_PHONE}`}
                     >
-                      Connect on LinkedIn
+                      {OFFICE_PHONE}
                     </a>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <FaMapMarkerAlt className="text-[#4b9328]" aria-hidden="true" />
+                  <div className="space-y-1">
+                    <span className={label}>Fax</span>
                     <a
-                      href="https://www.google.com/maps/dir/?api=1&destination=McNeilly+Financial+Group,+Tecumseh,+Ontario"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-semibold hover:underline"
-                      onClick={() =>
-                        track('contact_link_click', {
-                          event_category: 'Contact',
-                          event_label: 'Directions',
-                        })
-                      }
+                      href={`tel:${OFFICE_FAX_TEL}`}
+                      className="text-[#1f2937]/75 underline underline-offset-4 decoration-black/15 hover:decoration-black/30 transition"
+                      aria-label={`Fax ${OFFICE_FAX}`}
                     >
-                      Get Directions
+                      {OFFICE_FAX}
                     </a>
+                  </div>
+
+                  <div className="space-y-1">
+                    <span className={label}>Email</span>
+                    <a
+                      href={OFFICE_EMAIL.startsWith('REPLACE_') ? undefined : `mailto:${OFFICE_EMAIL}`}
+                      className="text-[#1f2937]/75 underline underline-offset-4 decoration-black/15 hover:decoration-black/30 transition"
+                      onClick={() => track('office_email_click', { event_category: 'Engagement', event_label: 'Office Email' })}
+                      aria-label={`Email ${OFFICE_EMAIL}`}
+                    >
+                      {OFFICE_EMAIL}
+                    </a>
+                  </div>
+
+                  <div className="space-y-1">
+                    <span className={label}>Hours</span>
+                    <span className="text-[#1f2937]/75">Monday–Friday, 9:00 AM – 5:00 PM</span>
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-500 pt-1">
-                  For fastest service, use the message form and we’ll reply by email.
-                </p>
-              </div>
-            </div>
+                <div className="mt-6 space-y-3">
+                  <a
+                    href={googleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={mapBtn}
+                    onClick={() => track('directions_click', { event_category: 'Engagement', event_label: 'Google Maps' })}
+                    aria-label="Open directions in Google Maps"
+                  >
+                    <FaMapMarkerAlt aria-hidden="true" />
+                    OPEN IN GOOGLE MAPS
+                  </a>
 
-            {/* RIGHT: MAP */}
-            <div>
-              <header className="flex items-center gap-2 mb-4">
-                <FaMapMarkerAlt className="text-[#4b9328] text-xl" aria-hidden="true" />
-                <h2 className="font-serif text-2xl font-semibold text-[#0f5028]">Map</h2>
-              </header>
-
-              <div className="w-full aspect-video rounded-xl overflow-hidden shadow-lg border border-[#d4d4d4] bg-white">
-                <iframe
-                  title="McNeilly Financial Group Office Location - Satellite View"
-                  src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d2916.342227835676!2d-82.8762024!3d42.3051101!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x883b31c8b02c7b4d%3A0x7600832066f7306b!2s1608%20Sylvestre%20Dr%20%232D%2C%20Tecumseh%2C%20ON%20N8N%202L9%2C%20Canada!5e0!3m2!1sen!2sus!4v1685045914896!5m2!1sen!2sus&t=k"
-                  width="100%"
-                  height="100%"
-                  loading="lazy"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  referrerPolicy="no-referrer-when-downgrade"
-                  onLoad={() =>
-                    track('map_view', {
-                      event_category: 'Engagement',
-                      event_label: 'Satellite Map Viewed',
-                    })
-                  }
-                />
+                  <a
+                    href={appleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={mapBtn}
+                    onClick={() => track('directions_click', { event_category: 'Engagement', event_label: 'Apple Maps' })}
+                    aria-label="Open directions in Apple Maps"
+                  >
+                    <FaMapMarkerAlt aria-hidden="true" />
+                    OPEN IN APPLE MAPS
+                  </a>
+                </div>
               </div>
-            </div>
-          </div>
-        </section>
+            </motion.div>
+          </motion.section>
+        </div>
       </main>
 
       {/* Print-only footer note */}

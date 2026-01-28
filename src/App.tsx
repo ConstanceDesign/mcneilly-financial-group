@@ -55,7 +55,7 @@ const NotFound: React.FC = () => (
 const App: React.FC = () => (
   <Router>
     {/* Keep the site background consistent behind all pages */}
-    <div className="min-h-screen bg-[#f8f9f7] flex flex-col">
+    <div className="min-h-screen bg-[#f4f2ec] flex flex-col">
       <Navbar />
 
       <main

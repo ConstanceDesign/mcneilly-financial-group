@@ -38,10 +38,10 @@ const tabComponents: Record<TabKey, ReactNode> = {
   health: <BusinessHealthInsurance />,
 };
 
-const panelMotion = {
-  hidden: { opacity: 0, y: 14 },
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: 14 },
+  exit: { opacity: 0, y: 20 },
 };
 
 const Business: React.FC = () => {
@@ -127,10 +127,7 @@ const Business: React.FC = () => {
         {/* Warm editorial wash (reduces the “frog overlay” effect) */}
         <div
           aria-hidden="true"
-          className="
-            absolute inset-0
-            bg-[linear-gradient(90deg,rgba(244,242,236,0.92),rgba(244,242,236,0.80),rgba(15,80,40,0.14))]
-          "
+          className="absolute inset-0 bg-[linear-gradient(90deg,rgba(244,242,236,0.92),rgba(244,242,236,0.80),rgba(15,80,40,0.14))]"
         />
 
         {/* Subtle darkening at the far right edge to keep contrast stable */}
@@ -142,17 +139,15 @@ const Business: React.FC = () => {
         {/* Content */}
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="py-12 md:py-16 lg:py-18">
-            <p className="text-[11px] md:text-xs font-semibold uppercase tracking-[0.25em] text-[#1f2937]/55">
+            <p className="text-[12px] sm:text-xs font-semibold uppercase tracking-[0.28em] text-[#0f5028]">
               Business Coverage • Benefits • Continuity Planning
             </p>
 
             <h1 className="mt-3 text-[2.25rem] sm:text-5xl lg:text-6xl font-semibold tracking-tight text-[#102019]">
               Business Insurance
-              <br className="hidden sm:block" />
-              Solutions
             </h1>
 
-            <p className="mt-4 max-w-2xl text-sm sm:text-base text-[#1f2937]/70 leading-relaxed">
+            <p className="mt-5 max-w-xl text-[15.5px] sm:text-base text-[#1f2937]/75 leading-relaxed">
               Protect your company, your partners, and your team with coordinated strategies for benefits, income
               protection, and succession planning.
             </p>
@@ -161,67 +156,35 @@ const Business: React.FC = () => {
       </section>
 
       {/* Tabs + Content */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-14">
-        {/* Tabs (LEFT aligned) */}
-        <div className="pt-8">
-          <div
-            role="tablist"
-            aria-label="Business insurance categories"
-            onKeyDown={onTabKeyDown}
-            className="flex flex-wrap items-center gap-3 md:gap-4 justify-start"
-          >
-            {tabs.map((tab) => {
-              const isActive = activeTab === tab.id;
-
-              return (
-                <motion.button
-                  key={tab.id}
-                  ref={(el) => {
-                    tabRefs.current[tab.id] = el;
-                  }}
-                  type="button"
-                  onClick={() => setActiveTab(tab.id)}
-                  role="tab"
-                  aria-selected={isActive}
-                  aria-controls={`${tab.id}-panel`}
-                  id={`${tab.id}-tab`}
-                  className={`${pillBase} ${isActive ? pillActive : pillInactive}`}
-                  whileHover={{ y: -1 }}
-                  whileTap={{ y: 0 }}
-                  transition={{ duration: 0.15 }}
-                >
-                  <span
-                    className={`text-base md:text-[18px] ${isActive ? 'text-white/90' : 'text-[#0f5028]/55'}`}
-                    aria-hidden="true"
-                  >
-                    {tab.icon}
-                  </span>
-                  <span>{tab.label}</span>
-
-                  {/* Active “sheen” for premium feel */}
-                  {isActive ? (
-                    <span
-                      aria-hidden="true"
-                      className="
-                        pointer-events-none absolute inset-0 rounded-full
-                        bg-[linear-gradient(180deg,rgba(255,255,255,0.16),transparent_55%)]
-                      "
-                    />
-                  ) : null}
-                </motion.button>
-              );
-            })}
-          </div>
-
-          <p className="mt-4 text-sm text-[#1f2937]/55">
-            Choose a category to explore coverage details, planning notes, and common use cases.
-          </p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
+        {/* Tabs */}
+        <div className="flex justify-center flex-wrap gap-3 md:gap-4 mb-10" role="tablist">
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                role="tab"
+                aria-selected={isActive}
+                aria-controls={`${tab.id}-panel`}
+                id={`${tab.id}-tab`}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full border-2 text-xs md:text-sm font-bold uppercase tracking-widest transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#8cbe3f] ${
+                  isActive
+                    ? 'bg-[#4b9328] text-white border-[#4b9328] shadow-md hover:bg-[#8cbe3f] hover:border-[#8cbe3f] hover:scale-105'
+                    : 'bg-white text-[#0f5028] border-[#8cbe3f] hover:bg-[#8cbe3f] hover:text-white hover:border-[#8cbe3f] hover:scale-105'
+                }`}
+              >
+                <span className="text-base md:text-lg" aria-hidden="true">
+                  {tab.icon}
+                </span>
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
         </div>
 
-        {/* ✅ Removed: the empty rectangular “mystery box” */}
-        <div className="mt-8 h-px bg-black/5" aria-hidden="true" />
-
-        {/* Content: airy + section-based (tab components will handle internal spacing) */}
+        {/* Tab Content */}
         <AnimatePresence mode="wait">
           <motion.section
             key={activeTab}
@@ -231,11 +194,14 @@ const Business: React.FC = () => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            variants={panelMotion}
-            transition={{ duration: 0.32, ease: 'easeOut' }}
-            className="mt-10"
+            variants={fadeInUp}
+            transition={{ duration: 0.35, ease: 'easeOut' }}
+            className="bg-white border border-[#d0d0d0] p-6 md:p-8 rounded-xl shadow-md"
           >
-            {tabComponents[activeTab]}
+            <div className="flex flex-col gap-4 md:gap-6">
+              {/* Inner components handle their own headings */}
+              {tabComponents[activeTab]}
+            </div>
           </motion.section>
         </AnimatePresence>
       </div>

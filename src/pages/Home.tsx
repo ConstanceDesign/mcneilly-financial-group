@@ -16,7 +16,6 @@ import {
 import heroImage from '../images/home-hero.jpg';
 
 import Reveal from '../components/motion/Reveal';
-import BackgroundShapeSweep from '../components/motion/BackgroundShapeSweep';
 
 const FinancialCalculator = React.lazy(() => import('../components/FinancialCalculator'));
 
@@ -179,7 +178,7 @@ const Home: React.FC = () => {
                     aria-label="Schedule a free consultation"
                   >
                     <FaComments aria-hidden="true" />
-                    Free Consultation <FaArrowRight aria-hidden="true" />
+                    Free Consultation
                   </button>
 
                   <a
@@ -199,7 +198,7 @@ const Home: React.FC = () => {
                     aria-label="Jump to the investment calculator"
                   >
                     <FaCalculator aria-hidden="true" />
-                    Investment Calculator <FaArrowRight aria-hidden="true" />
+                    Investment Calculator
                   </a>
                 </div>
 
@@ -241,11 +240,10 @@ const Home: React.FC = () => {
 
       {/* SERVICES + CALCULATOR */}
       <main id="main-content">
-        <section className="py-16 px-4 bg-[#f8f9f7]" aria-label="Our services and financial tools">
+        <section className="py-16 px-4 bg-[#f4f2ec]" aria-label="Our services and financial tools">
           <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-start">
             {/* Services */}
             <div className="relative" aria-label="Financial planning services">
-              <BackgroundShapeSweep className="pointer-events-none absolute inset-0 overflow-hidden" opacity={0.14} />
 
               <Reveal>
                 <div className="flex items-end justify-between gap-4 relative">
@@ -256,13 +254,7 @@ const Home: React.FC = () => {
                     </p>
                   </div>
 
-                  <Link
-                    to="/contact"
-                    className="hidden sm:inline-flex items-center gap-2 text-[#0f5028] font-semibold hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/40 rounded-xs px-2 py-1"
-                    aria-label="Contact us to discuss your financial plan"
-                  >
-                    Talk to an advisor <FaArrowRight aria-hidden="true" />
-                  </Link>
+    
                 </div>
               </Reveal>
 
