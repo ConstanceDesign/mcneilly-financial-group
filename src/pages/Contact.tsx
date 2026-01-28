@@ -344,7 +344,7 @@ const Contact: React.FC = () => {
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="py-7 md:py-10 lg:py-12">
-            <p className="text-[12px] sm:text-xs font-semibold uppercase tracking-[0.28em] text-[#0f5028]">
+            <p className="text-[13px] font-bold uppercase tracking-[0.18em] text-[#0f5028]">
               Consultation • Planning • Protection
             </p>
 
@@ -354,7 +354,7 @@ const Contact: React.FC = () => {
               Your Financial Plan
             </h1>
 
-            <p className="mt-4 max-w-xl text-[15.5px] sm:text-base text-[#1f2937]/75 leading-relaxed">
+            <p className="mt-4 max-w-xl text-[17px] sm:text-base text-[#1f2937]/80 leading-relaxed">
               Clear, conservative financial guidance for retirement, insurance,
               <br className="hidden sm:block" />
               and long-term planning — in person or virtually.
@@ -372,7 +372,7 @@ const Contact: React.FC = () => {
                 <h2 className="mt-2 font-sans text-2xl font-semibold tracking-tight text-[#0f5028]">
                   Start a conversation
                 </h2>
-                <p className="mt-1.5 text-[#1f2937]/70">We reply personally within one business day.</p>
+                <p className="mt-1.5 text-[15px] text-[#1f2937]/65">We reply personally within one business day.</p>
               </header>
 
               <div className="mt-4 h-px w-full bg-black/10" />
@@ -546,8 +546,8 @@ const Contact: React.FC = () => {
             <motion.div {...(colIn(0.06) || {})} className="mt-4">
               <div className="text-sm md:text-base text-[#1f2937]/70 leading-relaxed">
                 <p className="font-semibold text-lg text-[#0f5028]">McNeilly Financial Group</p>
-                <p className="mt-2 leading-7">1608 Sylvestre Drive, Suite 2D</p>
-                <p className="leading-7">Tecumseh, Ontario N8N 2L9</p>
+                <p className="mt-2 text-[15px] leading-7">1608 Sylvestre Drive, Suite 2D</p>
+                <p className="text-[15px] leading-7">Tecumseh, Ontario N8N 2L9</p>
 
                 <div className="mt-4 space-y-3.5">
                   <div className="space-y-1">
