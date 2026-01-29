@@ -45,8 +45,8 @@ const Navbar: React.FC = () => {
         Skip to main content
       </a>
 
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="flex h-23 items-center justify-between">
+      <div className="mx-auto max-w-7xl px-8">
+        <div className="flex h-18 items-center justify-between">
           {/* Logo */}
           <NavLink
             to="/"
@@ -58,13 +58,13 @@ const Navbar: React.FC = () => {
             <img
               src="/images/mcneillyfinancialgroup-logo.png"
               alt="McNeilly Financial Group"
-              className="h-18 w-auto object-contain"
+              className="h-15 w-auto object-contain"
             />
           </NavLink>
 
           {/* Desktop navigation */}
-          <div className="hidden xl:flex items-center gap-8">
-            <ul className="flex items-center gap-8 uppercase tracking-widest text-[1rem]">
+          <div className="hidden xl:flex items-center gap-16">
+            <ul className="flex items-center gap-7 uppercase tracking-wide text-[0.95rem]">
               {navItems.map(({ to, label }) => (
                 <li key={to}>
                   <NavLink
@@ -111,12 +111,12 @@ const Navbar: React.FC = () => {
               rel="noopener noreferrer"
               className="
                 inline-flex items-center gap-2
-                px-4 py-2.5
+                px-3 py-2
                 rounded-xs
                 bg-white/13 hover:bg-white/20
                 border border-white/23
                 text-white text-[0.95rem]
-                font-semibold uppercase tracking-widest
+                font-semibold uppercase tracking-wide
                 transition
                 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70
               "
@@ -137,7 +137,7 @@ const Navbar: React.FC = () => {
               }}
               className="
                 inline-flex items-center justify-center
-                h-11 w-11 rounded-md
+                h-8 w-8 rounded-md
                 hover:bg-white/10
                 transition
                 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70
@@ -147,7 +147,7 @@ const Navbar: React.FC = () => {
               aria-controls="mobile-nav"
             >
               <svg
-                className="h-6 w-6 text-white"
+                className="h-4 w-4 text-white"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"

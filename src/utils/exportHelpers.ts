@@ -1,4 +1,4 @@
-import jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { saveAs } from 'file-saver';
 import Papa from 'papaparse';
@@ -42,7 +42,8 @@ export const exportCSV = (
     const values = data.datasets[0]?.data || [];
 
     const generatedOn =
-      meta.generatedOnISO || new Date().toISOString().replace('T', ' ').replace(/\.\d+Z$/, ' UTC');
+      meta.generatedOnISO ||
+      new Date().toISOString().replace('T', ' ').replace(/\.\d+Z$/, ' UTC');
 
     const metaRows: Array<Record<string, string>> = [
       { Field: 'Report', Value: meta.reportTitle || 'Investment Projection Report' },
@@ -67,20 +68,19 @@ export const exportCSV = (
     const projectionCsv = Papa.unparse(projectionRows, { quotes: false });
 
     const csv = `${metaCsv}\n\n${projectionCsv}\n`;
-    saveAs(new Blob([csv], { type: 'text/csv;charset=utf-8;' }), fileName);
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, fileName);
   } catch (err) {
     console.error('CSV export failed:', err);
     alert('CSV export failed. See console for details.');
   }
 };
 
-/* --------------------------- CANVAS COPY (CHART FIX) -------------------- */
-/**
- * Chart.js canvas often goes blank when cloning DOM for html2canvas.
- * This copies the live canvas pixels onto the cloned canvas nodes.
- */
-const copyCanvasToClone = (sourceRoot: HTMLElement, clonedDoc: Document) => {
-  const srcCanvases = Array.from(sourceRoot.querySelectorAll('canvas'));
+/* --------------------------- CANVAS/CHART FIX --------------------------- */
+
+const copyCanvasToClone = (sourceEl: HTMLElement, clonedDoc: Document) => {
+  const srcCanvases = Array.from(sourceEl.querySelectorAll('canvas'));
   const cloneCanvases = Array.from(clonedDoc.querySelectorAll('canvas'));
 
   srcCanvases.forEach((srcCanvas, i) => {
@@ -103,30 +103,7 @@ const copyCanvasToClone = (sourceRoot: HTMLElement, clonedDoc: Document) => {
   });
 };
 
-/* -------------------- STRIP UNSUPPORTED COLOR FUNCTIONS ------------------ */
-/**
- * html2canvas can't parse okLCH/okLab/color-mix in many builds.
- * In dev (Vite), CSS is injected into <style> tags, so we must sanitize those
- * during the cloned export run.
- */
-const stripUnsupportedColorFnsFromStyleTags = (clonedDoc: Document) => {
-  const RE_OKLCH = /\boklch\([^)]+\)/g;
-  const RE_OKLAB = /\boklab\([^)]+\)/g;
-  const RE_COLORMIX = /\bcolor-mix\([^)]+\)/g;
-
-  clonedDoc.querySelectorAll('style').forEach((styleEl) => {
-    const css = styleEl.textContent || '';
-    if (!css) return;
-
-    // Export-only safety: replace unsupported functions with safe values
-    styleEl.textContent = css
-      .replace(RE_OKLCH, '#000')
-      .replace(RE_OKLAB, '#000')
-      .replace(RE_COLORMIX, '#000');
-  });
-};
-
-/* ------------------------------ PDF EXPORT ------------------------------ */
+/* -------------------------------- PDF ---------------------------------- */
 
 export const exportPDF = async (
   reportElement: HTMLElement,
@@ -136,20 +113,19 @@ export const exportPDF = async (
   try {
     if (!reportElement) throw new Error('Missing report element for PDF export.');
 
+    // NOTE: We intentionally cast options to any to avoid overly-strict local .d.ts issues.
     const canvas = await html2canvas(reportElement, {
       scale: 2,
       useCORS: true,
       backgroundColor: '#ffffff',
       onclone: (clonedDoc: Document) => {
+        // remove anything marked export-ignore
         clonedDoc.querySelectorAll('[data-export-ignore="true"]').forEach((n) => n.remove());
 
-        // ✅ critical fix for oklch() crashes
-        stripUnsupportedColorFnsFromStyleTags(clonedDoc);
-
-        // ✅ critical fix for chart canvas blanking
+        // preserve Chart.js pixels
         copyCanvasToClone(reportElement, clonedDoc);
       },
-    });
+    } as any);
 
     const imgData = canvas.toDataURL('image/png');
 
@@ -157,32 +133,32 @@ export const exportPDF = async (
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
 
-    // Header
     const title = meta.reportTitle || 'Investment Projection Report';
     const firm = meta.firmLine || 'McNeilly Financial Group';
     const preparedFor = meta.preparedFor ? `Prepared for: ${meta.preparedFor}` : '';
 
+    // Header
     let y = 44;
-
     pdf.setFontSize(16);
-    pdf.setTextColor(15, 80, 40);
+    pdf.setTextColor('#0f5028');
     pdf.text(firm, 40, y);
 
     pdf.setFontSize(14);
-    pdf.setTextColor(0, 0, 0);
+    pdf.setTextColor('#000000');
     pdf.text(title, 40, y + 18);
 
     if (preparedFor) {
       pdf.setFontSize(11);
-      pdf.setTextColor(80, 80, 80);
+      pdf.setTextColor('#505050');
       pdf.text(preparedFor, 40, y + 36);
+      y += 18;
     }
 
-    y += 64;
+    y += 54;
 
-    // Fit image to page width, paginate vertically
+    // Image sizing + pagination
     const imgProps = pdf.getImageProperties(imgData);
-    const imgWidth = pageWidth - 80;
+    const imgWidth = pageWidth - 80; // margins
     const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
 
     let remaining = imgHeight;
@@ -202,7 +178,7 @@ export const exportPDF = async (
   }
 };
 
-/* --------------------------- PDF BASE64 (EMAIL) -------------------------- */
+/* ------------------------ PDF BASE64 (FOR EMAIL) ------------------------ */
 
 export const getPDFBase64 = async (targetElement: HTMLElement): Promise<string> => {
   if (!targetElement) throw new Error('No target element provided');
@@ -211,16 +187,7 @@ export const getPDFBase64 = async (targetElement: HTMLElement): Promise<string> 
     scale: 2,
     useCORS: true,
     backgroundColor: '#ffffff',
-    onclone: (clonedDoc: Document) => {
-      clonedDoc.querySelectorAll('[data-export-ignore="true"]').forEach((n) => n.remove());
-
-      // ✅ critical fix for oklch() crashes
-      stripUnsupportedColorFnsFromStyleTags(clonedDoc);
-
-      // ✅ chart pixels preserved
-      copyCanvasToClone(targetElement, clonedDoc);
-    },
-  });
+  } as any);
 
   const imgData = canvas.toDataURL('image/png');
 

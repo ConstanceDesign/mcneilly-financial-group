@@ -168,33 +168,38 @@ const Footer: React.FC = () => {
 
   const mobileLinks = [...leftLinks, ...rightLinks] as const;
 
-  // Mobile “card” wrapper (higher contrast so it reads premium on the light footer)
+  // ✅ Match 2026 page base everywhere
+  const footerBg = 'bg-[#f4f2ec]';
+
+  // Mobile “card” wrapper (premium, but not darker than page)
   const mobileCard =
     'w-full max-w-85 ' +
-    'rounded-md ' +
-    'border border-[#0f5028]/15 ' +
-    'bg-white/55 backdrop-blur-sm ' +
-    'shadow-sm ' +
+    'rounded-2xl ' +
+    'border border-black/10 ' +
+    'bg-white/60 backdrop-blur-sm ' +
+    'shadow-[0_14px_42px_rgba(0,0,0,0.08)] ' +
     'px-4 py-4 ' +
     'text-left';
 
   const LinkRow = ({ to, label, icon, external, onClick }: FooterLink) => {
+    // Tighten tracking + reduce “menu competition”
     const common =
       'inline-flex items-center gap-2 ' +
-      'text-[13px] font-semibold uppercase tracking-widest ' +
-      'text-[#1f2937]/80 hover:text-[#0f5028] transition ' +
-      'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/30 rounded ' +
+      'text-[13px] font-medium tracking-normal ' +
+      'text-[#1f2937]/70 hover:text-[#0f5028] transition ' +
+      'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/25 rounded ' +
       'whitespace-nowrap';
 
+    // Softer underline style (more “nav-like”)
     const labelClass =
       'relative inline-block ' +
-      "after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 " +
-      'after:bg-[#8cbe3f] after:transition-all after:duration-300 ' +
+      "after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 " +
+      'after:bg-black/15 after:transition-all after:duration-300 ' +
       'hover:after:w-full focus-visible:after:w-full';
 
     const content = (
       <>
-        <span className="text-[#0f5028]/70 transition">{icon}</span>
+        <span className="text-[#0f5028]/55 transition">{icon}</span>
         <span className={labelClass}>{label}</span>
         {external ? <span className="sr-only">(opens in a new tab)</span> : null}
       </>
@@ -230,32 +235,32 @@ const Footer: React.FC = () => {
 
   const footerActionBtn =
     'inline-flex w-fit items-center justify-center gap-2 ' +
-    'rounded-[3px] px-3.5 py-2 ' +
-    'bg-white ' +
-    'border border-[#0f5028]/55 ' +
+    'rounded-xs px-3.5 py-2.5 ' +
+    'bg-white/70 backdrop-blur-sm ' +
+    'border border-black/12 ' +
     'text-[#0f5028] ' +
-    'shadow-sm ' +
-    'hover:bg-[#0f5028]/5 hover:border-[#0f5028]/70 ' +
-    'active:bg-[#0f5028]/8 ' +
+    'shadow-sm hover:shadow-[0_10px_22px_rgba(15,80,40,0.10)] ' +
+    'hover:bg-white/80 ' +
     'transition ' +
-    'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/35 ' +
-    'focus-visible:ring-offset-2 focus-visible:ring-offset-[#f4f7f3] ' +
-    'text-[13px] font-semibold uppercase tracking-widest ' +
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/25 ' +
+    'focus-visible:ring-offset-2 focus-visible:ring-offset-[#f4f2ec] ' +
+    'text-[12px] font-bold uppercase tracking-[0.14em] ' +
     'whitespace-nowrap';
 
   const footerUtilityLink =
     'inline-flex items-center gap-2 ' +
-    'text-[11px] font-semibold tracking-widest ' +
-    'text-[#1f2937]/60 hover:text-[#0f5028] transition ' +
+    'text-[11px] font-semibold tracking-[0.12em] uppercase ' +
+    'text-[#1f2937]/55 hover:text-[#0f5028] transition ' +
     'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/25 rounded ' +
     'whitespace-nowrap';
 
   const desktopCtaWidth = 'w-56';
-  const sectionHeader = 'text-[11px] font-semibold uppercase tracking-widest text-[#1f2937]/65';
+  const sectionHeader =
+    'text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1f2937]/55';
 
   return (
-    <footer className="bg-[#f4f7f3] text-[#1f2937] font-inter" role="contentinfo">
-      <div className="h-px bg-[#0f5028]/15" aria-hidden="true" />
+    <footer className={`${footerBg} text-[#1f2937] font-inter`} role="contentinfo">
+      <div className="h-px bg-black/10" aria-hidden="true" />
 
       <div className="mx-auto max-w-7xl px-8 py-10">
         <div className="relative">
@@ -307,8 +312,8 @@ const Footer: React.FC = () => {
                   <div className={mobileCard}>
                     <p className={sectionHeader}>McNeilly Financial Group</p>
 
-                    <address className="mt-4 not-italic font-semibold text-[13px] text-[#1f2937]/75 leading-relaxed">
-                      <div>
+                    <address className="mt-4 not-italic text-[13px] text-[#1f2937]/70 leading-relaxed">
+                      <div className="font-semibold text-[#102019]">
                         1608 Sylvestre Drive, Suite 2D
                         <br />
                         Tecumseh, Ontario N8N 2L9
@@ -319,7 +324,7 @@ const Footer: React.FC = () => {
                           href="tel:+15199795396"
                           className="inline-flex items-center gap-2 hover:text-[#0f5028] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/25 rounded"
                         >
-                          <span className="text-[#0f5028]/60">
+                          <span className="text-[#0f5028]/55">
                             <FaPhoneAlt aria-hidden="true" />
                           </span>
                           (519) 979-5396
@@ -327,10 +332,10 @@ const Footer: React.FC = () => {
                       </div>
 
                       <div className="mt-3 inline-flex items-center gap-2">
-                        <span className="text-[#0f5028]/60">
+                        <span className="text-[#0f5028]/55">
                           <FaClock aria-hidden="true" />
                         </span>
-                        Mon–Fri, 9 AM – 5 PM
+                        <span className="text-[#1f2937]/70">Mon–Fri, 9 AM – 5 PM</span>
                       </div>
                     </address>
                   </div>
@@ -338,7 +343,7 @@ const Footer: React.FC = () => {
 
                 <div className="mt-8">
                   <div
-                    className="h-px bg-[#0f5028]/12 w-screen relative left-1/2 -translate-x-1/2"
+                    className="h-px bg-black/10 w-screen relative left-1/2 -translate-x-1/2"
                     aria-hidden="true"
                   />
                 </div>
@@ -353,7 +358,7 @@ const Footer: React.FC = () => {
                   >
                     <span className="relative inline-block">Back to top</span>
                     <svg
-                      className="h-4 w-4 text-[#0f5028]/45"
+                      className="h-4 w-4 text-[#0f5028]/40"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -370,7 +375,7 @@ const Footer: React.FC = () => {
               </div>
 
               {/* Mobile small print */}
-              <div className="mx-auto max-w-85 text-xs text-[#1f2937]/65 lg:hidden">
+              <div className="mx-auto max-w-85 text-xs text-[#1f2937]/55 lg:hidden">
                 <span className="block">Secure experience. Client Login opens in a new tab.</span>
                 <span className="block">&copy; {currentYear} McNeilly Financial Group. All Rights Reserved.</span>
               </div>
@@ -385,7 +390,7 @@ const Footer: React.FC = () => {
                           <img
                             src="/images/sterling-mutuals-logo.png"
                             alt="Sterling Mutuals Inc."
-                            className="w-[90%] h-auto block"
+                            className="w-[70%] h-auto block"
                             loading="lazy"
                             decoding="async"
                           />
@@ -434,8 +439,8 @@ const Footer: React.FC = () => {
                     <section aria-label="McNeilly Financial Group contact" className="min-w-50">
                       <p className={sectionHeader}>McNeilly Financial Group</p>
 
-                      <address className="mt-3.5 not-italic font-semibold text-[13px] text-[#1f2937]/75 leading-relaxed">
-                        <div>
+                      <address className="mt-3.5 not-italic text-[13px] text-[#1f2937]/70 leading-relaxed">
+                        <div className="font-semibold text-[#102019]">
                           1608 Sylvestre Drive, Suite 2D
                           <br />
                           Tecumseh, Ontario <br />
@@ -447,7 +452,7 @@ const Footer: React.FC = () => {
                             href="tel:+15199795396"
                             className="inline-flex items-center gap-2 hover:text-[#0f5028] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/25 rounded"
                           >
-                            <span className="text-[#0f5028]/60">
+                            <span className="text-[#0f5028]/55">
                               <FaPhoneAlt aria-hidden="true" />
                             </span>
                             (519) 979-5396
@@ -455,10 +460,10 @@ const Footer: React.FC = () => {
                         </div>
 
                         <div className="mt-3.5 inline-flex items-center gap-2">
-                          <span className="text-[#0f5028]/60">
+                          <span className="text-[#0f5028]/55">
                             <FaClock aria-hidden="true" />
                           </span>
-                          Mon–Fri, 9 AM – 5 PM
+                          <span className="text-[#1f2937]/70">Mon–Fri, 9 AM – 5 PM</span>
                         </div>
                       </address>
                     </section>
@@ -467,7 +472,7 @@ const Footer: React.FC = () => {
 
                 <div className="relative my-12 mb-3">
                   <div
-                    className="h-px bg-[#0f5028]/15 w-screen relative left-1/2 -translate-x-1/2"
+                    className="h-px bg-black/10 w-screen relative left-1/2 -translate-x-1/2"
                     aria-hidden="true"
                   />
                   <div className="absolute right-0 mt-1.5 px-3">
@@ -480,7 +485,7 @@ const Footer: React.FC = () => {
                     >
                       <span className="relative inline-block">Back to top</span>
                       <svg
-                        className="h-4 w-4 text-[#0f5028]/45"
+                        className="h-4 w-4 text-[#0f5028]/40"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -496,7 +501,7 @@ const Footer: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="mx-auto max-w-7xl text-xs text-[#1f2937]/65">
+                <div className="mx-auto max-w-7xl text-xs text-[#1f2937]/55">
                   <p>
                     Secure experience. Client Login opens in a new tab. &copy; {currentYear} McNeilly Financial Group.
                     All Rights Reserved.
@@ -558,7 +563,7 @@ const Footer: React.FC = () => {
                       </div>
                       <p
                         id={legalDescId}
-                        className="mt-1 text-xs font-semibold tracking-wide uppercase text-[#4b9328]"
+                        className="mt-1 text-xs font-semibold tracking-[0.12em] uppercase text-[#4b9328]"
                       >
                         Info &amp; jurisdictional disclosure
                       </p>
@@ -640,7 +645,7 @@ const Footer: React.FC = () => {
             "
           >
             <div className="px-2">
-              <p id="cookie-consent-title" className="font-semibold uppercase tracking-widest text-[12px] text-white/90">
+              <p id="cookie-consent-title" className="font-semibold uppercase tracking-[0.14em] text-[12px] text-white/90">
                 Cookies &amp; Privacy
               </p>
 
@@ -649,7 +654,7 @@ const Footer: React.FC = () => {
                 <NavLink
                   to="/privacy-policy"
                   className="
-                    underline font-semibold uppercase tracking-widest
+                    underline font-semibold uppercase tracking-[0.14em]
                     text-[#8cbe3f] hover:text-white
                     focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 rounded
                   "
@@ -667,7 +672,7 @@ const Footer: React.FC = () => {
                 inline-flex items-center gap-2
                 bg-[#4b9328] hover:bg-[#8cbe3f]
                 px-4 py-2 rounded-xs
-                text-sm font-semibold uppercase tracking-widest
+                text-sm font-semibold uppercase tracking-[0.14em]
                 transition
                 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70
                 shadow-md

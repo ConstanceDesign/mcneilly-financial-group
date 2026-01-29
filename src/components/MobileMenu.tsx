@@ -100,7 +100,7 @@ const MobileMenu: React.FC<Props> = ({ isMenuOpen, menuRef, closeMenu }) => {
             ref={menuRef}
             className="
               fixed top-0 right-0 xl:hidden
-              h-dvh w-[20rem] sm:w-88 max-w-full
+              h-dvh w-68 sm:w-88 max-w-full
               overflow-hidden
               bg-white/92 backdrop-blur-3xl
               shadow-2xl
@@ -124,11 +124,11 @@ const MobileMenu: React.FC<Props> = ({ isMenuOpen, menuRef, closeMenu }) => {
               <div className="absolute inset-0 bg-[#0f5028]" aria-hidden="true" />
 
               {/* Navbar */}
-              <div className="relative h-23 px-6 flex items-center justify-between">
+              <div className="relative h-18 px-6 flex items-center justify-between">
                 <img
                   src="/images/mcneillyfinancialgroup-logo.png"
                   alt="McNeilly Financial Group"
-                  className="h-18 w-auto object-contain"
+                  className="h-15 w-auto object-contain"
                 />
 
                 {/* Close */}
@@ -138,7 +138,7 @@ const MobileMenu: React.FC<Props> = ({ isMenuOpen, menuRef, closeMenu }) => {
                   onClick={closeMenu}
                   className="
                     inline-flex items-center justify-center
-                    h-11 w-11 rounded-md
+                    h-8 w-8 rounded-md
                     hover:bg-white/10
                     transition
                     focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70
@@ -146,7 +146,7 @@ const MobileMenu: React.FC<Props> = ({ isMenuOpen, menuRef, closeMenu }) => {
                   aria-label="Close menu"
                 >
                   <svg
-                    className="h-5 w-5 text-white"
+                    className="h-4 w-4 text-white"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -162,20 +162,20 @@ const MobileMenu: React.FC<Props> = ({ isMenuOpen, menuRef, closeMenu }) => {
             </div>
 
             {/* Client Login Block */}
-            <div className="px-6 py-6 bg-[#4b9328]">
+            <div className="px-2.5 py-2.5 bg-[#4b9328]">
               <a
                 href={LOGIN_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="
                   inline-flex items-center gap-2
-                  px-4 py-3
+                  px-1 py-1
                   rounded-xs
                   bg-white/13 hover:bg-white/20
                   border border-white/23
                   text-white text-[0.95rem]
-                  font-semibold uppercase tracking-widest
-                  w-full justify-center
+                  font-semibold uppercase tracking-wide
+                  w-45 justify-center
                   transition
                   focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70
                 "
@@ -187,7 +187,7 @@ const MobileMenu: React.FC<Props> = ({ isMenuOpen, menuRef, closeMenu }) => {
             </div>
 
             {/* Links */}
-            <nav className="px-5 py-7" aria-label="Primary">
+            <nav className="px-5 py-5" aria-label="Primary">
               <motion.ul
                 className="flex flex-col gap-2 text-[#0f5028] font-semibold uppercase"
                 initial="hidden"
@@ -214,8 +214,8 @@ const MobileMenu: React.FC<Props> = ({ isMenuOpen, menuRef, closeMenu }) => {
                         ref={index === 0 ? firstLinkRef : undefined}
                         className="
                           group relative inline-block w-full
-                          py-3
-                          tracking-widest text-[1rem]
+                          py-2
+                          tracking-wide text-[0.95rem]
                           focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/30 rounded
                         "
                         aria-current={isActive ? 'page' : undefined}
@@ -255,7 +255,7 @@ const MobileMenu: React.FC<Props> = ({ isMenuOpen, menuRef, closeMenu }) => {
               <img
                 src="/images/sterling-mutuals-logo.png"
                 alt="Sterling Mutuals Inc. – Independent Financial Network"
-                className="h-16 w-auto object-contain"
+                className="h-15 w-auto object-contain"
               />
 
               <p className="mt-3 text-xs text-black/50 leading-relaxed">

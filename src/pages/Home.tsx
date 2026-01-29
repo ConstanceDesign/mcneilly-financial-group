@@ -90,153 +90,159 @@ const Home: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col text-[#333] font-sans">
-      {/* HERO */}
-      <section
-        aria-label="McNeilly Financial Group homepage hero"
-        className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-hidden"
-      >
-        {/* Image + overlays */}
-        <div
-          className="
-            relative
-            min-h-[100svh]
-            sm:min-h-0
-            sm:h-[560px]
-            lg:h-[560px]
-          "
-        >
-          <img
-            src={heroImage}
-            alt="Sailboat at sunrise on calm water"
-            className="
-              absolute inset-0 h-full w-full object-cover
-              [object-position:68%_52%]
-              sm:[object-position:63%_50%]
-              lg:[object-position:58%_50%]
-              xl:[object-position:55%_50%]
-            "
-            style={{
-              transform: `translateY(${heroOffset}px) scale(1.06)`,
-            }}
-            loading="eager"
-            fetchPriority="high"
-          />
 
-          {/* Editorial wash (UNCHANGED) */}
-          <div
-            aria-hidden="true"
-            className="
-              absolute inset-0
-              bg-[linear-gradient(90deg,rgba(244,242,236,0.94),rgba(244,242,236,0.82),rgba(15,80,40,0.14))]
-            "
-          />
+{/* HERO */}
+<section
+  aria-label="McNeilly Financial Group homepage hero"
+  className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-hidden"
+>
+  {/* Image + overlays */}
+  <div
+    className="
+      relative
+      min-h-[100svh]
+      sm:min-h-0
+      sm:h-[calc(100vh-92px)]
+      sm:max-h-[860px]
+      sm:min-h-[620px]
+    "
+  >
+    <img
+      src={heroImage}
+      alt="Sailboat at sunrise on calm water"
+      className="
+        absolute inset-0 h-full w-full object-cover
+        [object-position:68%_56%]
+        sm:[object-position:63%_54%]
+        lg:[object-position:58%_52%]
+        xl:[object-position:55%_52%]
+      "
+      style={{
+        transform: `translateY(${heroOffset}px) scale(1.06)`,
+      }}
+      loading="eager"
+      fetchPriority="high"
+      decoding="async"
+    />
 
-          {/* Right-edge stabilizer (UNCHANGED) */}
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 bg-[radial-gradient(circle_at_85%_35%,rgba(0,0,0,0.10),transparent_55%)]"
-          />
+    {/* Editorial wash */}
+    <div
+      aria-hidden="true"
+      className="
+        absolute inset-0
+        bg-[linear-gradient(90deg,rgba(244,242,236,0.94),rgba(244,242,236,0.82),rgba(15,80,40,0.14))]
+      "
+    />
 
-          {/* Content */}
-          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-full">
-            <div className="h-full flex items-center">
-              <div className="w-full max-w-2xl">
-                <p className="text-[12px] sm:text-xs font-semibold uppercase tracking-[0.28em] text-[#0f5028]">
-                  <span className="block sm:inline">Financial Planning</span>
-                  <span className="hidden sm:inline"> • </span>
-                  <span className="block sm:inline">Wealth Strategies</span>
-                  <span className="hidden sm:inline"> • </span>
-                  <span className="block sm:inline">Protection</span>
-                </p>
+    {/* Right-edge stabilizer */}
+    <div
+      aria-hidden="true"
+      className="absolute inset-0 bg-[radial-gradient(circle_at_85%_35%,rgba(0,0,0,0.10),transparent_55%)]"
+    />
 
-                <h1 className="mt-4 font-semibold tracking-tight text-[#102019] leading-[1.06] text-[2.45rem] sm:text-5xl lg:text-6xl">
-                  Plan with clarity.
-                  <br />
-                  Protect what matters.
-                  <br />
-                  Grow with confidence.
-                </h1>
+    {/* Content */}
+    <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-full">
+      <div className="h-full flex items-center">
+        <div className="w-full max-w-2xl">
+          <p className="text-[12px] font-bold uppercase tracking-[0.22em] text-[#0f5028]">
+            <span className="block sm:inline">Financial Planning</span>
+            <span className="hidden sm:inline"> • </span>
+            <span className="block sm:inline">Wealth Strategies</span>
+            <span className="hidden sm:inline"> • </span>
+            <span className="block sm:inline">Protection</span>
+          </p>
 
-                <p className="mt-5 max-w-xl text-[15.5px] sm:text-base text-[#1f2937]/75 leading-relaxed">
-                  Trusted guidance for individuals, families, and business owners across Canada—built on clear strategy,
-                  practical protection, and long-term discipline.
-                </p>
+          <h1 className="mt-3 font-sans text-[2.05rem] sm:text-5xl lg:text-6xl font-semibold tracking-tight text-[#102019]">
+            Plan with clarity.
+            <br />
+            Protect what matters.
+            <br />
+            Grow with confidence.
+          </h1>
 
-                <div className="mt-10 sm:mt-6 grid grid-cols-1 sm:flex sm:flex-wrap gap-3">
-                  <button
-                    type="button"
-                    onClick={handleContactClick}
-                    className="
-                      inline-flex items-center justify-center gap-2
-                      px-5 py-3.5 rounded-xs
-                      bg-[#2f7a2e] hover:bg-[#3a8b34]
-                      text-white font-bold uppercase tracking-wide
-                      shadow-sm hover:shadow-md
-                      transition
-                      focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/30
-                    "
-                    aria-label="Schedule a free consultation"
-                  >
-                    <FaComments aria-hidden="true" />
-                    Free Consultation
-                  </button>
+          <p className="mt-4 text-[16px] sm:text-[16px] text-[#1f2937]/80 leading-relaxed">
+            Trusted guidance for individuals, families, and business owners across Canada—built on clear strategy, practical protection,
+            and long-term discipline.
+          </p>
 
-                  <a
-                    href="#calculator"
-                    className="
-                      inline-flex items-center justify-center gap-2
-                      px-5 py-3.5 rounded-xs
-                      bg-white/40 hover:bg-white/50
-                      backdrop-blur-sm
-                      border border-white/70
-                      text-[#102019] font-extrabold uppercase tracking-wide
-                      whitespace-nowrap sm:whitespace-normal
-                      shadow-sm hover:shadow-md
-                      transition
-                      focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/30
-                    "
-                    aria-label="Jump to the investment calculator"
-                  >
-                    <FaCalculator aria-hidden="true" />
-                    Investment Calculator
-                  </a>
-                </div>
+          <div className="mt-10 sm:mt-6 grid grid-cols-1 sm:flex sm:flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={handleContactClick}
+              className="
+                inline-flex items-center justify-center gap-2
+                px-5 py-3.5 rounded-xs
+                bg-[#2f7a2e] hover:bg-[#3a8b34]
+                text-white font-bold uppercase tracking-wide
+                shadow-sm hover:shadow-md
+                transition
+                focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/30
+              "
+              aria-label="Schedule a free consultation"
+            >
+              <FaComments aria-hidden="true" />
+              Free Consultation
+            </button>
 
-                <ul
-                  className="
-                    mt-6
-                    flex flex-col gap-2
-                    text-[15px] sm:text-sm font-semibold text-[#102019]/80
-                    sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-2
-                    lg:flex-nowrap lg:gap-x-8 lg:whitespace-nowrap
-                  "
-                  aria-label="Service highlights"
-                >
-                  <li className="inline-flex items-center gap-2">
-                    <FaCheckCircle className="text-[#2f7a2e]" aria-hidden="true" />
-                    Clear, documented planning
-                  </li>
-                  <li className="inline-flex items-center gap-2">
-                    <FaCheckCircle className="text-[#2f7a2e]" aria-hidden="true" />
-                    Canada-wide support
-                  </li>
-                  <li className="inline-flex items-center gap-2">
-                    <FaCheckCircle className="text-[#2f7a2e]" aria-hidden="true" />
-                    Regulated, transparent guidance
-                  </li>
-                </ul>
-
-                <a
-                  href="#main-content"
-                  className="sr-only focus:not-sr-only focus:inline-flex focus:mt-4 focus:bg-white/80 focus:px-3 focus:py-2 focus:rounded-xs focus:outline-none focus:ring-2 focus:ring-[#0f5028]/30"
-                >
-                  Skip to main content
-                </a>
-              </div>
-            </div>
+            <a
+              href="#calculator"
+              className="
+                inline-flex items-center justify-center gap-2
+                px-5 py-3.5 rounded-xs
+                bg-white/40 hover:bg-white/50
+                backdrop-blur-sm
+                border border-white/70
+                text-[#102019] font-extrabold uppercase tracking-wide
+                whitespace-nowrap sm:whitespace-normal
+                shadow-sm hover:shadow-md
+                transition
+                focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/30
+              "
+              aria-label="Jump to the investment calculator"
+            >
+              <FaCalculator aria-hidden="true" />
+              Investment Calculator
+            </a>
           </div>
+
+          <ul
+            className="
+              mt-6
+              flex flex-col gap-2
+              text-[15px] sm:text-sm font-semibold text-[#102019]/80
+              sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-2
+              lg:flex-nowrap lg:gap-x-8 lg:whitespace-nowrap
+            "
+            aria-label="Service highlights"
+          >
+            <li className="inline-flex items-center gap-2">
+              <FaCheckCircle className="text-[#2f7a2e]" aria-hidden="true" />
+              Clear, documented planning
+            </li>
+            <li className="inline-flex items-center gap-2">
+              <FaCheckCircle className="text-[#2f7a2e]" aria-hidden="true" />
+              Canada-wide support
+            </li>
+            <li className="inline-flex items-center gap-2">
+              <FaCheckCircle className="text-[#2f7a2e]" aria-hidden="true" />
+              Regulated, transparent guidance
+            </li>
+          </ul>
+
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:inline-flex focus:mt-4 focus:bg-white/80 focus:px-3 focus:py-2 focus:rounded-xs focus:outline-none focus:ring-2 focus:ring-[#0f5028]/30"
+          >
+            Skip to main content
+          </a>
         </div>
-      </section>
+      </div>
+    </div>
+
+    {/* Soft fade into page background (nice “landing screen” finish) */}
+    {/* <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 bg-[linear-gradient(to_bottom,rgba(244,242,236,0),rgba(244,242,236,1))]" /> */}
+  </div>
+</section>
 
       {/* SERVICES + CALCULATOR */}
       <main id="main-content">
