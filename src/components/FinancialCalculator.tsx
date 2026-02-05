@@ -252,6 +252,7 @@ const FinancialCalculator: React.FC = () => {
 
   return (
     <div className="max-w-xl mx-auto space-y-6" aria-label="Investment projection calculator">
+    
       {/* ---------------- FORM CARD ---------------- */}
       <div className="bg-white p-6 rounded shadow border border-[#d4d4d4]">
         <div className="flex items-center gap-2 mb-3">

@@ -3,6 +3,56 @@ import html2canvas from 'html2canvas';
 import { saveAs } from 'file-saver';
 import Papa from 'papaparse';
 
+/* -------------------------------- FUNCTION -------------------------------- */
+
+const PDF_COLOURS = {
+  text: '#0b1f16',
+  heading: '#0f5132',
+  background: '#ffffff',
+  border: '#0f5132',
+  accent: '#198754',
+};
+
+/**
+ * html2canvas currently does NOT support modern CSS color functions like oklch().
+ * Tailwind + modern themes often emit oklch() via CSS variables.
+ *
+ * This function “sanitizes” the cloned DOM before capture:
+ * - strips oklch() usage from inline style attributes
+ * - forces safe inline fallbacks (brand colors) for common properties
+ *
+ * IMPORTANT: run this on the CLONED document (clonedDoc.body), not just one element.
+ */
+function sanitizeForHtml2Canvas(clonedRoot: HTMLElement) {
+  // 1) Remove any oklch() from inline style attributes (fast & effective)
+  const all = Array.from(clonedRoot.querySelectorAll<HTMLElement>('*'));
+  for (const el of all) {
+    const styleAttr = el.getAttribute('style');
+    if (styleAttr && styleAttr.includes('oklch')) {
+      // remove oklch(...) occurrences; if it leaves stray semicolons, browser ignores harmlessly
+      el.setAttribute('style', styleAttr.replace(/oklch\([^)]+\)/g, ''));
+    }
+  }
+
+  // 2) Apply safe brand-colored fallbacks for computed styles that still reference oklch()
+  // (This catches inherited color vars / unresolved computed strings.)
+  for (const el of all) {
+    const computed = clonedRoot.ownerDocument.defaultView?.getComputedStyle(el);
+    if (!computed) continue;
+
+    const c = computed.color;
+    const bg = computed.backgroundColor;
+    const bc = computed.borderColor;
+
+    if (c && c.includes('oklch')) el.style.color = PDF_COLOURS.text;
+    if (bg && bg.includes('oklch')) el.style.backgroundColor = PDF_COLOURS.background;
+    if (bc && bc.includes('oklch')) el.style.borderColor = PDF_COLOURS.border;
+  }
+
+  // 3) Ensure a clean PDF background (prevents transparency/odd dark capture)
+  clonedRoot.style.backgroundColor = PDF_COLOURS.background;
+}
+
 /* -------------------------------- TYPES -------------------------------- */
 
 export type ProjectionMeta = {
@@ -113,17 +163,24 @@ export const exportPDF = async (
   try {
     if (!reportElement) throw new Error('Missing report element for PDF export.');
 
-    // NOTE: We intentionally cast options to any to avoid overly-strict local .d.ts issues.
     const canvas = await html2canvas(reportElement, {
-      scale: 2,
+      scale: 1.5, // lower than 2 to reduce memory + increase reliability
       useCORS: true,
-      backgroundColor: '#ffffff',
+      backgroundColor: PDF_COLOURS.background,
       onclone: (clonedDoc: Document) => {
-        // remove anything marked export-ignore
-        clonedDoc.querySelectorAll('[data-export-ignore="true"]').forEach((n) => n.remove());
-
-        // preserve Chart.js pixels
+        // Fix charts first so they render in the clone
         copyCanvasToClone(reportElement, clonedDoc);
+
+        // IMPORTANT: sanitize the entire cloned body (oklch often comes from :root / inherited vars)
+        sanitizeForHtml2Canvas(clonedDoc.body as HTMLElement);
+
+
+          // 🔽 PDF-only font scaling
+  (clonedDoc.body as HTMLElement).style.fontSize = '90%';
+
+        // Optional: add a hook class if you ever want PDF-only CSS rules
+        const clonedReport = clonedDoc.getElementById(reportElement.id);
+        if (clonedReport) (clonedReport as HTMLElement).classList.add('pdf-export');
       },
     } as any);
 
@@ -137,24 +194,28 @@ export const exportPDF = async (
     const firm = meta.firmLine || 'McNeilly Financial Group';
     const preparedFor = meta.preparedFor ? `Prepared for: ${meta.preparedFor}` : '';
 
-    // Header
-    let y = 44;
-    pdf.setFontSize(16);
-    pdf.setTextColor('#0f5028');
-    pdf.text(firm, 40, y);
+// Header
+let y = 48;
 
-    pdf.setFontSize(14);
-    pdf.setTextColor('#000000');
-    pdf.text(title, 40, y + 18);
+// Firm
+pdf.setFontSize(18);
+pdf.setTextColor(PDF_COLOURS.heading);
+pdf.text(firm, 40, y);
 
-    if (preparedFor) {
-      pdf.setFontSize(11);
-      pdf.setTextColor('#505050');
-      pdf.text(preparedFor, 40, y + 36);
-      y += 18;
-    }
+// Report title
+pdf.setFontSize(15);
+pdf.setTextColor(PDF_COLOURS.text);
+pdf.text(title, 40, y + 22);
 
-    y += 54;
+// Prepared for
+if (preparedFor) {
+  pdf.setFontSize(11);
+  pdf.setTextColor('#505050');
+  pdf.text(preparedFor, 40, y + 42);
+  y += 22;
+}
+
+y += 60;
 
     // Image sizing + pagination
     const imgProps = pdf.getImageProperties(imgData);
@@ -184,9 +245,16 @@ export const getPDFBase64 = async (targetElement: HTMLElement): Promise<string> 
   if (!targetElement) throw new Error('No target element provided');
 
   const canvas = await html2canvas(targetElement, {
-    scale: 2,
+    scale: 1.5,
     useCORS: true,
-    backgroundColor: '#ffffff',
+    backgroundColor: PDF_COLOURS.background,
+    onclone: (clonedDoc: Document) => {
+      // If charts are inside the target element, copy them into the clone
+      copyCanvasToClone(targetElement, clonedDoc);
+
+      // Same oklch sanitization for email PDFs
+      sanitizeForHtml2Canvas(clonedDoc.body as HTMLElement);
+    },
   } as any);
 
   const imgData = canvas.toDataURL('image/png');

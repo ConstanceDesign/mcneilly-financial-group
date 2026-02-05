@@ -21,7 +21,13 @@ type FieldKey = 'name' | 'email' | 'phone' | 'message';
 type FieldErrors = Partial<Record<FieldKey, string>>;
 
 const Contact: React.FC = () => {
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+  // In production on Vercel, leave VITE_API_BASE_URL unset so requests hit the same-origin /api/* routes.
+  // In local dev, default to the Express dev server (5000) unless you override VITE_API_BASE_URL.
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+    ? String(import.meta.env.VITE_API_BASE_URL)
+    : import.meta.env.DEV
+      ? 'http://localhost:5000'
+      : '';
 
   // v2 checkbox key
   const V2_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY as string | undefined;
