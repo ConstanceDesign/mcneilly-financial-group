@@ -87,17 +87,13 @@ const FinancialCalculator: React.FC = () => {
     }
   `;
 
-  /* ---------- PRINT (react-to-print v3) ---------- */
-  const reactToPrint = useReactToPrint({
-    contentRef: reportRef, // ✅ v3 API
-    documentTitle: `${clientName || 'Investment Projection'} - ${accountType}`,
-    removeAfterPrint: true,
-    pageStyle: printOnlyReportCSS,
-    onPrintError: (_location, error) => {
-      console.error('Print error:', error);
-      setEmailError('Print failed. Please try again.');
-    },
-  });
+/* ---------- PRINT (react-to-print) ---------- */
+const reactToPrint = useReactToPrint({
+  content: () => reportRef.current,
+  documentTitle: `${clientName || 'Investment Projection'} - ${accountType}`,
+  removeAfterPrint: true,
+  pageStyle: printOnlyReportCSS,
+} as any);
 
   /* ---------- CONTRIBUTION LIMIT (simple estimate) ---------- */
   const contributionLimit = useMemo(() => {
@@ -142,11 +138,11 @@ const FinancialCalculator: React.FC = () => {
 
     setWarning(warn);
 
-    setResult(
-      `Projected Future Value: ${formatCAD(total)}${
-        adjustForInflation ? ' (inflation-adjusted)' : ''
-      }.`
-    );
+    const resultText = `Projected Future Value: ${formatCAD(total)}${
+      adjustForInflation ? ' (inflation-adjusted)' : ''
+    }.`;
+
+    setResult(resultText);
 
     const labels: string[] = [];
     const values: number[] = [];
@@ -177,18 +173,18 @@ const FinancialCalculator: React.FC = () => {
     });
 
     setHasCalculated(true);
-    setEmailError(null);
   };
 
   /* ---------- EMAIL ---------- */
   const handleEmailReport = async () => {
     if (!hasCalculated || !clientName || !reportRef.current || !result) {
-      setEmailError('Please enter a client name and click Calculate first.');
+      alert('Please enter a client name and click Calculate first.');
       return;
     }
 
-    if (!sendToEmail.trim()) {
-      setEmailError('Please enter the recipient email address.');
+    const email = sendToEmail.trim();
+    if (!email) {
+      setEmailError('Please enter an email address to send the report to.');
       return;
     }
 
@@ -199,14 +195,15 @@ const FinancialCalculator: React.FC = () => {
       // ✅ Uses the same export-safe logic (style-tag stripping + canvas copy)
       const pdfBase64 = await getPDFBase64(reportRef.current);
 
+      const subject = `${clientName || 'Investment Projection'} - ${accountType}`;
+
       const res = await fetch('/api/send-report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          clientName,
-          summary: [result, warning].filter(Boolean).join('\n'),
+          email,
+          subject,
           pdfBase64,
-          email: sendToEmail.trim(),
           meta: {
             reportTitle: 'Investment Projection Report',
             firmLine: 'McNeilly Financial Group',
@@ -218,24 +215,25 @@ const FinancialCalculator: React.FC = () => {
             annualReturnRate: rate || '',
             yearsToGrow: years || '',
             inflationAdjusted: adjustForInflation,
-            projectedValue: result || '',
+            projectedValue: result, // string is fine for your handler
           },
+          summary: [result, warning].filter(Boolean).join('\n'),
         }),
       });
 
-      const data = await res.json().catch(() => null);
+      const data = await res.json();
 
-      // ✅ Your API returns { ok: true/false }, not { success }
       if (!res.ok || !data?.ok) {
         setEmailError(data?.message || 'Email failed.');
         return;
       }
 
+      setEmailError(null);
       setEmailSent(true);
       setTimeout(() => setEmailSent(false), 2500);
     } catch (err) {
       console.error(err);
-      setEmailError('Email failed. Please try again.');
+      setEmailError('Email failed. Check console + Vercel logs.');
     } finally {
       setIsSending(false);
     }
@@ -300,12 +298,12 @@ const FinancialCalculator: React.FC = () => {
         >
           <div className="grid sm:grid-cols-2 gap-4">
             <label className="block">
-              <span className="text-sm font-semibold text-[#0f5028]">Name</span>
+              <span className="text-sm font-semibold text-[#0f5028]">Client name</span>
               <input
                 className="mt-1 w-full rounded-xs border border-black/25 px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f]/40"
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
-                placeholder="Your name"
+                placeholder="e.g., Alex Martin"
                 autoComplete="name"
               />
             </label>
@@ -316,13 +314,13 @@ const FinancialCalculator: React.FC = () => {
                 className="mt-1 w-full rounded border border-black/25 px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f]/40"
                 value={sendToEmail}
                 onChange={(e) => setSendToEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder="e.g., client@email.com"
                 inputMode="email"
                 autoComplete="email"
               />
             </label>
 
-            <label className="block">
+            <label className="block sm:col-span-2">
               <span className="text-[16px] text-[#1f2937]">Account type</span>
               <select
                 className="mt-1 w-full rounded border border-black/25 px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f]/40"
@@ -346,7 +344,7 @@ const FinancialCalculator: React.FC = () => {
                 className="mt-1 w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f]"
                 value={income}
                 onChange={(e) => setIncome(e.target.value)}
-                placeholder="ex: 80000"
+                placeholder="e.g., 83000"
                 inputMode="decimal"
               />
             </label>
@@ -359,7 +357,7 @@ const FinancialCalculator: React.FC = () => {
                 className="mt-1 w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f]"
                 value={principal}
                 onChange={(e) => setPrincipal(e.target.value)}
-                placeholder="ex: 10000"
+                placeholder="e.g., 10000"
                 inputMode="decimal"
               />
             </label>
@@ -370,7 +368,7 @@ const FinancialCalculator: React.FC = () => {
                 className="mt-1 w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f]"
                 value={monthly}
                 onChange={(e) => setMonthly(e.target.value)}
-                placeholder="ex: 250"
+                placeholder="e.g., 250"
                 inputMode="decimal"
               />
             </label>
@@ -383,7 +381,7 @@ const FinancialCalculator: React.FC = () => {
                 className="mt-1 w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f]"
                 value={rate}
                 onChange={(e) => setRate(e.target.value)}
-                placeholder="ex: 6"
+                placeholder="e.g., 6"
                 inputMode="decimal"
               />
             </label>
@@ -394,7 +392,7 @@ const FinancialCalculator: React.FC = () => {
                 className="mt-1 w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f]"
                 value={years}
                 onChange={(e) => setYears(e.target.value)}
-                placeholder="ex: 20"
+                placeholder="e.g., 20"
                 inputMode="numeric"
               />
             </label>
@@ -495,7 +493,7 @@ const FinancialCalculator: React.FC = () => {
         </div>
 
         <div className="mt-4 space-y-2">
-          {(result || warning || emailError) ? (
+          {result || warning ? (
             <div className="rounded-lg border border-[#d4d4d4] bg-[#f8f9f7] p-4">
               {result && <p className="text-[#0f5028] font-semibold leading-relaxed">{result}</p>}
               {warning && <p className="text-sm text-[#0f5028] mt-2 leading-relaxed">{warning}</p>}

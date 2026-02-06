@@ -35,35 +35,12 @@ function getIp(req: VercelRequest) {
   return ip;
 }
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-function makeTransporter() {
-  const user = (process.env.SMTP_USER || '').trim();
-  const pass = (process.env.SMTP_PASS || '').replace(/\s+/g, ''); // ✅ remove spaces
-
-  return nodemailer.createTransport({
-    service: 'gmail',
-    auth: { user, pass },
-  });
-}
-
-async function sendWithRetry(send: () => Promise<void>) {
-  try {
-    await send();
-    return;
-  } catch (err: any) {
-    const code = String(err?.code || '');
-    if (code === 'EBUSY' || code === 'EAI_AGAIN' || code === 'ENOTFOUND') {
-      await sleep(350);
-      await send();
-      return;
-    }
-    throw err;
-  }
-}
+const env = (k: string) => (process.env[k] ?? '').trim();
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') return fail(res, 405, 'METHOD_NOT_ALLOWED', 'Method not allowed');
+  if (req.method !== 'POST') {
+    return fail(res, 405, 'METHOD_NOT_ALLOWED', 'Method not allowed');
+  }
 
   const ip = getIp(req);
   const rl = rateLimit(`report:${ip}`, 8, 10 * 60_000);
@@ -72,14 +49,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const { pdfBase64, email, subject, meta } = (req.body ?? {}) as {
+    const { pdfBase64, email, subject, meta, summary } = (req.body ?? {}) as {
       pdfBase64?: string;
       email?: string;
       subject?: string;
       meta?: Record<string, any>;
+      summary?: string;
     };
 
-    const to = (email || process.env.EMAIL_TO || '').trim();
+    const to = (email || env('EMAIL_TO')).trim();
     if (!isEmail(to)) return fail(res, 400, 'BAD_EMAIL', 'Please enter a valid email address.');
 
     if (!pdfBase64 || typeof pdfBase64 !== 'string' || !pdfBase64.includes(',')) {
@@ -98,38 +76,60 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 `REPORT REQUEST
 DATE (UTC): ${createdAtUTC}
 PREPARED FOR: ${clamp(preparedFor, 120)}
-EMAIL: ${clamp(to, 160)}
+SEND TO: ${clamp(to, 160)}
 ACCOUNT TYPE: ${clamp(accountType, 60)}
+
+SUMMARY:
+${clamp(String(summary || ''), 8000)}
+
+META:
 INCOME: ${clamp(String(m.income || ''), 40)}
 STARTING: ${clamp(String(m.startingAmount || ''), 40)}
 MONTHLY: ${clamp(String(m.monthlyContribution || ''), 40)}
 RETURN: ${clamp(String(m.annualReturnRate || ''), 40)}
 YEARS: ${clamp(String(m.yearsToGrow || ''), 10)}
 INFLATION ADJUSTED: ${m.inflationAdjusted ? 'Yes (2%/yr)' : 'No'}
-PROJECTED VALUE: ${clamp(String(m.projectedValue || ''), 200)}
+PROJECTED VALUE: ${clamp(String(m.projectedValue || ''), 120)}
 
 TECH
 IP: ${ip}
 UA: ${userAgent}
 `;
 
-    const transporter = makeTransporter();
+    // --- Gmail App Passwords are often pasted with spaces; strip them safely ---
+    const SMTP_USER = env('SMTP_USER');
+    const SMTP_PASS = env('SMTP_PASS').replace(/\s+/g, '');
 
-    await sendWithRetry(() =>
-      transporter.sendMail({
-        from: (process.env.EMAIL_FROM || '').trim(),
-        to,
-        subject: subject ? clamp(subject, 120) : title,
-        text: body,
-        attachments: [
-          {
-            filename: 'investment-report.pdf',
-            content: pdfBase64.split(',')[1],
-            encoding: 'base64',
-          },
-        ],
-      }).then(() => undefined)
-    );
+    const EMAIL_HOST = env('EMAIL_HOST'); // e.g. smtp.gmail.com
+    const EMAIL_PORT = Number(env('EMAIL_PORT') || '465'); // 465 or 587
+    const EMAIL_SECURE = env('EMAIL_SECURE') === 'true';   // true for 465, false for 587
+
+    const EMAIL_FROM = env('EMAIL_FROM'); // e.g. "McNeilly Financial Group <your@gmail.com>"
+    const FALLBACK_FROM = SMTP_USER ? `McNeilly Financial Group <${SMTP_USER}>` : 'no-reply@example.com';
+
+    const transporter = nodemailer.createTransport({
+      host: EMAIL_HOST,
+      port: EMAIL_PORT,
+      secure: EMAIL_SECURE,
+      auth: {
+        user: SMTP_USER,
+        pass: SMTP_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: EMAIL_FROM || FALLBACK_FROM,
+      to,
+      subject: subject ? clamp(subject, 120) : title,
+      text: body,
+      attachments: [
+        {
+          filename: 'investment-report.pdf',
+          content: pdfBase64.split(',')[1],
+          encoding: 'base64',
+        },
+      ],
+    });
 
     return ok(res, 'Email sent! Please check your inbox.');
   } catch (err) {
