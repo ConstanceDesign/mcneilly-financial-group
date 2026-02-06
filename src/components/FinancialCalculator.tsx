@@ -87,13 +87,17 @@ const FinancialCalculator: React.FC = () => {
     }
   `;
 
-/* ---------- PRINT (react-to-print) ---------- */
-const reactToPrint = useReactToPrint({
-  content: () => reportRef.current,
-  documentTitle: `${clientName || 'Investment Projection'} - ${accountType}`,
-  removeAfterPrint: true,
-  pageStyle: printOnlyReportCSS,
-} as any);
+  /* ---------- PRINT (react-to-print v3) ---------- */
+  const reactToPrint = useReactToPrint({
+    contentRef: reportRef, // ✅ v3 API
+    documentTitle: `${clientName || 'Investment Projection'} - ${accountType}`,
+    removeAfterPrint: true,
+    pageStyle: printOnlyReportCSS,
+    onPrintError: (_location, error) => {
+      console.error('Print error:', error);
+      setEmailError('Print failed. Please try again.');
+    },
+  });
 
   /* ---------- CONTRIBUTION LIMIT (simple estimate) ---------- */
   const contributionLimit = useMemo(() => {
@@ -173,45 +177,65 @@ const reactToPrint = useReactToPrint({
     });
 
     setHasCalculated(true);
+    setEmailError(null);
   };
 
   /* ---------- EMAIL ---------- */
   const handleEmailReport = async () => {
     if (!hasCalculated || !clientName || !reportRef.current || !result) {
-      alert('Please enter a client name and click Calculate first.');
+      setEmailError('Please enter a client name and click Calculate first.');
+      return;
+    }
+
+    if (!sendToEmail.trim()) {
+      setEmailError('Please enter the recipient email address.');
       return;
     }
 
     try {
       setIsSending(true);
+      setEmailError(null);
 
       // ✅ Uses the same export-safe logic (style-tag stripping + canvas copy)
       const pdfBase64 = await getPDFBase64(reportRef.current);
 
-const res = await fetch('/api/send-report', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    clientName,
-    summary: [result, warning].filter(Boolean).join('\n'),
-    pdfBase64,
-    email: sendToEmail, // ✅ add this
-  }),
-});
+      const res = await fetch('/api/send-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          clientName,
+          summary: [result, warning].filter(Boolean).join('\n'),
+          pdfBase64,
+          email: sendToEmail.trim(),
+          meta: {
+            reportTitle: 'Investment Projection Report',
+            firmLine: 'McNeilly Financial Group',
+            preparedFor: clientName || '',
+            accountType,
+            income: income || '',
+            startingAmount: principal || '',
+            monthlyContribution: monthly || '',
+            annualReturnRate: rate || '',
+            yearsToGrow: years || '',
+            inflationAdjusted: adjustForInflation,
+            projectedValue: result || '',
+          },
+        }),
+      });
 
-const data = await res.json();
+      const data = await res.json().catch(() => null);
 
-if (!res.ok || !data?.success) {
-  setEmailError(data?.message || 'Email failed.');
-  return;
-}
+      // ✅ Your API returns { ok: true/false }, not { success }
+      if (!res.ok || !data?.ok) {
+        setEmailError(data?.message || 'Email failed.');
+        return;
+      }
 
-setEmailError(null);
-setEmailSent(true);
-setTimeout(() => setEmailSent(false), 2500);
+      setEmailSent(true);
+      setTimeout(() => setEmailSent(false), 2500);
     } catch (err) {
       console.error(err);
-      alert('Email failed. Check console + Network tab.');
+      setEmailError('Email failed. Please try again.');
     } finally {
       setIsSending(false);
     }
@@ -227,6 +251,7 @@ setTimeout(() => setEmailSent(false), 2500);
     setYears('');
     setAdjustForInflation(false);
     setClientName('');
+    setSendToEmail('');
 
     setResult(null);
     setWarning(null);
@@ -234,6 +259,7 @@ setTimeout(() => setEmailSent(false), 2500);
     setHasCalculated(false);
 
     setEmailSent(false);
+    setEmailError(null);
     setPdfExported(false);
     setCsvExported(false);
     setPrintTriggered(false);
@@ -258,7 +284,6 @@ setTimeout(() => setEmailSent(false), 2500);
 
   return (
     <div className="max-w-xl mx-auto space-y-6" aria-label="Investment projection calculator">
-    
       {/* ---------------- FORM CARD ---------------- */}
       <div className="bg-white p-6 rounded shadow border border-[#d4d4d4]">
         <div className="flex items-center gap-2 mb-3">
@@ -286,16 +311,16 @@ setTimeout(() => setEmailSent(false), 2500);
             </label>
 
             <label className="block">
-  <span className="text-sm font-semibold text-[#0f5028]">Send report to email</span>
-  <input
-    className="mt-1 w-full rounded border border-black/25 px-3 py-2.5"
-    value={sendToEmail}
-    onChange={(e) => setSendToEmail(e.target.value)}
-    placeholder="e.g., client@email.com"
-    inputMode="email"
-    autoComplete="email"
-  />
-</label>
+              <span className="text-sm font-semibold text-[#0f5028]">Send report to email</span>
+              <input
+                className="mt-1 w-full rounded border border-black/25 px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f]/40"
+                value={sendToEmail}
+                onChange={(e) => setSendToEmail(e.target.value)}
+                placeholder="e.g., client@email.com"
+                inputMode="email"
+                autoComplete="email"
+              />
+            </label>
 
             <label className="block">
               <span className="text-[16px] text-[#1f2937]">Account type</span>
@@ -470,10 +495,13 @@ setTimeout(() => setEmailSent(false), 2500);
         </div>
 
         <div className="mt-4 space-y-2">
-          {(result || warning) ? (
+          {(result || warning || emailError) ? (
             <div className="rounded-lg border border-[#d4d4d4] bg-[#f8f9f7] p-4">
               {result && <p className="text-[#0f5028] font-semibold leading-relaxed">{result}</p>}
               {warning && <p className="text-sm text-[#0f5028] mt-2 leading-relaxed">{warning}</p>}
+              {emailError && (
+                <p className="text-sm text-red-700 mt-2 leading-relaxed">{emailError}</p>
+              )}
             </div>
           ) : (
             <div className="rounded-lg border border-[#d4d4d4] bg-[#f8f9f7] p-4 text-sm text-slate-700">

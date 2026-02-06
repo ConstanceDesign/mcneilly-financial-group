@@ -35,10 +35,36 @@ function getIp(req: VercelRequest) {
   return ip;
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') {
-    return fail(res, 405, 'METHOD_NOT_ALLOWED', 'Method not allowed');
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+function makeTransporter() {
+  const user = (process.env.SMTP_USER || '').trim();
+  const pass = (process.env.SMTP_PASS || '').replace(/\s+/g, ''); // ✅ remove spaces
+
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user, pass },
+  });
+}
+
+async function sendWithRetry(send: () => Promise<void>) {
+  try {
+    await send();
+    return;
+  } catch (err: any) {
+    const code = String(err?.code || '');
+    // ✅ one retry for transient DNS issues
+    if (code === 'EBUSY' || code === 'EAI_AGAIN' || code === 'ENOTFOUND') {
+      await sleep(350);
+      await send();
+      return;
+    }
+    throw err;
   }
+}
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') return fail(res, 405, 'METHOD_NOT_ALLOWED', 'Method not allowed');
 
   const ip = getIp(req);
   const rl = rateLimit(`contact:${ip}`, 6, 10 * 60_000);
@@ -83,23 +109,17 @@ IP: ${ip}
 UA: ${userAgent}
 `;
 
-    const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: Number(process.env.EMAIL_PORT),
-      secure: process.env.EMAIL_SECURE === 'true',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
+    const transporter = makeTransporter();
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
-      to: process.env.EMAIL_TO,
-      subject,
-      replyTo: safeEmail,
-      text,
-    });
+    await sendWithRetry(() =>
+      transporter.sendMail({
+        from: (process.env.EMAIL_FROM || '').trim(),
+        to: (process.env.EMAIL_TO || '').trim(),
+        subject,
+        replyTo: safeEmail,
+        text,
+      }).then(() => undefined)
+    );
 
     return ok(res, 'Message sent! We’ll get back to you shortly.');
   } catch (err) {

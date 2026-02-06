@@ -291,13 +291,18 @@ export const handlePrintWrapper = ({
   setPrintTriggered,
 }: {
   reportRef: React.RefObject<HTMLElement | null>;
-  handlePrint: () => void;
+  handlePrint: (() => void) | undefined; // ✅ allow undefined
   setPrintTriggered: (val: boolean) => void;
 }) => {
   if (!reportRef.current) {
     alert('Nothing to print.');
     return;
   }
+  if (!handlePrint) {
+    alert('Print is not ready yet. Please refresh and try again.');
+    return;
+  }
+
   setPrintTriggered(true);
   handlePrint();
   setTimeout(() => setPrintTriggered(false), 2000);

@@ -35,10 +35,35 @@ function getIp(req: VercelRequest) {
   return ip;
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') {
-    return fail(res, 405, 'METHOD_NOT_ALLOWED', 'Method not allowed');
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+function makeTransporter() {
+  const user = (process.env.SMTP_USER || '').trim();
+  const pass = (process.env.SMTP_PASS || '').replace(/\s+/g, ''); // ✅ remove spaces
+
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user, pass },
+  });
+}
+
+async function sendWithRetry(send: () => Promise<void>) {
+  try {
+    await send();
+    return;
+  } catch (err: any) {
+    const code = String(err?.code || '');
+    if (code === 'EBUSY' || code === 'EAI_AGAIN' || code === 'ENOTFOUND') {
+      await sleep(350);
+      await send();
+      return;
+    }
+    throw err;
   }
+}
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') return fail(res, 405, 'METHOD_NOT_ALLOWED', 'Method not allowed');
 
   const ip = getIp(req);
   const rl = rateLimit(`report:${ip}`, 8, 10 * 60_000);
@@ -64,11 +89,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const createdAtUTC = new Date().toISOString();
     const userAgent = String(req.headers['user-agent'] || '');
 
-    // CRM-ready email body
     const m = meta || {};
     const title = String(m.reportTitle || 'Investment Projection Report');
     const preparedFor = String(m.preparedFor || '');
     const accountType = String(m.accountType || '');
+
     const body =
 `REPORT REQUEST
 DATE (UTC): ${createdAtUTC}
@@ -81,48 +106,30 @@ MONTHLY: ${clamp(String(m.monthlyContribution || ''), 40)}
 RETURN: ${clamp(String(m.annualReturnRate || ''), 40)}
 YEARS: ${clamp(String(m.yearsToGrow || ''), 10)}
 INFLATION ADJUSTED: ${m.inflationAdjusted ? 'Yes (2%/yr)' : 'No'}
-PROJECTED VALUE: ${clamp(String(m.projectedValue || ''), 60)}
+PROJECTED VALUE: ${clamp(String(m.projectedValue || ''), 200)}
 
 TECH
 IP: ${ip}
 UA: ${userAgent}
 `;
 
-    const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: Number(process.env.EMAIL_PORT),
-      secure: process.env.EMAIL_SECURE === 'true',
-      service: 'gmail',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
+    const transporter = makeTransporter();
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
-      to,
-      subject: subject ? clamp(subject, 120) : title,
-      text: body,
-      attachments: [
-        {
-          filename: 'investment-report.pdf',
-          content: pdfBase64.split(',')[1],
-          encoding: 'base64',
-        },
-        {
-          filename: 'lead.json',
-          content: Buffer.from(
-            JSON.stringify(
-              { source: 'Website Calculator', createdAtUTC, to, ip, userAgent, meta: m },
-              null,
-              2
-            )
-          ).toString('base64'),
-          encoding: 'base64',
-        },
-      ],
-    });
+    await sendWithRetry(() =>
+      transporter.sendMail({
+        from: (process.env.EMAIL_FROM || '').trim(),
+        to,
+        subject: subject ? clamp(subject, 120) : title,
+        text: body,
+        attachments: [
+          {
+            filename: 'investment-report.pdf',
+            content: pdfBase64.split(',')[1],
+            encoding: 'base64',
+          },
+        ],
+      }).then(() => undefined)
+    );
 
     return ok(res, 'Email sent! Please check your inbox.');
   } catch (err) {
