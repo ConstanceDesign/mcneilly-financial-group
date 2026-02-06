@@ -49,6 +49,48 @@
     font-size: 1rem;
   }
 
+  /* ===== Report: print / PDF polish ===== */
+@media print {
+  .report-sheet {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 16mm !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+    color: #0f5028 !important;
+    font-size: 12pt;
+    line-height: 1.35;
+  }
+
+  .report-sheet h3 {
+    font-size: 16pt !important;
+    margin: 0 !important;
+  }
+
+  .report-sheet img {
+    height: 18mm !important;
+  }
+
+  /* Keep the summary bar from looking cramped */
+  .report-sheet .summary-bar {
+    padding: 10pt !important;
+    border-radius: 8pt !important;
+  }
+
+  /* Make the chart larger in print */
+  .report-sheet .chart-wrap {
+    height: 120mm !important;
+    padding: 8pt !important;
+  }
+
+  /* Hide export buttons in print */
+  [data-export-ignore="true"] {
+    display: none !important;
+  }
+}
+
   code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
   }

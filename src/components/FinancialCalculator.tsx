@@ -45,6 +45,8 @@ const formatCAD = (n: number) =>
 // ✅ Ensure this file exists in /public/images/...
 const LOGO_URL = '/images/mcneillyfinancialgroup-logo.png';
 
+const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+
 const FinancialCalculator: React.FC = () => {
   const [accountType, setAccountType] = useState<AccountType>('RRSP');
   const [income, setIncome] = useState('');
@@ -87,13 +89,13 @@ const FinancialCalculator: React.FC = () => {
     }
   `;
 
-/* ---------- PRINT (react-to-print) ---------- */
-const reactToPrint = useReactToPrint({
-  content: () => reportRef.current,
-  documentTitle: `${clientName || 'Investment Projection'} - ${accountType}`,
-  removeAfterPrint: true,
-  pageStyle: printOnlyReportCSS,
-} as any);
+  /* ---------- PRINT (react-to-print v3 contentRef API) ---------- */
+  const reactToPrint = useReactToPrint({
+    contentRef: reportRef,
+    documentTitle: `${clientName || 'Investment Projection'} - ${accountType}`,
+    removeAfterPrint: true,
+    pageStyle: printOnlyReportCSS,
+  });
 
   /* ---------- CONTRIBUTION LIMIT (simple estimate) ---------- */
   const contributionLimit = useMemo(() => {
@@ -138,11 +140,11 @@ const reactToPrint = useReactToPrint({
 
     setWarning(warn);
 
-    const resultText = `Projected Future Value: ${formatCAD(total)}${
-      adjustForInflation ? ' (inflation-adjusted)' : ''
-    }.`;
-
-    setResult(resultText);
+    setResult(
+      `Projected Future Value: ${formatCAD(total)}${
+        adjustForInflation ? ' (inflation-adjusted)' : ''
+      }.`
+    );
 
     const labels: string[] = [];
     const values: number[] = [];
@@ -175,16 +177,29 @@ const reactToPrint = useReactToPrint({
     setHasCalculated(true);
   };
 
+  const meta: ProjectionMeta & { projectedValue?: string } = {
+    reportTitle: 'Investment Projection Report',
+    firmLine: 'McNeilly Financial Group',
+    logoUrl: LOGO_URL,
+    preparedFor: clientName || '',
+    accountType,
+    income: income || '',
+    startingAmount: principal || '',
+    monthlyContribution: monthly || '',
+    annualReturnRate: rate || '',
+    yearsToGrow: years || '',
+    inflationAdjusted: adjustForInflation,
+    projectedValue: result || '',
+  };
+
   /* ---------- EMAIL ---------- */
   const handleEmailReport = async () => {
     if (!hasCalculated || !clientName || !reportRef.current || !result) {
       alert('Please enter a client name and click Calculate first.');
       return;
     }
-
-    const email = sendToEmail.trim();
-    if (!email) {
-      setEmailError('Please enter an email address to send the report to.');
+    if (!sendToEmail.trim() || !isEmail(sendToEmail)) {
+      alert('Please enter a valid email address to send the report to.');
       return;
     }
 
@@ -192,38 +207,26 @@ const reactToPrint = useReactToPrint({
       setIsSending(true);
       setEmailError(null);
 
-      // ✅ Uses the same export-safe logic (style-tag stripping + canvas copy)
+      // ✅ Uses export-safe logic (style-tag stripping + canvas copy)
       const pdfBase64 = await getPDFBase64(reportRef.current);
-
-      const subject = `${clientName || 'Investment Projection'} - ${accountType}`;
 
       const res = await fetch('/api/send-report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email,
-          subject,
           pdfBase64,
-          meta: {
-            reportTitle: 'Investment Projection Report',
-            firmLine: 'McNeilly Financial Group',
-            preparedFor: clientName || '',
-            accountType,
-            income: income || '',
-            startingAmount: principal || '',
-            monthlyContribution: monthly || '',
-            annualReturnRate: rate || '',
-            yearsToGrow: years || '',
-            inflationAdjusted: adjustForInflation,
-            projectedValue: result, // string is fine for your handler
-          },
-          summary: [result, warning].filter(Boolean).join('\n'),
+          email: sendToEmail.trim(),
+          subject: `${clientName} — Investment Projection Report`,
+          meta,
         }),
       });
 
       const data = await res.json();
 
-      if (!res.ok || !data?.ok) {
+      // support either {ok:true} or {success:true}
+      const ok = Boolean(data?.ok ?? data?.success);
+
+      if (!res.ok || !ok) {
         setEmailError(data?.message || 'Email failed.');
         return;
       }
@@ -233,7 +236,7 @@ const reactToPrint = useReactToPrint({
       setTimeout(() => setEmailSent(false), 2500);
     } catch (err) {
       console.error(err);
-      setEmailError('Email failed. Check console + Vercel logs.');
+      setEmailError('Email failed. Check console + Network tab.');
     } finally {
       setIsSending(false);
     }
@@ -261,20 +264,6 @@ const reactToPrint = useReactToPrint({
     setPdfExported(false);
     setCsvExported(false);
     setPrintTriggered(false);
-  };
-
-  const meta: ProjectionMeta = {
-    reportTitle: 'Investment Projection Report',
-    firmLine: 'McNeilly Financial Group',
-    logoUrl: LOGO_URL,
-    preparedFor: clientName || '',
-    accountType,
-    income: income || '',
-    startingAmount: principal || '',
-    monthlyContribution: monthly || '',
-    annualReturnRate: rate || '',
-    yearsToGrow: years || '',
-    inflationAdjusted: adjustForInflation,
   };
 
   const btnBase =
@@ -320,7 +309,7 @@ const reactToPrint = useReactToPrint({
               />
             </label>
 
-            <label className="block sm:col-span-2">
+            <label className="block">
               <span className="text-[16px] text-[#1f2937]">Account type</span>
               <select
                 className="mt-1 w-full rounded border border-black/25 px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f]/40"
@@ -493,13 +482,11 @@ const reactToPrint = useReactToPrint({
         </div>
 
         <div className="mt-4 space-y-2">
-          {result || warning ? (
+          {(result || warning || emailError) ? (
             <div className="rounded-lg border border-[#d4d4d4] bg-[#f8f9f7] p-4">
               {result && <p className="text-[#0f5028] font-semibold leading-relaxed">{result}</p>}
               {warning && <p className="text-sm text-[#0f5028] mt-2 leading-relaxed">{warning}</p>}
-              {emailError && (
-                <p className="text-sm text-red-700 mt-2 leading-relaxed">{emailError}</p>
-              )}
+              {emailError && <p className="text-sm text-red-700 mt-2 leading-relaxed">{emailError}</p>}
             </div>
           ) : (
             <div className="rounded-lg border border-[#d4d4d4] bg-[#f8f9f7] p-4 text-sm text-slate-700">
