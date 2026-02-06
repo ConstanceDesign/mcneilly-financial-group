@@ -287,12 +287,12 @@ const FinancialCalculator: React.FC = () => {
         >
           <div className="grid sm:grid-cols-2 gap-4">
             <label className="block">
-              <span className="text-sm font-semibold text-[#0f5028]">Client name</span>
+              <span className="text-sm font-semibold text-[#0f5028]">Name</span>
               <input
                 className="mt-1 w-full rounded-xs border border-black/25 px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f]/40"
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
-                placeholder="e.g., Alex Martin"
+                placeholder="Your name"
                 autoComplete="name"
               />
             </label>
@@ -303,7 +303,7 @@ const FinancialCalculator: React.FC = () => {
                 className="mt-1 w-full rounded border border-black/25 px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8cbe3f]/40"
                 value={sendToEmail}
                 onChange={(e) => setSendToEmail(e.target.value)}
-                placeholder="e.g., client@email.com"
+                placeholder="you@example.com"
                 inputMode="email"
                 autoComplete="email"
               />
