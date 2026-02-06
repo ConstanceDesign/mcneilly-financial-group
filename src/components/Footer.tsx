@@ -319,7 +319,7 @@ const Footer: React.FC = () => {
                         Tecumseh, Ontario N8N 2L9
                       </div>
 
-                      <div className="mt-3">
+                      <div className="mt-3 font-semibold text-[#102019]">
                         <a
                           href="tel:+15199795396"
                           className="inline-flex items-center gap-2 hover:text-[#0f5028] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/25 rounded"
@@ -447,7 +447,7 @@ const Footer: React.FC = () => {
                           N8N 2L9
                         </div>
 
-                        <div className="mt-2">
+                        <div className="mt-2 font-semibold text-[#102019]">
                           <a
                             href="tel:+15199795396"
                             className="inline-flex items-center gap-2 hover:text-[#0f5028] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/25 rounded"
@@ -465,6 +465,7 @@ const Footer: React.FC = () => {
                           </span>
                           <span className="text-[#1f2937]/70">Mon–Fri, 9 AM – 5 PM</span>
                         </div>
+
                       </address>
                     </section>
                   </div>
