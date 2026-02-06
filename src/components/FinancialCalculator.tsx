@@ -61,6 +61,7 @@ const FinancialCalculator: React.FC = () => {
   const [hasCalculated, setHasCalculated] = useState(false);
 
   const [isSending, setIsSending] = useState(false);
+  const [sendToEmail, setSendToEmail] = useState('');
   const [emailSent, setEmailSent] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [pdfExported, setPdfExported] = useState(false);
@@ -194,6 +195,7 @@ const res = await fetch('/api/send-report', {
     clientName,
     summary: [result, warning].filter(Boolean).join('\n'),
     pdfBase64,
+    email: sendToEmail, // ✅ add this
   }),
 });
 
@@ -282,6 +284,18 @@ setTimeout(() => setEmailSent(false), 2500);
                 autoComplete="name"
               />
             </label>
+
+            <label className="block">
+  <span className="text-sm font-semibold text-[#0f5028]">Send report to email</span>
+  <input
+    className="mt-1 w-full rounded border border-black/25 px-3 py-2.5"
+    value={sendToEmail}
+    onChange={(e) => setSendToEmail(e.target.value)}
+    placeholder="e.g., client@email.com"
+    inputMode="email"
+    autoComplete="email"
+  />
+</label>
 
             <label className="block">
               <span className="text-[16px] text-[#1f2937]">Account type</span>
