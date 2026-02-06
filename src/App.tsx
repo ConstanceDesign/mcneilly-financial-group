@@ -31,7 +31,7 @@ import ScrollToTop from '@components/ScrollToTop';
 
 const NotFound: React.FC = () => (
   <div className="max-w-3xl mx-auto px-6 py-14 text-center">
-    <h1 className="text-2xl sm:text-3xl font-bold text-[#0f5028]">Page Not Found</h1>
+    <h1 className="text-2xl sm:text-3xl font-bold text-[#0f5028]">404 Page Not Found</h1>
     <p className="mt-3 text-[#333]/80">
       The page you’re looking for may have been moved or no longer exists.
     </p>
@@ -47,7 +47,7 @@ const NotFound: React.FC = () => (
       "
       aria-label="Return to the homepage"
     >
-      Go to Home
+      Go to Home Page
     </Link>
   </div>
 );

@@ -1,18 +1,92 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import nodemailer from 'nodemailer';
 
+type ApiOk = { ok: true; message: string };
+type ApiErr = { ok: false; code: string; message: string };
+
+const ok = (res: VercelResponse, message: string) =>
+  res.status(200).json({ ok: true, message } satisfies ApiOk);
+
+const fail = (res: VercelResponse, status: number, code: string, message: string) =>
+  res.status(status).json({ ok: false, code, message } satisfies ApiErr);
+
+const isEmail = (v?: string) => !!v && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+const clamp = (s: string, n: number) => (s.length > n ? s.slice(0, n) : s);
+
+const buckets = new Map<string, { count: number; resetAt: number }>();
+function rateLimit(key: string, limit = 6, windowMs = 10 * 60_000) {
+  const now = Date.now();
+  const b = buckets.get(key);
+  if (!b || now > b.resetAt) {
+    buckets.set(key, { count: 1, resetAt: now + windowMs });
+    return { allowed: true };
+  }
+  if (b.count >= limit) return { allowed: false };
+  b.count += 1;
+  return { allowed: true };
+}
+
+function getIp(req: VercelRequest) {
+  const xf = req.headers['x-forwarded-for'];
+  const ip =
+    (typeof xf === 'string' ? xf : Array.isArray(xf) ? xf[0] : '')?.split(',')[0]?.trim() ||
+    req.socket?.remoteAddress ||
+    'unknown';
+  return ip;
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return fail(res, 405, 'METHOD_NOT_ALLOWED', 'Method not allowed');
+  }
+
+  const ip = getIp(req);
+  const rl = rateLimit(`contact:${ip}`, 6, 10 * 60_000);
+  if (!rl.allowed) {
+    return fail(res, 429, 'RATE_LIMITED', 'Too many requests. Please try again in 10 minutes.');
   }
 
   try {
-    const { name, email, message } = req.body;
+    const { name, email, message, phone } = (req.body ?? {}) as {
+      name?: string;
+      email?: string;
+      message?: string;
+      phone?: string;
+    };
+
+    const safeName = (name || '').trim();
+    const safeEmail = (email || '').trim();
+    const safeMsg = (message || '').trim();
+    const safePhone = (phone || '').trim();
+
+    if (!safeName) return fail(res, 400, 'MISSING_NAME', 'Please enter your name.');
+    if (!isEmail(safeEmail)) return fail(res, 400, 'BAD_EMAIL', 'Please enter a valid email address.');
+    if (!safeMsg) return fail(res, 400, 'MISSING_MESSAGE', 'Please enter a message.');
+
+    const createdAtUTC = new Date().toISOString();
+    const userAgent = String(req.headers['user-agent'] || '');
+
+    const subject = `[Website Lead] Contact Form — ${clamp(safeName, 80)}`;
+
+    const text =
+`LEAD SOURCE: Website Contact Form
+DATE (UTC): ${createdAtUTC}
+NAME: ${clamp(safeName, 120)}
+EMAIL: ${clamp(safeEmail, 160)}
+PHONE: ${clamp(safePhone, 60)}
+
+MESSAGE:
+${clamp(safeMsg, 5000)}
+
+TECH
+IP: ${ip}
+UA: ${userAgent}
+`;
 
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT || 587),
-      secure: false,
+      host: process.env.EMAIL_HOST,
+      port: Number(process.env.EMAIL_PORT),
+      secure: process.env.EMAIL_SECURE === 'true',
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
@@ -20,16 +94,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     await transporter.sendMail({
-      from: process.env.SMTP_USER,
-      to: process.env.EMAIL_RECEIVER,
-      subject: `Contact form: ${name}`,
-      replyTo: email,
-      text: message,
+      from: process.env.EMAIL_FROM,
+      to: process.env.EMAIL_TO,
+      subject,
+      replyTo: safeEmail,
+      text,
     });
 
-    return res.status(200).json({ success: true });
+    return ok(res, 'Message sent! We’ll get back to you shortly.');
   } catch (err) {
-    console.error('Contact email error:', err);
-    return res.status(500).json({ error: 'Email failed' });
+    console.error('Contact error:', err);
+    return fail(res, 500, 'EMAIL_SEND_FAILED', 'Message failed to send. Please try again in a moment.');
   }
 }

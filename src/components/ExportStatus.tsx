@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 
 interface ExportStatusProps {
   emailSent: boolean;
+  emailError?: string | null; 
   pdfExported: boolean;
   csvExported: boolean;
   printTriggered: boolean;

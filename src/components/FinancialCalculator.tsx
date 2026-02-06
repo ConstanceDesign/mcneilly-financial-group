@@ -62,6 +62,7 @@ const FinancialCalculator: React.FC = () => {
 
   const [isSending, setIsSending] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [emailError, setEmailError] = useState<string | null>(null);
   const [pdfExported, setPdfExported] = useState(false);
   const [csvExported, setCsvExported] = useState(false);
   const [printTriggered, setPrintTriggered] = useState(false);
@@ -85,13 +86,13 @@ const FinancialCalculator: React.FC = () => {
     }
   `;
 
-  /* ---------- PRINT (react-to-print contentRef API) ---------- */
-  const reactToPrint = useReactToPrint({
-    contentRef: reportRef,
-    documentTitle: `${clientName || 'Investment Projection'} - ${accountType}`,
-    removeAfterPrint: true,
-    pageStyle: printOnlyReportCSS,
-  });
+/* ---------- PRINT (react-to-print) ---------- */
+const reactToPrint = useReactToPrint({
+  content: () => reportRef.current,
+  documentTitle: `${clientName || 'Investment Projection'} - ${accountType}`,
+  removeAfterPrint: true,
+  pageStyle: printOnlyReportCSS,
+} as any);
 
   /* ---------- CONTRIBUTION LIMIT (simple estimate) ---------- */
   const contributionLimit = useMemo(() => {
@@ -186,23 +187,26 @@ const FinancialCalculator: React.FC = () => {
       // ✅ Uses the same export-safe logic (style-tag stripping + canvas copy)
       const pdfBase64 = await getPDFBase64(reportRef.current);
 
-      const res = await fetch('/api/send-report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          clientName,
-          summary: [result, warning].filter(Boolean).join(' '),
-          pdfBase64,
-        }),
-      });
+const res = await fetch('/api/send-report', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    clientName,
+    summary: [result, warning].filter(Boolean).join('\n'),
+    pdfBase64,
+  }),
+});
 
-      if (!res.ok) {
-        const txt = await res.text();
-        throw new Error(txt);
-      }
+const data = await res.json();
 
-      setEmailSent(true);
-      setTimeout(() => setEmailSent(false), 2500);
+if (!res.ok || !data?.success) {
+  setEmailError(data?.message || 'Email failed.');
+  return;
+}
+
+setEmailError(null);
+setEmailSent(true);
+setTimeout(() => setEmailSent(false), 2500);
     } catch (err) {
       console.error(err);
       alert('Email failed. Check console + Network tab.');
