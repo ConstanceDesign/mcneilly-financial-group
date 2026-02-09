@@ -161,7 +161,7 @@ const Home: React.FC = () => {
           </h1>
 
           <p className="mt-4 text-[16px] sm:text-[16px] text-[#1f2937]/80 leading-relaxed">
-            Trusted guidance for individuals, families, and business owners across Canada—built on clear strategy, practical protection,
+            Trusted guidance for individuals, families, and business owners across Ontario, built on clear strategy, practical protection,
             and long-term discipline.
           </p>
 
@@ -221,7 +221,7 @@ const Home: React.FC = () => {
             </li>
             <li className="inline-flex items-center gap-2">
               <FaCheckCircle className="text-[#2f7a2e]" aria-hidden="true" />
-              Canada-wide support
+              Ontario-licensed support
             </li>
             <li className="inline-flex items-center gap-2">
               <FaCheckCircle className="text-[#2f7a2e]" aria-hidden="true" />
