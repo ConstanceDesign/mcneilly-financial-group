@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useRef, useState } from 'react';
+import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import {
   FaBalanceScale,
   FaCheck,
@@ -14,22 +14,37 @@ import {
   FaUserShield,
 } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 
 type FooterLink = {
-  to?: string;
+  to: string;
   label: string;
   icon: React.ReactNode;
   external?: boolean;
-  onClick?: () => void;
+};
+
+const COOKIE_NAME = 'cookies_accepted';
+const COOKIE_VALUE = 'true';
+
+const hasCookie = (name: string, value?: string) => {
+  const cookies = typeof document !== 'undefined' ? document.cookie.split('; ') : [];
+  const found = cookies.find((c) => c.startsWith(`${name}=`));
+  if (!found) return false;
+  if (value == null) return true;
+  return found.split('=')[1] === value;
+};
+
+const setCookie = (name: string, value: string, maxAgeSeconds: number) => {
+  const secure = typeof window !== 'undefined' && window.location.protocol === 'https:' ? '; Secure' : '';
+  document.cookie = `${name}=${value}; max-age=${maxAgeSeconds}; path=/; SameSite=Lax${secure}`;
 };
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
+  const reduceMotion = useReducedMotion();
 
   const [cookiesAccepted, setCookiesAccepted] = useState(false);
-  const [showBanner, setShowBanner] = useState(true);
-
+  const [showCookieBanner, setShowCookieBanner] = useState(true);
   const [legalOpen, setLegalOpen] = useState(false);
 
   // Accessible IDs (stable + collision-safe)
@@ -43,7 +58,9 @@ const Footer: React.FC = () => {
   const lastFocusedElRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    setCookiesAccepted(document.cookie.includes('cookies_accepted=true'));
+    const accepted = hasCookie(COOKIE_NAME, COOKIE_VALUE);
+    setCookiesAccepted(accepted);
+    setShowCookieBanner(!accepted);
   }, []);
 
   // Save the previously focused element (so we can restore focus on close)
@@ -77,12 +94,11 @@ const Footer: React.FC = () => {
 
   const acceptCookies = () => {
     setCookiesAccepted(true);
-    window.setTimeout(() => setShowBanner(false), 300);
-    document.cookie = `cookies_accepted=true; max-age=${60 * 60 * 24 * 365}; path=/; SameSite=Lax`;
+    setCookie(COOKIE_NAME, COOKIE_VALUE, 60 * 60 * 24 * 365);
+    window.setTimeout(() => setShowCookieBanner(false), reduceMotion ? 0 : 250);
   };
 
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
   const closeLegal = () => setLegalOpen(false);
 
   // Focus trap helpers
@@ -96,9 +112,12 @@ const Footer: React.FC = () => {
       'textarea:not([disabled])',
       '[tabindex]:not([tabindex="-1"])',
     ].join(',');
-    return Array.from(root.querySelectorAll<HTMLElement>(selectors)).filter(
-      (el) => !el.hasAttribute('disabled') && !el.getAttribute('aria-hidden')
-    );
+
+    return Array.from(root.querySelectorAll<HTMLElement>(selectors)).filter((el) => {
+      if (el.hasAttribute('disabled')) return false;
+      if (el.getAttribute('aria-hidden') === 'true') return false;
+      return true;
+    });
   };
 
   const onLegalKeyDown = (e: React.KeyboardEvent) => {
@@ -131,58 +150,63 @@ const Footer: React.FC = () => {
     }
   };
 
-  // Desktop column order is “down the first link column, then down the next”.
-  const leftLinks: readonly FooterLink[] = [
-    {
-      to: 'https://www.sterlingmutuals.com/advisor/legal.html',
-      label: 'Sterling Mutuals Legal Info',
-      icon: <FaGavel aria-hidden="true" />,
-      external: true,
-    },
-    {
-      to: 'https://www.sterlingmutuals.com/advisor/privacy.html',
-      label: 'Sterling Mutuals Privacy Policy',
-      icon: <FaUserShield aria-hidden="true" />,
-      external: true,
-    },
-    {
-      to: 'https://www.sterlingmutuals.com/advisor/complaint.html',
-      label: 'Client Complaint Procedures',
-      icon: <FaCommentDots aria-hidden="true" />,
-      external: true,
-    },
-    {
-      to: 'https://www.linkedin.com/in/patrick-mcneilly-3300b42/',
-      label: 'LinkedIn',
-      icon: <FaLinkedin aria-hidden="true" />,
-      external: true,
-    },
-  ] as const;
+  // Links
+  const leftLinks = useMemo<readonly FooterLink[]>(
+    () => [
+      {
+        to: 'https://www.sterlingmutuals.com/advisor/legal.html',
+        label: 'Sterling Mutuals Legal Info',
+        icon: <FaGavel aria-hidden="true" />,
+        external: true,
+      },
+      {
+        to: 'https://www.sterlingmutuals.com/advisor/privacy.html',
+        label: 'Sterling Mutuals Privacy Policy',
+        icon: <FaUserShield aria-hidden="true" />,
+        external: true,
+      },
+      {
+        to: 'https://www.sterlingmutuals.com/advisor/complaint.html',
+        label: 'Client Complaint Procedures',
+        icon: <FaCommentDots aria-hidden="true" />,
+        external: true,
+      },
+      {
+        to: 'https://www.linkedin.com/in/patrick-mcneilly-3300b42/',
+        label: 'LinkedIn',
+        icon: <FaLinkedin aria-hidden="true" />,
+        external: true,
+      },
+    ],
+    []
+  );
 
-  const rightLinks: readonly FooterLink[] = [
-    { to: '/accessibility', label: 'Accessibility', icon: <FaUniversalAccess aria-hidden="true" /> },
-    { to: '/terms-of-use', label: 'Terms of Use', icon: <FaScroll aria-hidden="true" /> },
-    { to: '/privacy-policy', label: 'Privacy Policy', icon: <FaShieldAlt aria-hidden="true" /> },
-    { to: '/disclaimer', label: 'Website Disclaimer', icon: <FaFileAlt aria-hidden="true" /> },
-  ] as const;
+  const rightLinks = useMemo<readonly FooterLink[]>(
+    () => [
+      { to: '/accessibility', label: 'Accessibility', icon: <FaUniversalAccess aria-hidden="true" /> },
+      { to: '/terms-of-use', label: 'Terms of Use', icon: <FaScroll aria-hidden="true" /> },
+      { to: '/privacy-policy', label: 'Privacy Policy', icon: <FaShieldAlt aria-hidden="true" /> },
+      { to: '/disclaimer', label: 'Website Disclaimer', icon: <FaFileAlt aria-hidden="true" /> },
+    ],
+    []
+  );
 
-  const mobileLinks = [...leftLinks, ...rightLinks] as const;
+  const mobileLinks = useMemo(() => [...leftLinks, ...rightLinks] as const, [leftLinks, rightLinks]);
 
   // ✅ Match 2026 page base everywhere
   const footerBg = 'bg-[#f4f2ec]';
 
   // Mobile “card” wrapper (premium, but not darker than page)
   const mobileCard =
-    'w-full max-w-85 ' +
-    'rounded-2xl ' +
+    'w-full max-w-65 ' +
+    'rounded-2xs ' +
     'border border-black/10 ' +
     'bg-white/60 backdrop-blur-sm ' +
     'shadow-[0_14px_42px_rgba(0,0,0,0.08)] ' +
     'px-4 py-4 ' +
     'text-left';
 
-  const LinkRow = ({ to, label, icon, external, onClick }: FooterLink) => {
-    // Tighten tracking + reduce “menu competition”
+  const LinkRow: React.FC<FooterLink> = ({ to, label, icon, external }) => {
     const common =
       'inline-flex items-center gap-2 ' +
       'text-[13px] font-medium tracking-normal ' +
@@ -190,7 +214,6 @@ const Footer: React.FC = () => {
       'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/25 rounded ' +
       'whitespace-nowrap';
 
-    // Softer underline style (more “nav-like”)
     const labelClass =
       'relative inline-block ' +
       "after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 " +
@@ -205,23 +228,6 @@ const Footer: React.FC = () => {
       </>
     );
 
-    if (onClick) {
-      return (
-        <button
-          type="button"
-          onClick={onClick}
-          className={common}
-          aria-haspopup="dialog"
-          aria-expanded={legalOpen}
-          aria-controls={legalDialogId}
-        >
-          {content}
-        </button>
-      );
-    }
-
-    if (!to) return null;
-
     return external ? (
       <a href={to} target="_blank" rel="noopener noreferrer" className={common}>
         {content}
@@ -235,16 +241,15 @@ const Footer: React.FC = () => {
 
   const footerActionBtn =
     'inline-flex w-fit items-center justify-center gap-2 ' +
-    'rounded-xs px-3.5 py-2.5 ' +
-    'bg-white/70 backdrop-blur-sm ' +
+    'rounded-xs px-2 py-2 ' +
+    'bg-white/25 backdrop-blur-sm ' +
     'border border-black/12 ' +
-    'text-[#0f5028] ' +
-    'shadow-sm hover:shadow-[0_10px_22px_rgba(15,80,40,0.10)] ' +
+    'text-[#102019] ' +
+    'shadow-xs hover:shadow-sm ' +
     'hover:bg-white/80 ' +
     'transition ' +
-    'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/25 ' +
-    'focus-visible:ring-offset-2 focus-visible:ring-offset-[#f4f2ec] ' +
-    'text-[12px] font-bold uppercase tracking-[0.14em] ' +
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/30 ' +
+    'text-[11px] font-semibold uppercase tracking-[0.16em] ' +
     'whitespace-nowrap';
 
   const footerUtilityLink =
@@ -255,12 +260,12 @@ const Footer: React.FC = () => {
     'whitespace-nowrap';
 
   const desktopCtaWidth = 'w-56';
-  const sectionHeader =
-    'text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1f2937]/55';
+  const sectionHeader = 'text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1f2937]/55';
 
   return (
     <footer className={`${footerBg} text-[#1f2937] font-inter`} role="contentinfo">
       <div className="h-px bg-black/10" aria-hidden="true" />
+      <h2 className="sr-only">Footer navigation and company information</h2>
 
       <div className="mx-auto max-w-7xl px-8 py-10">
         <div className="relative">
@@ -273,7 +278,7 @@ const Footer: React.FC = () => {
                     <img
                       src="/images/sterling-mutuals-logo.png"
                       alt="Sterling Mutuals Inc."
-                      className="w-[90%] h-auto mx-auto block"
+                      className="w-[75%] h-auto mx-auto block"
                       loading="lazy"
                       decoding="async"
                     />
@@ -289,63 +294,62 @@ const Footer: React.FC = () => {
                       className={footerActionBtn}
                     >
                       <FaBalanceScale className="text-[#0f5028]" aria-hidden="true" />
-                      <span>Legal Disclaimer</span>
+                      <span className="font-semibold uppercase tracking-[0.16em]">Legal Disclaimer</span>
                     </button>
                   </div>
                 </div>
 
-                <nav aria-label="Footer external links and resources" className="mt-8 flex justify-center">
-                  <div className={mobileCard}>
-                    <p className={sectionHeader}>External Links &amp; Resources</p>
+                {/* iPad (md) = 2 columns, Mobile = stacked */}
+                <div className="mt-8 mb-8 grid grid-cols-1 md:grid-cols-2 md:gap-6 md:items-start">
+                  <nav aria-label="Footer links and resources" className="flex justify-center md:justify-end w-full">
+                    <div className={mobileCard}>
+                      <p className={sectionHeader}>Links &amp; Resources</p>
 
-                    <ul className="mt-4 grid grid-cols-1 gap-y-3">
-                      {mobileLinks.map((l) => (
-                        <li key={l.to ?? l.label}>
-                          <LinkRow {...l} />
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </nav>
+                      <ul className="mt-4 grid grid-cols-1 gap-y-3">
+                        {mobileLinks.map((l) => (
+                          <li key={`${l.to}-${l.label}`}>
+                            <LinkRow {...l} />
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </nav>
 
-                <section className="mt-6 flex justify-center" aria-label="McNeilly Financial Group contact">
-                  <div className={mobileCard}>
-                    <p className={sectionHeader}>McNeilly Financial Group</p>
+                  <section
+                    className="mt-6 md:mt-0 flex justify-center md:justify-start w-full"
+                    aria-label="McNeilly Financial Group contact"
+                  >
+                    <div className={mobileCard}>
+                      <p className={sectionHeader}>McNeilly Financial Group</p>
 
-                    <address className="mt-4 not-italic text-[13px] text-[#1f2937]/70 leading-relaxed">
-                      <div className="font-semibold text-[#102019]">
-                        1608 Sylvestre Drive, Suite 2D
-                        <br />
-                        Tecumseh, Ontario N8N 2L9
-                      </div>
+                      <address className="mt-4 not-italic text-[13px] text-[#1f2937]/70 leading-relaxed">
+                        <div className="font-semibold text-[#102019]">
+                          1608 Sylvestre Drive, Suite 2D
+                          <br />
+                          Tecumseh, Ontario N8N 2L9
+                        </div>
 
-                      <div className="mt-3 font-semibold text-[#102019]">
-                        <a
-                          href="tel:+15199795396"
-                          className="inline-flex items-center gap-2 hover:text-[#0f5028] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/25 rounded"
-                        >
+                        <div className="mt-3 font-semibold text-[#102019]">
+                          <a
+                            href="tel:+15199795396"
+                            className="inline-flex items-center gap-2 hover:text-[#0f5028] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0f5028]/25 rounded"
+                          >
+                            <span className="text-[#0f5028]/55">
+                              <FaPhoneAlt aria-hidden="true" />
+                            </span>
+                            (519) 979-5396
+                          </a>
+                        </div>
+
+                        <div className="mt-3 inline-flex items-center gap-2">
                           <span className="text-[#0f5028]/55">
-                            <FaPhoneAlt aria-hidden="true" />
+                            <FaClock aria-hidden="true" />
                           </span>
-                          (519) 979-5396
-                        </a>
-                      </div>
-
-                      <div className="mt-3 inline-flex items-center gap-2">
-                        <span className="text-[#0f5028]/55">
-                          <FaClock aria-hidden="true" />
-                        </span>
-                        <span className="text-[#1f2937]/70">Mon–Fri, 9 AM – 5 PM</span>
-                      </div>
-                    </address>
-                  </div>
-                </section>
-
-                <div className="mt-8">
-                  <div
-                    className="h-px bg-black/10 w-screen relative left-1/2 -translate-x-1/2"
-                    aria-hidden="true"
-                  />
+                          <span className="text-[#1f2937]/70">Mon–Fri, 9 AM – 5 PM</span>
+                        </div>
+                      </address>
+                    </div>
+                  </section>
                 </div>
 
                 <div className="mt-5 mb-4 flex justify-center">
@@ -375,9 +379,11 @@ const Footer: React.FC = () => {
               </div>
 
               {/* Mobile small print */}
-              <div className="mx-auto max-w-85 text-xs text-[#1f2937]/55 lg:hidden">
+              <div className="mx-auto max-w-78 text-xs text-[#1f2937]/55 lg:hidden">
                 <span className="block">Secure experience. Client Login opens in a new tab.</span>
-                <span className="block">&copy; {currentYear} McNeilly Financial Group. All Rights Reserved.</span>
+                <span className="block">
+                  &copy; {currentYear} McNeilly Financial Group. All Rights Reserved.
+                </span>
               </div>
 
               {/* ===== DESKTOP ===== */}
@@ -390,7 +396,7 @@ const Footer: React.FC = () => {
                           <img
                             src="/images/sterling-mutuals-logo.png"
                             alt="Sterling Mutuals Inc."
-                            className="w-[70%] h-auto block"
+                            className="w-[75%] h-auto block"
                             loading="lazy"
                             decoding="async"
                           />
@@ -405,14 +411,14 @@ const Footer: React.FC = () => {
                             aria-controls={legalDialogId}
                             className={footerActionBtn}
                           >
-                            <FaBalanceScale className="text-[#0f5028]" aria-hidden="true" />
+                            <FaBalanceScale className="text-[#0f5028]/55 text-[13px]" aria-hidden="true" />
                             <span>Legal Disclaimer</span>
                           </button>
                         </div>
                       </div>
                     </section>
 
-                    <nav aria-label="Footer external links" className="min-w-88">
+                    <nav aria-label="Footer external links" className="min-w-65 xl:min-w-50">
                       <p className={sectionHeader}>External Links</p>
                       <ul className="mt-4 grid grid-cols-1 gap-y-3">
                         {leftLinks.map((l) => (
@@ -425,7 +431,7 @@ const Footer: React.FC = () => {
 
                     <div aria-hidden="true" className="hidden xl:block w-6 shrink-0" />
 
-                    <nav aria-label="Footer resources" className="min-w-70">
+                    <nav aria-label="Footer resources" className="min-w-50">
                       <p className={sectionHeader}>Resources</p>
                       <ul className="mt-4 grid grid-cols-1 gap-y-3">
                         {rightLinks.map((l) => (
@@ -465,18 +471,14 @@ const Footer: React.FC = () => {
                           </span>
                           <span className="text-[#1f2937]/70">Mon–Fri, 9 AM – 5 PM</span>
                         </div>
-
                       </address>
                     </section>
                   </div>
                 </div>
 
                 <div className="relative my-12 mb-3">
-                  <div
-                    className="h-px bg-black/10 w-screen relative left-1/2 -translate-x-1/2"
-                    aria-hidden="true"
-                  />
-                  <div className="absolute right-0 mt-1.5 px-3">
+                  <div className="h-px bg-black/10 w-screen relative left-1/2 -translate-x-1/2" aria-hidden="true" />
+                  <div className="absolute right-0 mt-1.5 px-0">
                     <button
                       type="button"
                       onClick={scrollToTop}
@@ -521,10 +523,10 @@ const Footer: React.FC = () => {
                 aria-modal="true"
                 aria-labelledby={legalTitleId}
                 aria-describedby={legalDescId}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 12 }}
-                transition={{ duration: 0.25, ease: 'easeOut' }}
+                initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+                animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+                exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
+                transition={reduceMotion ? { duration: 0 } : { duration: 0.25, ease: 'easeOut' }}
                 className="
                   fixed inset-0 z-50
                   flex items-center justify-center
@@ -533,7 +535,6 @@ const Footer: React.FC = () => {
                 "
                 onKeyDown={onLegalKeyDown}
                 onMouseDown={(e) => {
-                  // Click/press on the overlay closes the dialog
                   if (e.target === e.currentTarget) closeLegal();
                 }}
               >
@@ -554,7 +555,7 @@ const Footer: React.FC = () => {
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <FaBalanceScale className="text-[#0f5028]" aria-hidden="true" />
+                        <FaBalanceScale className="text-[#0f5028]/55" aria-hidden="true" />
                         <h2
                           id={legalTitleId}
                           className="text-[1rem] sm:text-[1.05rem] font-semibold tracking-wide text-[#0f5028]"
@@ -602,13 +603,13 @@ const Footer: React.FC = () => {
 
                   <div className="mt-5 border-t border-[#0f5028]/20 pt-4">
                     <p className="text-[0.95rem] leading-relaxed text-[#1f2937]/80 mb-4">
-                      The contents of this website do not constitute an offer or solicitation for residents in the United
-                      States or in any other jurisdiction where either <strong>McNeilly Financial Group</strong> and/or{' '}
-                      <strong>Sterling Mutuals</strong> is not registered or permitted to conduct business. Mutual funds
-                      provided through <strong>Sterling Mutuals Inc.</strong> Commissions, trailing commissions,
-                      management fees and expenses may be associated with mutual fund investments. Please read the
-                      prospectus carefully before investing. Mutual funds are not guaranteed, their values fluctuate
-                      frequently, and past performance may not be repeated.
+                      The contents of this website do not constitute an offer or solicitation for residents in the
+                      United States or in any other jurisdiction where either <strong>McNeilly Financial Group</strong>{' '}
+                      and/or <strong>Sterling Mutuals</strong> is not registered or permitted to conduct business.
+                      Mutual funds provided through <strong>Sterling Mutuals Inc.</strong> Commissions, trailing
+                      commissions, management fees and expenses may be associated with mutual fund investments. Please
+                      read the prospectus carefully before investing. Mutual funds are not guaranteed, their values
+                      fluctuate frequently, and past performance may not be repeated.
                     </p>
 
                     <p className="text-[0.95rem] leading-relaxed text-[#1f2937]/80 mb-0">
@@ -628,60 +629,76 @@ const Footer: React.FC = () => {
 
       {/* Cookie Consent Banner */}
       <AnimatePresence>
-        {!cookiesAccepted && showBanner && (
+        {!cookiesAccepted && showCookieBanner && (
           <motion.div
             role="region"
             aria-label="Cookie consent"
             aria-labelledby="cookie-consent-title"
             aria-describedby="cookie-consent-desc"
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ duration: 0.45, ease: 'easeInOut' }}
+            initial={reduceMotion ? false : { y: '100%' }}
+            animate={reduceMotion ? { y: 0 } : { y: 0 }}
+            exit={reduceMotion ? { y: '100%' } : { y: '100%' }}
+            transition={reduceMotion ? { duration: 0 } : { duration: 0.45, ease: 'easeInOut' }}
             className="
-              fixed left-0 right-0 bottom-0
-              bg-[#0f5028] text-white
-              p-5 z-50 shadow-lg
-              flex flex-col md:flex-row justify-between items-center gap-4
+              fixed left-0 right-0 bottom-0 z-50
+              bg-[#0f5028] text-white shadow-lg
+              py-2.5
             "
           >
-            <div className="px-2">
-              <p id="cookie-consent-title" className="font-semibold uppercase tracking-[0.14em] text-[12px] text-white/90">
-                Cookies &amp; Privacy
-              </p>
+            <div className="mx-auto w-full max-w-7xl px-8">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-4">
+                <div className="min-w-0 text-center md:text-left">
+                  <span id="cookie-consent-title" className="sr-only">
+                    Cookies &amp; Privacy
+                  </span>
 
-              <p id="cookie-consent-desc" className="text-sm text-center md:text-left mt-1 text-white/90">
-                We use cookies to enhance your experience. By continuing to use our site, you agree to our{' '}
-                <NavLink
-                  to="/privacy-policy"
-                  className="
-                    underline font-semibold uppercase tracking-[0.14em]
-                    text-[#8cbe3f] hover:text-white
-                    focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 rounded
-                  "
-                >
-                  Privacy Policy
-                </NavLink>
-                .
-              </p>
+                  <p id="cookie-consent-desc" className="text-sm leading-snug text-white/90">
+                    <span className="font-semibold uppercase tracking-[0.12em] text-[13px] text-white/85 whitespace-nowrap">
+                      Cookies &amp; Privacy
+                    </span>
+                    <span className="mx-2 text-white/50">•</span>
+                    We use cookies to enhance your experience.
+                    <span className="hidden md:block lg:hidden" />
+                    <span>
+                      {' '}
+                      By continuing, you agree to our{' '}
+                      <NavLink
+                        to="/privacy-policy"
+                        className="
+                          font-semibold text-[#8cbe3f]
+                          underline underline-offset-4 decoration-white/30
+                          hover:text-white hover:decoration-white/60
+                          focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 rounded
+                        "
+                      >
+                        Privacy Policy
+                      </NavLink>
+                      .
+                    </span>
+                  </p>
+                </div>
+
+                <div className="w-full md:w-auto flex justify-center md:justify-end pt-2 md:pt-0">
+                  <button
+                    type="button"
+                    onClick={acceptCookies}
+                    className="
+                      inline-flex shrink-0 items-center gap-2
+                      bg-[#4b9328] hover:bg-[#8cbe3f]
+                      px-3 py-2 rounded-xs
+                      text-white text-[0.95rem]
+                      font-semibold uppercase tracking-wide
+                      transition
+                      focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70
+                      shadow-md
+                    "
+                  >
+                    <FaCheck aria-hidden="true" />
+                    Got it
+                  </button>
+                </div>
+              </div>
             </div>
-
-            <button
-              type="button"
-              onClick={acceptCookies}
-              className="
-                inline-flex items-center gap-2
-                bg-[#4b9328] hover:bg-[#8cbe3f]
-                px-4 py-2 rounded-xs
-                text-sm font-semibold uppercase tracking-[0.14em]
-                transition
-                focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70
-                shadow-md
-              "
-            >
-              <FaCheck aria-hidden="true" />
-              Got it
-            </button>
           </motion.div>
         )}
       </AnimatePresence>

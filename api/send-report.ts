@@ -101,8 +101,8 @@ UA: ${userAgent}
     const SMTP_PASS = env('SMTP_PASS').replace(/\s+/g, '');
 
     const EMAIL_HOST = env('EMAIL_HOST'); // e.g. smtp.gmail.com
-    const EMAIL_PORT = Number(env('EMAIL_PORT') || '587'); // 465 or 587
-    const EMAIL_SECURE = env('EMAIL_SECURE') === 'false';   // true for 465, false for 587
+    const EMAIL_PORT = Number(env('EMAIL_PORT') || '465'); // 465 or 587
+    const EMAIL_SECURE = env('EMAIL_SECURE') === 'true';   // true for 465, false for 587
 
     const EMAIL_FROM = env('EMAIL_FROM'); // e.g. "McNeilly Financial Group <your@gmail.com>"
     const FALLBACK_FROM = SMTP_USER ? `McNeilly Financial Group <${SMTP_USER}>` : 'no-reply@example.com';
